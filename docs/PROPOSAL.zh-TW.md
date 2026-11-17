@@ -1,6 +1,6 @@
 # 森羅物語：烘焙（Kaleidoscope Baking）企劃書
 
-> 版本：草案 v0.1　｜　日期：2026-11-17
+> 版本：草案 v0.2（新增飲品系統）　｜　日期：2026-11-17
 > 對應本體：森羅物語：廚房（Kaleidoscope Cookery）Bedrock 版 v1.6.6
 > 命名空間：`kaleidoscope_baking`（腳本簡寫 `kb`）
 
@@ -8,7 +8,7 @@
 
 ## 1. 專案概述
 
-**森羅物語：烘焙** 是森羅物語系列的擴充模組，在「廚房」本體上加入完整的烘焙玩法：揉麵、發酵、烤製、裝飾與擺盤，並帶來一系列烘焙廚具與甜點、麵包。
+**森羅物語：烘焙** 是森羅物語系列的擴充模組，在「廚房」本體上加入完整的烘焙玩法：揉麵、發酵、烤製、裝飾與擺盤，並帶來一系列烘焙廚具與甜點、麵包；同時附帶 **咖啡館飲品系統**（咖啡、珍珠奶茶、手搖飲、熱可可等），讓「麵包店 + 咖啡館」成為一個完整的下午茶玩法。
 
 本企劃有三個核心目標：
 
@@ -53,12 +53,14 @@
 
 | 廚房能力 | 烘焙用途 |
 |---------|---------|
-| `millstone` | 研磨：可可豆→可可粉、糖→糖粉、堅果→堅果粉、燕麥→燕麥粉 |
+| `millstone` | 研磨：可可豆→可可粉、糖→糖粉、堅果→堅果粉、燕麥→燕麥粉、**烘焙咖啡豆→咖啡粉、樹薯→樹薯粉、冰塊→碎冰、茶葉→抹茶粉** |
 | `chopping_board` / `chopping_board_tool` | 切蛋糕、切麵包片；用 **擀麵棍** 當工具擀派皮 |
 | `steamer` | 中式糕點：發糕、馬拉糕、蒸蛋糕 |
-| `stockpot_exact` / `stockpot_flex` | 熬煮卡士達、焦糖、果醬、巧克力醬 |
-| `wok` | 法式吐司、可麗餅（平底）、煎餅 |
-| `teapot` | 下午茶搭配：奶茶麵包用茶湯、花草茶 |
+| `stockpot_exact` / `stockpot_flex` | 熬煮卡士達、焦糖、果醬、巧克力醬、**煮珍珠（黑糖粉圓）、仙草凍、熱可可** |
+| `wok` | 法式吐司、可麗餅（平底）、煎餅、**炒黑糖（黑糖糖漿）** |
+| `teapot` | 下午茶搭配：奶茶麵包用茶湯、花草茶、**手搖飲用的紅茶 / 綠茶 / 烏龍茶湯底** |
+| `teapot_mystery_exclude` | 咖啡豆、珍珠等飲品材料排除在廚房「神秘茶」之外，避免被誤泡 |
+| `cup_stack` 方塊元件 | 熱飲（拿鐵、熱可可）可疊放在桌上，沿用廚房空杯 `kaleidoscope_cookery:empty_cup` |
 | `bamboo_tray` | 曬果乾（葡萄乾、蔓越莓乾）、乾燥香草 |
 | `oil_containers` | 奶油罐 / 酥油罐註冊為油源，可供炒鍋使用 |
 | `stockpot_base_containers` | 牛奶桶、鮮奶油桶作為湯鍋基底 |
@@ -115,6 +117,63 @@
 
 所有可擺放成品加上 `kaleidoscope_cookery:placeable_food` 標籤；所有成品加上第 5 節的通用食材標籤，讓其他模組能把它們當原料。
 
+### 3.4 飲品系統（咖啡館）
+
+烘焙附帶一條獨立但與甜點緊密搭配的飲品線。設計上**避開廚房已有的茶飲**（碧螺春、鐵觀音、烏龍、酥油茶、砂鍋奶茶等），廚房的茶只作為「湯底」被引用，不重做。
+
+#### 3.4.1 原料來源
+
+| 原料 | 取得方式 | ID 草案 |
+|------|---------|---------|
+| 咖啡豆 | 新作物「咖啡樹」，生成於叢林 / 熱帶草原；採收得生豆 | `:coffee_cherry` → `:green_coffee_beans` |
+| 烘焙咖啡豆 | 烤箱烘豆，三段火候對應 **淺焙 / 中焙 / 深焙**（焦黑則變成「炭化咖啡豆」） | `:roasted_coffee_beans_light/medium/dark` |
+| 咖啡粉 | 廚房石磨研磨 | `:ground_coffee` |
+| 可可豆 → 可可粉 | 原版可可豆經石磨 | `:cocoa_powder` |
+| 樹薯 → 樹薯粉 | 新作物「樹薯」（或由豐收提供，見第 5 節） | `:cassava`、`:tapioca_starch` |
+| 生粉圓 | 攪拌盆：樹薯粉 + 黑糖 + 熱水 | `:raw_tapioca_pearls` |
+| 珍珠（粉圓） | 廚房湯鍋煮熟 | `:tapioca_pearls` |
+| 黑糖 / 黑糖糖漿 | 甘蔗經石磨 → 炒鍋炒糖 | `:brown_sugar`、`:brown_sugar_syrup` |
+| 碎冰 | 冰 / 浮冰經石磨 | `:crushed_ice` |
+| 茶湯底 | 廚房茶壺泡製（紅茶、綠茶、烏龍），裝入茶桶 | `:black_tea_base` 等 |
+| 鮮奶 / 奶泡 / 奶蓋 | 牛奶桶 + 奶泡壺；奶蓋 = 鮮奶油 + 鹽 | `:frothed_milk`、`:milk_foam_cap` |
+
+#### 3.4.2 飲品站點與工具
+
+| 名稱 | ID 草案 | 玩法 |
+|------|---------|------|
+| 咖啡機 | `:espresso_machine` | 放入咖啡粉，需下方熱源或紅石訊號供電；萃取濃縮咖啡，可接奶泡做拿鐵 / 卡布奇諾 |
+| 手沖架 | `:pour_over_stand` | 不需紅石的入門款；手沖咖啡，淺 / 中 / 深焙風味不同（效果不同） |
+| 奶泡壺 | `:milk_frother` | 手持對牛奶桶使用 N 次 → 奶泡 |
+| 雪克杯 | `:shaker` | 手搖飲核心：放入茶湯 / 咖啡 + 配料 + 冰，手持搖動 N 次；開啟表單選 **甜度、冰塊** |
+| 飲料吧台 | `:drink_counter` | 裝飾 + 收納杯子、吸管，可放置雪克杯與咖啡機 |
+| 杯具 | `:takeaway_cup`、`:glass_cup`、`:coffee_mug`、`:straw` | 手搖飲用外帶杯 + 吸管；熱飲用馬克杯或廚房空杯 |
+
+#### 3.4.3 甜度 / 冰塊客製化（台灣手搖特色）
+
+雪克杯完成時跳出表單（`@minecraft/server-ui`，與廚房同版本）：
+
+- **甜度**：全糖 / 少糖 / 半糖 / 微糖 / 無糖 → 影響飽食度與「糖分」效果
+- **冰塊**：正常冰 / 少冰 / 微冰 / 去冰 / 溫 / 熱 → 熱飲在寒冷生態域給予抗寒、冰飲在沙漠 / 地獄給予清涼效果
+- 選擇結果寫在物品 lore 與 ItemStack 動態屬性上；手搖飲因此設定為**不可堆疊（max_stack 1）**（Bedrock 物品動態屬性只能用在不可堆疊物品），咖啡等不需客製的熱飲維持可堆疊。
+
+#### 3.4.4 飲品清單（第一版約 20 款）
+
+| 類別 | 飲品 |
+|------|------|
+| 咖啡 | 濃縮咖啡、美式咖啡、拿鐵、卡布奇諾、摩卡、焦糖瑪奇朵、冰滴咖啡、手沖咖啡（三種焙度） |
+| 手搖飲 | **珍珠奶茶**、黑糖珍珠鮮奶、珍珠紅茶拿鐵、奶蓋烏龍、多多綠、檸檬紅茶 |
+| 混搭 | 鴛鴦（咖啡 + 奶茶）、抹茶拿鐵 |
+| 其他 | 熱可可、香草奶昔、檸檬水 |
+| 跨模組（見 5.4） | 水果茶、仙草奶凍、海鹽焦糖拿鐵、花草茶拿鐵 |
+
+#### 3.4.5 飲品效果
+
+- **咖啡因**：短時間給予「急迫（Haste）」與「速度」；短時間連喝 3 杯以上會累積「心悸」→ 反胃，鼓勵適量飲用。焙度越深效果越強、時間越短。
+- **糖分**：甜度越高飽和度越高，無糖版則額外給予少量回復。
+- **下午茶加成**：喝飲品後 30 秒內吃烘焙甜點（或反過來），額外增加飽和度並延長效果——讓飲品和甜點彼此需要。
+- **容器回收**：喝完依 `using_converts_to` 歸還外帶杯 / 馬克杯 / 廚房空杯（遵守廚房的容器回收契約，放置後食用則以掉落物生成）。
+- 可擺放：熱飲使用廚房 `cup_stack` 元件疊杯；手搖飲可放在桌上（一格最多 4 杯）。
+
 ---
 
 ## 4. 烘焙開放 API（Kaleidoscope Baking API v1）
@@ -132,6 +191,9 @@
 | `kaleidoscope_baking:register_topping` | 外部 → 烘焙 | 註冊裱花台可用的配料 / 裝飾 |
 | `kaleidoscope_baking:register_ingredient` | 外部 → 烘焙 | 為**無法加標籤的物品**（原版、他人物品）註冊食材分類 |
 | `kaleidoscope_baking:register_fuel` | 外部 → 烘焙 | 磚窯烤爐燃料（燃燒時間、溫度） |
+| `kaleidoscope_baking:register_drink_topping` | 外部 → 烘焙 | 註冊手搖飲配料（珍珠、椰果、仙草、布丁…），含顯示顏色與效果 |
+| `kaleidoscope_baking:register_drink_base` | 外部 → 烘焙 | 註冊飲品湯底（茶湯、咖啡、果汁），供雪克杯 / 咖啡機使用 |
+| `kaleidoscope_baking:register_drink_effect` | 外部 → 烘焙 | 為飲品附加效果或參與「下午茶加成」 |
 | `kaleidoscope_baking:query_ingredient` | 外部 → 烘焙 | 查詢某物品屬於哪些食材分類 |
 | `kaleidoscope_baking:ingredient_info` | 烘焙 → 外部 | `query_ingredient` 的回覆 |
 | `kaleidoscope_baking:bulk_begin` / `bulk_chunk` / `bulk_end` | 外部 → 烘焙 | 大量資料分塊傳送（Script Event 單則上限 2048 字元） |
@@ -145,6 +207,28 @@
 | `oven` | 烤箱 | `input`（或 `ingredients`）、`mold`、`result`、`time`、`perfectWindow`、`burntResult` |
 | `decorating` | 裱花台 | `base`、`layers`（配料序列）、`result` |
 | `oven_tray` | 烤盤（一次多份小點心） | `input`、`result`、`perTray`、`time` |
+| `coffee_roast` | 烤箱烘豆 | `input`、`light` / `medium` / `dark` 三段結果、`time` |
+| `espresso` | 咖啡機 / 手沖架 | `input`、`result`、`milk`（可選）、`carrier`、`time` |
+| `shaker` | 雪克杯 | `base`、`ingredients`、`toppings`、`shakes`、`result`、`carrier`、`allowSweetness`、`allowIce` |
+
+手搖飲範例（草本模組註冊仙草凍奶茶）：
+
+```js
+system.sendScriptEvent("kaleidoscope_baking:register_recipe", JSON.stringify({
+  api: 1, source: "kaleidoscope_herbal", kind: "shaker",
+  recipe: {
+    id: "kaleidoscope_herbal:shaker/grass_jelly_milk_tea",
+    base: "#kaleidoscope:tea_base",
+    ingredients: ["#kaleidoscope:milk"],
+    toppings: ["kaleidoscope_herbal:grass_jelly"],
+    shakes: 5,
+    result: "kaleidoscope_herbal:grass_jelly_milk_tea",
+    carrier: "kaleidoscope_baking:takeaway_cup",
+    allowSweetness: true,
+    allowIce: true
+  }
+}));
+```
 
 範例：
 
@@ -214,6 +298,11 @@ Bedrock 的世界 / 實體動態屬性是**以內容包為範圍**，不能跨�
 | `kaleidoscope:fish` / `:raw_fish` / `:cooked_fish` / `:shellfish` / `:seaweed` | 魚與海產 | 漁歌 |
 | `kaleidoscope:meat` / `:raw_meat` / `:cooked_meat` | 肉類 | 廚房 |
 | `kaleidoscope:bread` / `:cake` / `:pastry` / `:dough` | 烘焙成品與半成品 | 烘焙 |
+| `kaleidoscope:coffee_bean` / `:coffee` | 咖啡豆、咖啡飲品 | 烘焙、豐收 |
+| `kaleidoscope:tea_base` / `:juice` | 飲品湯底（茶湯、果汁） | 廚房（經註冊）、烘焙、豐收 |
+| `kaleidoscope:drink` / `:hot_drink` / `:cold_drink` | 所有飲品 | 各模組 |
+| `kaleidoscope:drink_topping` | 手搖飲配料 | 烘焙、草本、豐收 |
+| `kaleidoscope:ice` / `:salt` | 冰、鹽 | 烘焙、漁歌（海鹽） |
 | `kaleidoscope:sauce` / `:jam` / `:oil` | 醬料、果醬、油脂 | 各模組 |
 
 > 也同步加上社群常用的 `c:` 標籤（例如 `c:foods/bread`），提升與系列外模組的相容性；廚房本身已承認 `c:heat_sources`。
@@ -268,6 +357,12 @@ scripts/compat/
 | 草本 | 抹茶 / 花茶戚風 | 石磨（茶葉→茶粉）+ 烤箱 | `#kaleidoscope:tea_leaf` |
 | 草本 ← 烘焙 | 下午茶組合（茶 + 點心）提供草本藥效加成 | 廚房茶壺 | 透過草本 API 註冊 |
 | 廚房 | 蛋黃酥、月餅（使用廚房鹹蛋 / 肉餡） | 烤箱 | 直接使用廚房物品 |
+| **飲品互通** | | | |
+| 廚房 | 紅茶 / 烏龍 / 碧螺春湯底 → 珍珠奶茶、奶蓋烏龍 | 茶壺 → 雪克杯 | 廚房茶葉經茶壺泡成湯底，再進手搖 |
+| 漁歌 | 海鹽奶蓋、海鹽焦糖拿鐵 | 雪克杯 / 咖啡機 | 漁歌海水曬鹽 `#kaleidoscope:salt` |
+| 豐收 | 水果茶、楊枝甘露、百香綠茶、草莓牛奶 | 雪克杯 | `#kaleidoscope:fruit` / `:juice`；豐收若有樹薯 / 咖啡作物則取代烘焙自帶作物 |
+| 草本 | 仙草奶凍、愛玉檸檬、薄荷摩卡、洋甘菊拿鐵 | 雪克杯 / 咖啡機 | 仙草、愛玉註冊為 `drink_topping`；香草註冊為風味 |
+| 草本 ← 烘焙 | 咖啡渣 → 草本肥料 / 堆肥 | — | 透過草本 / 豐收 API 註冊 |
 
 ### 5.5 互通相容矩陣（目標）
 
@@ -326,6 +421,7 @@ Kaleidoscope Baking [RP]/
 | **M1 核心站點**（3 週） | 攪拌盆、發酵籃、烤箱（火候三段）、模具、基礎材料 | 能從小麥一路做出吐司，拆站不掉物品 |
 | **M2 廚房整合**（2 週） | 石磨 / 砧板 / 蒸籠 / 竹篩 / 湯鍋 / 炒鍋食譜註冊、油容器、顯示規則、食譜書分頁 | 食譜書出現烘焙分頁且所有食譜可查 |
 | **M3 內容填充**（3 週） | 約 40 道成品、裱花台、可擺放蛋糕與派、展示櫃 | 所有成品有貼圖、語系、食物數值 |
+| **M3.5 飲品系統**（2 週） | 咖啡樹 / 樹薯作物、烘豆、咖啡機、手沖架、奶泡壺、雪克杯（甜度冰塊表單）、約 20 款飲品、下午茶加成 | 從採咖啡果到喝拿鐵、從樹薯到珍珠奶茶全流程可玩；杯子正確回收 |
 | **M4 烘焙 API v1**（2 週） | 公開事件、驗證、冪等、分塊、文件、最小範例包 | 範例包可註冊新烤箱食譜並在食譜書顯示 |
 | **M5 系列互通**（3 週） | 食材標籤規範定稿、compat 三檔、跨模組食譜、反向註冊 | 五個模組任意組合安裝都能正常載入，缺任一模組不報錯 |
 | **M6 測試與發佈**（2 週） | 單人 / 多人 / Realms 測試、效能、移除重裝測試 | 無物品遺失；註冊 500 筆食譜不觸發 watchdog |
@@ -342,6 +438,9 @@ Kaleidoscope Baking [RP]/
 | Script Event 2048 字元上限 | 大量資料傳不完 | 分塊協定 |
 | 大量註冊造成 watchdog | 伺服器卡頓 | 註冊與快取重建分離、合併到下一 tick |
 | 方塊狀態組合爆量 | 載入慢、超過上限 | 外觀變化優先用展示實體，狀態只存必要欄位 |
+| 物品動態屬性只能存在不可堆疊物品上 | 手搖飲甜度 / 冰塊無法與堆疊並存 | 手搖飲設為不可堆疊；不需客製的咖啡、熱可可維持可堆疊 |
+| 廚房茶壺目前湯底以水為主 | 無法直接泡「奶茶湯底」 | 茶壺只泡茶湯，加奶統一在雪克杯完成；若需牛奶湯底再與廚房確認 `base` 支援 |
+| 與廚房茶飲重疊 | 內容重複 | 廚房茶只當湯底；烘焙不重做任何廚房已有茶品（含砂鍋奶茶） |
 | 與廚房同類食物重複（如廚房已有饅頭、肉餅） | 內容重疊 | 烘焙專注「烤」與「西點／中式酥點」，蒸類只做廚房沒有的品項 |
 
 ---
@@ -353,4 +452,7 @@ Kaleidoscope Baking [RP]/
 3. 是否同意由烘焙主導起草「森羅食材標籤 `kaleidoscope:*`」規範，並由四個模組共同採用？
 4. 烤箱是否需要獨立燃料系統，或完全沿用廚房熱源即可？
 5. 第一版成品清單的優先順序（建議：吐司、蛋糕、派、餅乾、鯛魚燒先行）。
-6. 授權與署名：沿用廚房的 license 與 CREDITS 格式。
+6. 飲品：咖啡樹與樹薯由烘焙自帶，還是交給豐收提供（烘焙只在豐收缺席時啟用自帶作物）？
+7. 咖啡機是否要紅石供電，或只用熱源即可（手沖架為無紅石替代）？
+8. 咖啡因「心悸」懲罰是否保留，或只做正面效果？
+9. 授權與署名：沿用廚房的 license 與 CREDITS 格式。
