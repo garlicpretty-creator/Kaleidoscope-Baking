@@ -5,7 +5,8 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 
 ## 文件
 
-- [企劃書（繁體中文）](docs/PROPOSAL.zh-TW.md)
+- [企劃書 1.0（繁體中文）](docs/PROPOSAL.zh-TW.md)
+- [企劃書 1.1（繁體中文）](docs/PROPOSAL-1.1.zh-TW.md)
 - [玩法說明](docs/GAMEPLAY.zh-TW.md)
 - [擴充 API（給其他模組作者）](BP/documentation/KB_EXTENSION_API.md)
 - [美術資源清單（給美術，自動產生）](docs/ART_ASSETS.md)
