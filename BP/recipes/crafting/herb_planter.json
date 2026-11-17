@@ -13,7 +13,7 @@
     ],
     "key": {
       "T": {
-        "item": "minecraft:terracotta"
+        "item": "minecraft:hardened_clay"
       },
       "D": {
         "item": "minecraft:dirt"
@@ -25,7 +25,7 @@
     },
     "unlock": [
       {
-        "item": "minecraft:terracotta"
+        "item": "minecraft:hardened_clay"
       },
       {
         "item": "minecraft:dirt"

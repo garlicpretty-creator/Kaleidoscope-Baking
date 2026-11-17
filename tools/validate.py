@@ -19,7 +19,7 @@ BP, RP = os.path.join(ROOT, "BP"), os.path.join(ROOT, "RP")
 NS = "kaleidoscope_baking"
 TAG_ONLY = {f"{NS}:whisk", f"{NS}:mold"}  # tag names (whisk is also an item)
 # Script-event ids and block-state names share the namespace but are not items.
-NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|facing|lit|growth|bites|cup_count|plant|stripped|"
+NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|oven_layer|oven_cell|facing|lit|growth|bites|cup_count|plant|stripped|"
                       rf"whisk|frother|mold|cup|caffeine|auto_convert|[a-z_]+_settings|guidebook|open_[a-z_]+|sweet|ice|settings_changed|"
                       rf"(oven|bowl|proof|stand|espresso|pour|shaker|planter|dessert|plant|tree|bark|herb_planter|mixing_bowl|"
                       rf"proofing_basket|decorating_stand|espresso_machine|pour_over_stand|drink_shaker|drink_stack)(\b.*)?)$")
@@ -115,6 +115,17 @@ for lang, keys in lang_keys.items():
     for k, v in keys.items():
         if k in base and v.count("%s") != base[k].count("%s"):
             err(f"{lang}: {k} has {v.count('%s')} %s, en_US has {base[k].count('%s')}")
+
+# 3b. Engine rules found by running the packs on Bedrock Dedicated Server (tools/bds_smoke.py)
+for bp in glob.glob(f"{BP}/blocks/*.json"):
+    blk = json.load(open(bp, encoding="utf-8"))["minecraft:block"]
+    comps = [blk.get("components", {})] + [x.get("components", {}) for x in blk.get("permutations", [])]
+    if any("minecraft:tags" in c for c in comps):
+        err(f"{rel(bp)}: blocks take tags as `tag:<name>` components; `minecraft:tags` makes the engine reject the block")
+    for st, vals in blk["description"].get("states", {}).items():
+        n = len(vals) if isinstance(vals, list) else vals["values"]["max"] - vals["values"]["min"] + 1
+        if n > 16:
+            err(f"{rel(bp)}: state {st} has {n} values; the engine allows at most 16")
 
 # 4. Scripts: message keys, ids, syntax
 scripts = glob.glob(f"{BP}/scripts/**/*.js", recursive=True)

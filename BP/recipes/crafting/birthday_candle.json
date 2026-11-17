@@ -9,7 +9,8 @@
     ],
     "pattern": [
       "S",
-      "H"
+      "H",
+      "D"
     ],
     "key": {
       "S": {
@@ -17,6 +18,9 @@
       },
       "H": {
         "item": "minecraft:honeycomb"
+      },
+      "D": {
+        "item": "minecraft:pink_dye"
       }
     },
     "result": {

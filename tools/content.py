@@ -158,7 +158,7 @@ for iid, zh, en, col in [("raw_apple_pie", "蘋果派生胚", "Raw Apple Pie", C
 #   kind "annual":    harvest by breaking when mature (loot), seeds back
 #   kind "perennial": interact when mature -> harvest, reset to stage `reset`
 # ---------------------------------------------------------------------------
-SOIL = ["minecraft:grass_block", "minecraft:dirt", "minecraft:podzol", "minecraft:coarse_dirt", "minecraft:farmland", "minecraft:moss_block", "minecraft:rooted_dirt"]
+SOIL = ["minecraft:grass_block", "minecraft:dirt", "minecraft:podzol", "minecraft:coarse_dirt", "minecraft:farmland", "minecraft:moss_block", "minecraft:dirt_with_roots"]
 FARMLAND = ["minecraft:farmland"]
 JUNGLE = ["minecraft:jungle_log", "minecraft:grass_block", "minecraft:podzol", "minecraft:dirt"]
 PLACE_ON = {"soil": SOIL, "farmland": FARMLAND, "jungle": JUNGLE}
@@ -335,20 +335,20 @@ CRAFTING = [
     ("espresso_machine", ["III", "IRI", "IBI"], {"I": "minecraft:iron_ingot", "R": "minecraft:redstone", "B": "minecraft:bucket"}, 1),
     ("pour_over_stand", [" P ", " S ", "SSS"], {"P": "minecraft:paper", "S": "minecraft:stick"}, 1),
     ("drink_shaker", [" N ", "I I", " I "], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
-    ("herb_planter", ["T T", "TDT"], {"T": "minecraft:terracotta", "D": "minecraft:dirt"}, 1),
+    ("herb_planter", ["T T", "TDT"], {"T": "minecraft:hardened_clay", "D": "minecraft:dirt"}, 1),
     ("whisk", [" N ", "NNN", " S "], {"N": "minecraft:iron_nugget", "S": "minecraft:stick"}, 1),
     ("milk_frother", [" N ", " N ", " S "], {"N": "minecraft:iron_nugget", "S": "minecraft:stick"}, 1),
     ("rolling_pin", ["SPS"], {"S": "minecraft:stick", "P": "minecraft:oak_planks"}, 1),
     ("bread_knife", ["  I", " I ", "S  "], {"I": "minecraft:iron_ingot", "S": "minecraft:stick"}, 1),
-    ("cake_mold", ["I I", "III"], {"I": "minecraft:iron_ingot"}, 1),
+    ("cake_mold", ["IPI", "III"], {"I": "minecraft:iron_ingot", "P": "minecraft:paper"}, 1),  # not the minecart shape
     ("loaf_pan", ["N N", "N N", "NNN"], {"N": "minecraft:iron_nugget"}, 1),
     ("baking_tray", ["III"], {"I": "minecraft:iron_ingot"}, 1),
-    ("pie_tin", ["N N", " N "], {"N": "minecraft:iron_ingot"}, 1),
+    ("pie_tin", ["N N", " N "], {"N": "minecraft:iron_nugget"}, 1),  # nuggets: the ingot shape is the bucket
     ("muffin_tin", ["NNN", "III"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
-    ("taiyaki_mold", ["I I", "I I"], {"I": "minecraft:iron_ingot"}, 1),
+    ("taiyaki_mold", ["INI", "INI"], {"I": "minecraft:iron_ingot", "N": "minecraft:iron_nugget"}, 1),  # not iron boots
     ("coffee_mug", ["C C", "CCC"], {"C": "minecraft:clay_ball"}, 4),
     ("takeaway_cup", ["P P", " P "], {"P": "minecraft:paper"}, 4),
-    ("birthday_candle", ["S", "H"], {"S": "minecraft:string", "H": "minecraft:honeycomb"}, 4),
+    ("birthday_candle", ["S", "H", "D"], {"S": "minecraft:string", "H": "minecraft:honeycomb", "D": "minecraft:pink_dye"}, 4),  # not the candle
 ]
 STATIONS.append(dict(id="herb_planter", cubes=None, tex=(180, 100, 70), sound="stone"))
 item("herb_planter", "香草盆栽", "Herb Planter", G_STATIONS, ("planter", (180, 100, 70), C["green"]), 64, place="herb_planter")

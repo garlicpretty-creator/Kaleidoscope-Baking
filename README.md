@@ -38,7 +38,9 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 
 ```sh
 npm test                           # 49 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
-python3 tools/validate.py          # 檢查 JSON、貼圖、語系、物品 ID、元件註冊、腳本語法
+python3 tools/validate.py          # 檢查 JSON、貼圖、語系、物品 ID、元件註冊、腳本語法、不顯示文字
+python3 tools/check_rp.py          # 實體 / 動畫 / 算圖控制器 / 粒子 / 動態貼圖互相對得上，腳本設定的實體屬性在範圍內
+python3 tools/art/check_refs.py    # 每個方塊的模型、貼圖、UV 都對得上
 python3 tools/build.py             # 打包成 dist/Kaleidoscope-Baking-v<版本>.mcaddon
 python3 tools/gen_content.py       # 由 tools/content.py 產生物品 / 方塊 / 語系 / 暫代圖（不覆蓋既有圖）
 node tools/gen_oven_block.mjs      # 修改烤箱結構後重新產生 BP/blocks/oven.json

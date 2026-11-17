@@ -25,9 +25,7 @@
       },
       "minecraft:map_color": "#326E32",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/cinnamon_leaves.json",
-      "minecraft:tags": [
-        "leaves"
-      ]
+      "tag:leaves": {}
     }
   }
 }
