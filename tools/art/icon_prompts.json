@@ -499,31 +499,31 @@
     },
     "sponge_cake": {
       "zh": "海綿蛋糕",
-      "prompt": "whole round golden sponge cake with white cream on top"
+      "prompt": "square block of golden sponge cake dusted with white sugar"
     },
     "chocolate_cake": {
       "zh": "巧克力蛋糕",
-      "prompt": "whole round chocolate layer cake side view, dark chocolate frosting on top, cream layers visible on the side"
+      "prompt": "square block of dark chocolate cake with chocolate shavings on top"
     },
     "strawberry_cream_cake": {
       "zh": "草莓鮮奶油蛋糕",
-      "prompt": "whole round white cream cake topped with red strawberries"
+      "prompt": "square white cream cake topped with red strawberries"
     },
     "birthday_cake": {
       "zh": "生日蛋糕",
-      "prompt": "whole round pink frosted birthday cake with lit candles"
+      "prompt": "square pink frosted birthday cake with white icing drips, sprinkles and lit candles"
     },
     "mint_chocolate_cake": {
       "zh": "薄荷巧克力蛋糕",
-      "prompt": "whole round chocolate cake with mint green frosting"
+      "prompt": "square block of mint green cake with a dark chocolate layer and chocolate drizzle"
     },
     "cheesecake": {
       "zh": "起司蛋糕",
-      "prompt": "whole round pale yellow baked cheesecake with golden top and crust"
+      "prompt": "square block of cheesecake, golden brown top, pale yellow sides"
     },
     "matcha_chiffon": {
       "zh": "抹茶戚風蛋糕",
-      "prompt": "tall light green chiffon cake ring with a hole in the center, side view, soft green sponge, dusted with powdered sugar"
+      "prompt": "square block of green matcha chiffon cake topped with white cream dollops"
     },
     "apple_pie": {
       "zh": "蘋果派",
@@ -535,7 +535,7 @@
     },
     "quiche": {
       "zh": "鹹派",
-      "prompt": "whole baked quiche with golden crust and yellow egg filling with green herbs"
+      "prompt": "square slab of yellow egg quiche dotted with red and green vegetables, golden crust sides"
     },
     "fish_pie": {
       "zh": "魚肉鹹派",
