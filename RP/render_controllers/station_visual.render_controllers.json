@@ -1,0 +1,76 @@
+{
+  "format_version": "1.10.0",
+  "render_controllers": {
+    "controller.render.kaleidoscope_baking.visual": {
+      "arrays": {
+        "geometries": {
+          "Array.geo": [
+            "Geometry.bowl",
+            "Geometry.bowl",
+            "Geometry.bowl",
+            "Geometry.bowl",
+            "Geometry.espresso",
+            "Geometry.pour",
+            "Geometry.shaker"
+          ]
+        },
+        "textures": {
+          "Array.tex": [
+            "Texture.bowl",
+            "Texture.bowl",
+            "Texture.bowl",
+            "Texture.bowl",
+            "Texture.espresso",
+            "Texture.pour",
+            "Texture.shaker"
+          ]
+        }
+      },
+      "geometry": "Array.geo[q.property('kaleidoscope_baking:kind')]",
+      "textures": [
+        "Array.tex[q.property('kaleidoscope_baking:kind')]"
+      ],
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ]
+    },
+    "controller.render.kaleidoscope_baking.contents": {
+      "arrays": {
+        "geometries": {
+          "Array.geo": [
+            "Geometry.bowl_c",
+            "Geometry.bowl_c",
+            "Geometry.proof_c",
+            "Geometry.stand_c",
+            "Geometry.espresso_c",
+            "Geometry.pour_c",
+            "Geometry.shaker_c"
+          ]
+        },
+        "textures": {
+          "Array.tint": [
+            "Texture.tint0",
+            "Texture.tint1",
+            "Texture.tint2",
+            "Texture.tint3",
+            "Texture.tint4",
+            "Texture.tint5",
+            "Texture.tint6",
+            "Texture.tint7"
+          ]
+        }
+      },
+      "geometry": "Array.geo[q.property('kaleidoscope_baking:kind')]",
+      "textures": [
+        "Array.tint[q.property('kaleidoscope_baking:tint')]"
+      ],
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ]
+    }
+  }
+}

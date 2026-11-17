@@ -3,6 +3,7 @@
 // a mug (max 4), an empty hand takes one back, breaking it drops every mug. No text: the cups themselves and the
 // clink of ceramic are the feedback.
 import { consumeHeld, giveItems, heldItem, isCreative, sound, spawnItems } from "../utils/runtime.js";
+import { steam } from "../utils/visuals.js";
 
 export const CUP_STATE = "kaleidoscope_baking:cup_count";
 const MAX = 4;
@@ -34,6 +35,10 @@ export const drinkStackComponent = {
     clink(block, 0.9);
     if (cups <= 1) { try { block.setType("minecraft:air"); } catch {} }
     else try { block.setPermutation(block.permutation.withState(CUP_STATE, cups - 1)); } catch {}
+  },
+  // a wisp of steam rises from the coffee now and then (the block's minecraft:tick)
+  onTick({ block }) {
+    steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.35, z: block.z + 0.5 });
   },
   onPlayerBreak({ block, brokenBlockPermutation, player }) {
     if (player && isCreative(player)) return;

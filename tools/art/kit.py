@@ -542,7 +542,8 @@ class Painted:
                     img.putpixel((px + u, py + v), c)
         return img
 
-    def geometry(self, gid, boxes, bounds=(2, 2.5, 0.75)):
+    def geometry(self, gid, boxes, bounds=(2, 2.5, 0.75), pivots=None):
+        pivots = pivots or {}
         vis = visible_faces(boxes)
         bones, order = {}, []
         for b in boxes:
@@ -571,7 +572,7 @@ class Painted:
             "description": {"identifier": gid, "texture_width": self.width, "texture_height": self.height,
                             "visible_bounds_width": bounds[0], "visible_bounds_height": bounds[1],
                             "visible_bounds_offset": [0, bounds[2], 0]},
-            "bones": [{"name": n, "pivot": [0, 0, 0], "cubes": bones[n]} for n in order if bones[n]]}]}
+            "bones": [{"name": n, "pivot": list(pivots.get(n, (0, 0, 0))), "cubes": bones[n]} for n in order if bones[n]]}]}
 
 
 def painter(fn, shade=True, shade_k=1.0):

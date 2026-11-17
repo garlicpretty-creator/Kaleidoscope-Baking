@@ -18,6 +18,7 @@ import drinks  # noqa: E402
 import oven  # noqa: E402
 import plants  # noqa: E402
 import stations  # noqa: E402
+import visuals  # noqa: E402
 
 NS = "kaleidoscope_baking"
 
@@ -139,12 +140,47 @@ def oven_preview(t, path, s=8):
     im.save(path)
 
 
+def write_particles():
+    """Steam over hot drinks and the espresso machine, and the oven's flickering fire (flipbook texture)."""
+    write_json("RP/particles/kb_steam.particle.json", {"format_version": "1.10.0", "particle_effect": {
+        "description": {"identifier": f"{NS}:steam", "basic_render_parameters": {
+            "material": "particles_blend", "texture": "textures/particle/particles"}},
+        "components": {
+            "minecraft:emitter_rate_instant": {"num_particles": 3},
+            "minecraft:emitter_lifetime_once": {"active_time": 0.1},
+            "minecraft:emitter_shape_disc": {"radius": 0.12, "direction": [0, 1, 0]},
+            "minecraft:particle_lifetime_expression": {"max_lifetime": "1.4 + math.random(0, 0.6)"},
+            "minecraft:particle_initial_speed": 0.25,
+            "minecraft:particle_motion_dynamic": {"linear_acceleration": [0, 0.15, 0], "linear_drag_coefficient": 1.2},
+            "minecraft:particle_appearance_billboard": {
+                "size": ["0.06 + v.particle_age * 0.05", "0.06 + v.particle_age * 0.05"], "facing_camera_mode": "lookat_xyz",
+                "uv": {"texture_width": 128, "texture_height": 128, "flipbook": {
+                    "base_UV": [56, 0], "size_UV": [8, 8], "step_UV": [-8, 0], "frames_per_second": 4, "max_frame": 8,
+                    "stretch_to_lifetime": True}}},
+            "minecraft:particle_appearance_tinting": {"color": ["1", "1", "1", "0.55 - v.particle_age / v.particle_lifetime * 0.55"]}}}})
+    # oven fire: 4-frame flipbook of kb_oven_firebox_lit
+    from PIL import Image
+    import oven as OV
+    frames = Image.new("RGBA", (16, 64))
+    for f in range(4):
+        img = Image.new("RGBA", (16, 16))
+        for y in range(16):
+            for x in range(16):
+                img.putpixel((x, y), tuple(OV.firebox(x, y, True, frame=f)[:3]) + (255,))
+        frames.paste(img, (0, f * 16))
+    frames.save(os.path.join(RP, "textures", "blocks", "kb_oven_firebox_lit.png"))
+    write_json("RP/textures/flipbook_textures.json", [
+        {"flipbook_texture": "textures/blocks/kb_oven_firebox_lit", "atlas_tile": "kb_oven_firebox_lit", "ticks_per_frame": 3}])
+
+
 def build_all():
     problems, bounds = build_stations()
     p2, dessert_info = build_desserts()
     ov = dict(oven.build(os.path.join(RP, "textures", "blocks")))
     oven_preview(ov, os.path.join(ROOT, "art", "previews", "oven.png"))
     p3, mugs = build_drinks()
+    p3 += visuals.build(write_json, RP, os.path.join(ROOT, "BP"))
+    write_particles()
     made = build_plants()
     sheet([m for m in made if not m[0].startswith(("sesame_crop_stage_1", "sesame_crop_stage_3", "sesame_crop_stage_5", "sesame_crop_stage_7", "stevia_crop_stage_1", "stevia_crop_stage_3", "stevia_crop_stage_5", "stevia_crop_stage_7", "cassava_crop_stage_1", "cassava_crop_stage_3", "cassava_crop_stage_5", "cassava_crop_stage_7"))],
           os.path.join(ROOT, "art", "previews", "plants.png"))

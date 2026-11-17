@@ -18,6 +18,7 @@ import { all } from "../api/registry.js";
 import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
 } from "../utils/runtime.js";
+import { KIND, removeVisual, setMotion, showContents, steam } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const ESPRESSO_ID = "kaleidoscope_baking:espresso_machine";
@@ -67,6 +68,7 @@ function interact(block, player) {
       if (!takeCarrier(player, cup)) { actionBar(player, t(`${MSG}need_cup`, itemName(cup))); return; }
       giveItems(player, s.ready, 1);
       s.ready = "";
+      showContents(block, KIND.espresso, { fill: 0 });
       sound(block.dimension, "random.pop", spout(block), 0.6, 1.1);
       save();
       return;
@@ -107,8 +109,11 @@ function interact(block, player) {
 
 registerTicker(PREFIX, ESPRESSO_ID, TICK, normalizeEspresso, isEmpty, (block, s) => {
   const res = tickEspresso(s, TICK, redstonePower(block));
-  if (res.state === "brewing") particle(block.dimension, "minecraft:basic_smoke_particle", { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
+  // a coffee stream runs from the group head while it brews; crema appears in the cup when done
+  setMotion(block, KIND.espresso, res.state === "brewing");
+  if (res.state === "brewing") steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.8, z: block.z + 0.5 });
   if (res.state === "done") {
+    showContents(block, KIND.espresso, { fill: 1, tint: 6, progress: 1 });
     sound(block.dimension, "random.orb", spout(block), 0.6, 1.4);
     particle(block.dimension, "minecraft:villager_happy", spout(block));
   }
@@ -125,6 +130,7 @@ function spill(dimension, loc) {
   if (s.ready) spawnItems(dimension, at, s.ready, 1);
   saveStation(PREFIX, fake, {}, () => true);
   untrackStation(PREFIX, fake);
+  removeVisual(fake);
 }
 
 export const espressoMachineComponent = {

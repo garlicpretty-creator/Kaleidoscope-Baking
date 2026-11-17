@@ -16,6 +16,7 @@ import {
   t, takeCarrier
 } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
+import { ensureVisual, KIND, playMotion, removeVisual } from "../utils/visuals.js";
 
 export const SHAKER_ID = "kaleidoscope_baking:drink_shaker";
 const PREFIX = "kb_shaker";
@@ -84,6 +85,7 @@ function customise(player, block, recipe) {
 }
 
 function interact(block, player) {
+  ensureVisual(block, KIND.shaker); // the shaker itself is part of the visual
   const s = loadStation(PREFIX, block, normalizeShaker);
   const held = heldItem(player);
   if (held) {
@@ -106,6 +108,7 @@ function interact(block, player) {
       return;
     }
     const r = shake(s);
+    playMotion(block, KIND.shaker, 12);
     sound(block.dimension, "block.chain.place", top(block), 0.5, 1.6);
     if (r.result === "progress") actionBar(player, t(`${MSG}shaking`, itemName(r.recipe.result), r.done, r.need));
     else if (r.result === "done") {
@@ -121,9 +124,11 @@ function spill(dimension, loc) {
   const s = loadStation(PREFIX, fake, normalizeShaker);
   for (const id of takeFromShaker(s)) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, id, 1);
   saveStation(PREFIX, fake, s, isEmpty);
+  removeVisual(fake);
 }
 
 export const drinkShakerComponent = {
+  onPlace({ block }) { ensureVisual(block, KIND.shaker); },
   onPlayerInteract({ block, player }) { if (player) interact(block, player); },
   onPlayerBreak({ block }) { spill(block.dimension, block); }
 };
