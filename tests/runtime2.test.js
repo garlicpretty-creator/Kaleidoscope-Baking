@@ -308,3 +308,19 @@ test("placed mugs steam now and then", () => {
   C("drink_stack").onTick({ block: b }, { params: {} });
   assert.ok(dim.particles.some(x => x.id === "kaleidoscope_baking:steam"));
 });
+
+test("eating or cutting a dessert throws crumbs in its colour; adding to the bowl bounces the batter", () => {
+  const b = place({ x: 80, y: 64, z: 0 }, kb("chocolate_cake"));
+  const p = makePlayer();
+  p.hold(undefined); p.hunger.currentValue = 0;
+  dim.particles.length = 0;
+  use("dessert", b, p);
+  const c = dim.particles.find(x => x.id === "kaleidoscope_baking:crumbs");
+  assert.ok(c, "crumbs");
+  assert.ok(c.vars?.vars["variable.color"].red < 0.6, "chocolate-brown crumbs");
+
+  const bowl = place({ x: 82, y: 64, z: 0 }, kb("mixing_bowl"));
+  p.hold(kb("cocoa_powder")); use("mixing_bowl", bowl, p);
+  const v = dim.getEntities({ type: "kaleidoscope_baking:station_visual", location: { x: 82.5, y: 64, z: 0.5 }, maxDistance: 1 })[0];
+  assert.equal(v.getProperty("kaleidoscope_baking:pop"), true, "the batter bounces as the cocoa goes in");
+});

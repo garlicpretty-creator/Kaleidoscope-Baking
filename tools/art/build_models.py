@@ -158,6 +158,21 @@ def write_particles():
                     "base_UV": [56, 0], "size_UV": [8, 8], "step_UV": [-8, 0], "frames_per_second": 4, "max_frame": 8,
                     "stretch_to_lifetime": True}}},
             "minecraft:particle_appearance_tinting": {"color": ["1", "1", "1", "0.55 - v.particle_age / v.particle_lifetime * 0.55"]}}}})
+    # crumbs when a slice is eaten or cut: colour comes from the script (variable.color)
+    write_json("RP/particles/kb_crumbs.particle.json", {"format_version": "1.10.0", "particle_effect": {
+        "description": {"identifier": f"{NS}:crumbs", "basic_render_parameters": {
+            "material": "particles_alpha", "texture": "textures/particle/particles"}},
+        "components": {
+            "minecraft:emitter_rate_instant": {"num_particles": 10},
+            "minecraft:emitter_lifetime_once": {"active_time": 0.1},
+            "minecraft:emitter_shape_sphere": {"radius": 0.2, "direction": "outwards"},
+            "minecraft:particle_lifetime_expression": {"max_lifetime": "0.5 + math.random(0, 0.4)"},
+            "minecraft:particle_initial_speed": "math.random(1.0, 2.2)",
+            "minecraft:particle_motion_dynamic": {"linear_acceleration": [0, -9, 0]},
+            "minecraft:particle_motion_collision": {"collision_radius": 0.03, "coefficient_of_restitution": 0.2},
+            "minecraft:particle_appearance_billboard": {"size": [0.04, 0.04], "facing_camera_mode": "lookat_xyz",
+                "uv": {"texture_width": 128, "texture_height": 128, "uv": [8, 64], "uv_size": [8, 8]}},
+            "minecraft:particle_appearance_tinting": {"color": ["variable.color.r", "variable.color.g", "variable.color.b", 1]}}}})
     # oven fire: 4-frame flipbook of kb_oven_firebox_lit
     from PIL import Image
     import oven as OV

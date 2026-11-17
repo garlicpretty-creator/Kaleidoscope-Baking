@@ -186,3 +186,24 @@ test("oven: a late duplicate teardown never refunds a second oven", () => {
   oven.onPlayerBreak({ block: b, brokenBlockPermutation: perm, player: p });
   assert.equal(dim.spawned.filter(s => s.id === OVEN).length, 1);
 });
+
+test("oven door visual: opens when loading, glows while baking, removed with the oven", () => {
+  const VIS = "kaleidoscope_baking:station_visual";
+  const p = makePlayer({ x: 30.5, z: 5.5 });
+  assert.ok(placeOven(p, { x: 30, y: 64, z: 0 }));
+  const near = () => dim.getEntities({ type: VIS, location: { x: 30.5, y: 65, z: 1.5 }, maxDistance: 0.6 });
+  assert.equal(near().length, 1, "the door appears with the oven");
+  const v = near()[0];
+  assert.equal(v.getProperty("kaleidoscope_baking:kind"), 7);
+  assert.equal(v.rotation.y, 0, "south-facing oven: door faces south");
+  p.hold("minecraft:potato", 1);
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 30, y: 64, z: 0 }), player: p });
+  assert.equal(v.getProperty("kaleidoscope_baking:active"), true, "loading opens the door");
+  p.hold("minecraft:coal", 1);
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 30, y: 64, z: 0 }), player: p });
+  __mock.tick(1);
+  assert.equal(v.getProperty("kaleidoscope_baking:progress"), 1, "the window glows while baking");
+  const ctrl = dim.getBlock({ x: 30, y: 64, z: 0 });
+  oven.onPlayerBreak({ block: ctrl, brokenBlockPermutation: ctrl.permutation, player: p });
+  assert.equal(near().length, 0, "breaking the oven removes the door");
+});

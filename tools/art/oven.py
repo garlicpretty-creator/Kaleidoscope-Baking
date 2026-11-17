@@ -61,21 +61,17 @@ def chimney(x, y):
 
 
 def door(x, y):
-    # cast iron door with a riveted frame, a small window and a brass handle, set in brick
+    """The oven's mouth, behind the swinging door (station_visual kind 7): dark inside, warm light, a baking tray."""
     if not (2 <= x <= 13 and 2 <= y <= 14):
         return brick_px(x, y)
     if x in (2, 13) or y in (2, 14):
-        return IRON[1]
-    if (x, y) in ((3, 3), (12, 3), (3, 13), (12, 13)):
-        return IRON[4]  # rivets
-    if 5 <= x <= 10 and 5 <= y <= 7:
-        if x in (5, 10) or y in (5, 7):
-            return IRON[3]
-        return (226, 132, 48) if (x + y) % 3 else (250, 196, 96)  # warm glow through the window
-    if 10 <= x <= 11 and y in (10, 11):
-        return (214, 170, 72) if y == 10 else (160, 120, 44)  # brass handle
-    n = noise(x, y, 17)
-    return IRON[3] if n > 0.9 else (IRON[1] if n < 0.12 else IRON[2])
+        return (96, 52, 36)  # brick reveal around the opening
+    if y == 10 and 4 <= x <= 11:
+        return IRON[3]  # tray edge
+    if y == 9 and 5 <= x <= 10:
+        return (222, 170, 96) if x % 2 else (200, 140, 70)  # loaves on the tray
+    d = abs(x - 7.5) + abs(y - 11)
+    return (120, 52, 26) if d < 3 else ((78, 36, 22) if d < 6 else SOOT)
 
 
 def _arch(x, y):

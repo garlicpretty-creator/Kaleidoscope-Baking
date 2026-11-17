@@ -19,7 +19,7 @@
 import { BlockPermutation, system, world } from "@minecraft/server";
 import {
   CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, PART_STATE,
-  controllerFrom, doorOutside, facingToward, fireboxPart, footprint, partOffset
+  controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
   MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, percent, phaseOf, slotYield, tickOven
@@ -30,6 +30,7 @@ import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
   particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
+import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
@@ -129,8 +130,28 @@ function destroyOven(dimension, c, dropOvenItem) {
   const at = centre(c);
   if (s) for (const slot of s.slots) for (const y of slotYield(slot, getOvenRecipeById(slot?.recipe))) spawnItems(dimension, at, y.id, y.count);
   if (dropOvenItem) spawnItems(dimension, at, OVEN_ID, 1);
+  for (const f of FACINGS) {
+    const o = partOffset(doorPart(f));
+    removeVisual({ dimension, x: c.x + o.dx, y: c.y + o.dy, z: c.z + o.dz });
+  }
   removeStructure(dimension, c);
   untrack(key);
+}
+
+// ---------------------------------------------------------------------------
+// Door visual (station_visual kind 7): swings open when something goes in or out, glows while baking
+// ---------------------------------------------------------------------------
+function doorBlock(dimension, c, facing) {
+  const o = partOffset(doorPart(facing));
+  return safeBlock(dimension, { x: c.x + o.dx, y: c.y + o.dy, z: c.z + o.dz });
+}
+function openDoor(dimension, c, facing) {
+  const d = doorBlock(dimension, c, facing);
+  if (d?.typeId === OVEN_ID) playMotion(d, KIND.oven, 30);
+}
+function showDoor(dimension, c, facing, lit) {
+  const d = doorBlock(dimension, c, facing);
+  if (d?.typeId === OVEN_ID) showContents(d, KIND.oven, { fill: 0, progress: lit ? 1 : 0 });
 }
 
 function setLit(dimension, c, facing, lit) {
@@ -234,7 +255,10 @@ function interact(block, player) {
   }
   if (changed) {
     saveState(key, s);
-    setLit(dimension, c, facing, isLit(s, getOvenRecipeById));
+    const lit = isLit(s, getOvenRecipeById);
+    setLit(dimension, c, facing, lit);
+    if (!getFuel(held?.typeId ?? "")) openDoor(dimension, c, facing); // loading / taking out opens the door
+    showDoor(dimension, c, facing, lit);
   }
 }
 
@@ -260,6 +284,7 @@ function tickAll() {
     const res = tickOven(s, TICK_INTERVAL, getOvenRecipeById);
     if (res.changed) saveState(key, s);
     setLit(dimension, o.loc, facing, res.lit);
+    showDoor(dimension, o.loc, facing, res.lit);
     if (res.lit) {
       const top = partOffset(CHIMNEY_PART);
       particle(dimension, "minecraft:campfire_smoke_particle", { x: o.loc.x + 0.5, y: o.loc.y + top.dy + 1.1, z: o.loc.z + 0.5 });
@@ -267,6 +292,7 @@ function tickAll() {
     const door = doorOutside(o.loc, facing);
     for (const ev of res.events) {
       if (ev.phase === "perfect") {
+        steam(dimension, door);
         sound(dimension, "random.orb", door, 0.8, 1.2);
         particle(dimension, "minecraft:villager_happy", door);
       } else if (ev.phase === "burnt") {
@@ -312,7 +338,9 @@ export const ovenComponent = {
       if (!buildParts(dimension, c, facing)) {
         // Something moved into the footprint between the check and the build: undo + refund.
         destroyOven(dimension, c, true);
+        return;
       }
+      showDoor(dimension, c, facing, false);
     });
   },
 

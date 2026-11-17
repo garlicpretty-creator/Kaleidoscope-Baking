@@ -3,11 +3,11 @@
 // (batter rising, whisk turning, dough swelling, cake turning, coffee streaming / dripping, shaker shaking).
 // Same pattern as Cookery's millstone visual: found again by a position tag, turned with the block's facing,
 // driven by entity properties the client animates (RP/entity/station_visual.entity.json). No text.
-import { system } from "@minecraft/server";
+import { MolangVariableMap, system } from "@minecraft/server";
 
 export const VISUAL_ID = "kaleidoscope_baking:station_visual";
 const NS = "kaleidoscope_baking";
-export const KIND = Object.freeze({ bowl: 1, proof: 2, stand: 3, espresso: 4, pour: 5, shaker: 6 });
+export const KIND = Object.freeze({ bowl: 1, proof: 2, stand: 3, espresso: 4, pour: 5, shaker: 6, oven: 7 });
 // Entity yaw for a block facing (model front is south / +z).
 const YAW = { south: 0, west: 90, north: 180, east: -90 };
 
@@ -16,7 +16,10 @@ const tagOf = b => `kb_vis:${b.dimension.id}:${b.x},${b.y},${b.z}`;
 const centre = b => ({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 });
 
 function facingYaw(block) {
-  try { return YAW[block.permutation.getState("minecraft:cardinal_direction")] ?? 0; } catch { return 0; }
+  for (const state of ["minecraft:cardinal_direction", `${NS}:facing`]) {
+    try { const v = block.permutation.getState(state); if (v in YAW) return YAW[v]; } catch {}
+  }
+  return 0;
 }
 
 function find(block) {
@@ -89,6 +92,30 @@ export function playMotion(block, kind, ticks = 12) {
 export function setMotion(block, kind, on) {
   const e = ensureVisual(block, kind);
   try { if (e && e.getProperty(`${NS}:active`) !== on) e.setProperty(`${NS}:active`, on); } catch {}
+}
+
+/** A short bounce of the contents when something is added. */
+export function bump(block, kind) {
+  const e = ensureVisual(block, kind);
+  if (!e) return;
+  try { e.setProperty(`${NS}:pop`, true); } catch {}
+  system.runTimeout(() => { try { if (e.isValid === undefined || e.isValid) e.setProperty(`${NS}:pop`, false); } catch {} }, 3);
+}
+
+// Colours of the tints, for particles (crumbs) that match what they came from.
+export const TINT_RGB = [[240, 214, 160], [110, 70, 45], [150, 190, 90], [240, 150, 170], [248, 214, 96], [250, 246, 236],
+  [76, 44, 26], [200, 130, 50]];
+
+/** Crumbs flying off a dessert, in its colour. */
+export function crumbs(dimension, loc, id) {
+  const [r, g, b] = TINT_RGB[tintOf([id])] ?? TINT_RGB[0];
+  try {
+    const vars = new MolangVariableMap();
+    vars.setColorRGB("variable.color", { red: r / 255, green: g / 255, blue: b / 255 });
+    dimension.spawnParticle(`${NS}:crumbs`, loc, vars);
+  } catch {
+    try { dimension.spawnParticle(`${NS}:crumbs`, loc); } catch {}
+  }
 }
 
 export function removeVisual(block) {

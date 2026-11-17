@@ -38,6 +38,7 @@ for (const f of readdirSync(BP + "blocks")) {
 }
 
 export const EquipmentSlot = { Mainhand: "Mainhand" };
+export class MolangVariableMap { constructor() { this.vars = {}; } setColorRGB(k, c) { this.vars[k] = c; } setFloat(k, v) { this.vars[k] = v; } }
 export const GameMode = { Creative: "Creative", Survival: "Survival" };
 
 export class ItemStack {
@@ -104,7 +105,7 @@ class Dimension {
   getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
   spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
   playSound(id) { this.sounds.push(id); }
-  spawnParticle(id, loc) { this.particles.push({ id, loc }); }
+  spawnParticle(id, loc, vars) { this.particles.push({ id, loc, vars }); }
 }
 
 const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };
