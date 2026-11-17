@@ -7,7 +7,7 @@
 import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
+import { refuse, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
 import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
@@ -45,17 +45,6 @@ export function warmth(block) {
   return hot ? 2 : cold ? 0.5 : 1;
 }
 
-function status(block, s) {
-  if (!s.count) return [t(`${MSG}empty`)];
-  const r = recipeOf(s);
-  if (r && s.progress >= r.time) return [t(`${MSG}done`, itemName(r.result), s.count * r.count)];
-  const pct = r ? Math.min(99, Math.floor((s.progress / r.time) * 100)) : 0;
-  const w = warmth(block);
-  const parts = [t(`${MSG}status`, itemName(s.input), s.count, pct)];
-  if (w !== 1) parts.push({ text: " " }, t(w > 1 ? `${MSG}warm` : `${MSG}cold`));
-  return parts;
-}
-
 /** Dough in the basket swells as it proofs. */
 function show(block, s) {
   const r = recipeOf(s);
@@ -69,7 +58,7 @@ function interact(block, player) {
   if (held) {
     const r = addProofing(s, held.typeId, held.amount);
     if (!r.added) {
-      actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId)));
+      refuse(block.dimension, centre(block));
       return;
     }
     if (!isCreative(player)) {
@@ -83,7 +72,6 @@ function interact(block, player) {
     show(block, s);
     bump(block, KIND.proof);
     sound(block.dimension, "random.pop", centre(block), 0.4, 0.8);
-    actionBar(player, t(`${MSG}added`, itemName(held.typeId), r.added), { text: "\n" }, ...status(block, s));
     return;
   }
   const r = recipeOf(s);
@@ -96,7 +84,6 @@ function interact(block, player) {
     sound(block.dimension, "random.pop", centre(block), 0.6, 1.0);
     return;
   }
-  actionBar(player, ...status(block, s));
 }
 
 registerTicker(PREFIX, BASKET_ID, 40, normalizeProofing, isEmpty, (block, s) => {

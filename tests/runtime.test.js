@@ -22,7 +22,8 @@ function placeOven(player, c) {
   return true;
 }
 const ovenBlocks = () => [...dim._blocks.values()].filter(p => p.type.id === OVEN).length;
-const lastMsg = p => JSON.stringify(p.messages.at(-1));
+// Baking never writes text to the screen; a refusal is a low note (and a puff of smoke) instead.
+const refused = () => dim.sounds.at(-1) === "note.bass";
 
 test("components are registered and Baking answers api_ping", () => {
   assert.ok(oven && bowl);
@@ -57,10 +58,11 @@ test("oven: placement is refused without a clear 3x3x3 space or when standing in
   dim.getBlock({ x: 21, y: 65, z: 0 }).setType("minecraft:dirt");
   const p = makePlayer({ x: 20.5, z: 8.5 });
   assert.equal(placeOven(p, { x: 20, y: 64, z: 0 }), false);
-  assert.match(lastMsg(p), /no_room/);
+  assert.ok(refused(), "no room: placement refused with the low note");
+  assert.equal(p.messages.length, 0, "no text");
   const q = makePlayer({ x: 40.5, z: 0.5 });
   assert.equal(placeOven(q, { x: 40, y: 64, z: 0 }), false);
-  assert.match(lastMsg(q), /too_close/);
+  assert.ok(refused(), "standing inside: refused");
   assert.equal(ovenBlocks(), 27);
 });
 
@@ -70,18 +72,16 @@ test("oven: mold from inventory, fuel, bake to perfect, take out from any part",
   p.inv.slots[5] = new ItemStack("kaleidoscope_baking:cake_mold", 1);
   p.hold("kaleidoscope_baking:cake_batter", 2);
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /loaded_no_fuel/);
   assert.equal(p.inv.count("kaleidoscope_baking:cake_mold"), 0, "mold moved into the oven");
   assert.equal(p.inv.count("kaleidoscope_baking:cake_batter"), 1);
 
   // second batter: no mold left -> refused, batter kept
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /need_mold/);
+  assert.ok(refused(), "no mold: refused");
   assert.equal(p.inv.count("kaleidoscope_baking:cake_batter"), 1);
 
   p.hold("minecraft:coal", 3);
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /fuel_added/);
   const firebox = () => dim.getBlock({ x: 0, y: 64, z: 1 }).permutation.getState("kaleidoscope_baking:lit");
   assert.equal(firebox(), true, "firebox lights while baking");
 
@@ -152,7 +152,7 @@ test("mixing bowl: liquids return their container, whisking makes butter", () =>
   const p = makePlayer();
   p.hold("minecraft:dirt");
   bowl.onPlayerInteract({ block: b, player: p });
-  assert.match(lastMsg(p), /not_ingredient/);
+  assert.ok(refused(), "dirt is not an ingredient");
 
   p.hold("minecraft:milk_bucket");
   bowl.onPlayerInteract({ block: b, player: p });
@@ -161,7 +161,7 @@ test("mixing bowl: liquids return their container, whisking makes butter", () =>
   p.hold("kaleidoscope_baking:whisk");
   for (let i = 0; i < 8; i++) bowl.onPlayerInteract({ block: b, player: p });
   assert.equal(p.inv.count("kaleidoscope_baking:butter"), 2);
-  assert.match(lastMsg(p), /bowl\.done/);
+  assert.equal(p.messages.length, 0, "no text");
 });
 
 test("mixing bowl: cake batter from tagged ingredients; breaking spills solids only", () => {
@@ -171,7 +171,6 @@ test("mixing bowl: cake batter from tagged ingredients; breaking spills solids o
   for (const id of ["kaleidoscope_cookery:flour", "minecraft:egg", "minecraft:sugar", "minecraft:milk_bucket"]) {
     p.hold(id); bowl.onPlayerInteract({ block: b, player: p });
   }
-  assert.match(lastMsg(p), /bowl\.ready/);
   dim.spawned.length = 0;
   bowl.onPlayerBreak({ block: b });
   assert.deepEqual(dim.spawned.map(s => s.id).sort(), ["kaleidoscope_cookery:flour", "minecraft:egg", "minecraft:sugar"]);

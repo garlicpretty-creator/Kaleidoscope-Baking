@@ -163,12 +163,13 @@ export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) 
   const saturation = { currentValue: 0, effectiveMax: 20, setCurrentValue(v) { this.currentValue = v; } };
   const p = {
     id: `p${++playerIds}`, typeId: "minecraft:player", effects: new Map(), hunger, saturation,
-    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], inv,
+    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], sounds: [], inv,
     addEffect(id, duration, opts) { p.effects.set(id, { duration, amplifier: opts?.amplifier ?? 0 }); },
     removeEffect(id) { p.effects.delete(id); },
     getDynamicProperty: k => props.get(k), setDynamicProperty: (k, v) => (v === undefined ? props.delete(k) : props.set(k, v)),
     getGameMode: () => (creative ? GameMode.Creative : GameMode.Survival),
     onScreenDisplay: { setActionBar: m => p.messages.push(m) },
+    playSound(id) { p.sounds.push(id); },
     getComponent(name) {
       if (name === "minecraft:inventory") return { container: inv };
       if (name === "minecraft:player.hunger") return hunger;

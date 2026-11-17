@@ -27,7 +27,7 @@ import {
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
+  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
   particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
 import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
@@ -162,52 +162,31 @@ function setLit(dimension, c, facing, lit) {
 }
 
 // ---------------------------------------------------------------------------
-// Feedback
-// ---------------------------------------------------------------------------
-function statusMessage(s) {
-  const parts = [t(`${MSG}status_fuel`, Math.ceil(s.fuel / 20))];
-  s.slots.forEach((slot, i) => {
-    parts.push({ text: " §7|§r " });
-    if (!slot) { parts.push(t(`${MSG}slot_empty`, i + 1)); return; }
-    const recipe = getOvenRecipeById(slot.recipe);
-    const phase = phaseOf(slot, recipe);
-    const name = itemName(phase === "unknown" ? slot.input : recipe.result);
-    if (phase === "baking") parts.push(t(`${MSG}slot_baking`, i + 1, name, percent(slot, recipe)));
-    else if (phase === "perfect") parts.push(t(`${MSG}slot_perfect`, i + 1, name));
-    else if (phase === "burnt") parts.push(t(`${MSG}slot_burnt`, i + 1, name));
-    else parts.push(t(`${MSG}slot_unknown`, i + 1, name));
-  });
-  return parts;
-}
-
-// ---------------------------------------------------------------------------
 // Interaction
 // ---------------------------------------------------------------------------
 function addFuel(player, dimension, c, s, held, fuel) {
-  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { actionBar(player, t(`${MSG}fuel_full`)); return; }
+  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { refuse(dimension, centre(c)); return; }
   s.fuel += fuel.ticks;
   consumeHeld(player, 1);
   if (fuel.returns && !isCreative(player)) giveItems(player, fuel.returns, 1);
   sound(dimension, "fire.ignite", centre(c));
-  actionBar(player, t(`${MSG}fuel_added`, itemName(held.typeId), Math.ceil(s.fuel / 20)));
 }
 
 function loadInput(player, dimension, c, s, held, recipe) {
   const i = freeSlot(s);
-  if (i < 0) { actionBar(player, t(`${MSG}full`)); return false; }
+  if (i < 0) { refuse(dimension, centre(c)); return false; }
   let mold = "";
   if (recipe.mold && !isCreative(player)) {
     mold = takeOneFromInventory(player, st => matchesSpec(st.typeId, recipe.mold)) ?? "";
     if (!mold) {
       const moldName = recipe.mold.startsWith("#") ? { text: recipe.mold } : itemName(recipe.mold);
-      actionBar(player, t(`${MSG}need_mold`, moldName));
+      refuse(dimension, centre(c));
       return false;
     }
   }
   s.slots[i] = { recipe: recipe.id, input: held.typeId, mold, progress: 0 };
   consumeHeld(player, 1);
   sound(dimension, "random.click", centre(c), 0.8, 0.8);
-  actionBar(player, t(s.fuel > 0 ? `${MSG}loaded` : `${MSG}loaded_no_fuel`, itemName(held.typeId), i + 1));
   return true;
 }
 
@@ -246,12 +225,9 @@ function interact(block, player) {
     const recipe = fuel ? undefined : getOvenRecipe(held.typeId);
     if (fuel) { addFuel(player, dimension, c, s, held, fuel); changed = true; }
     else if (recipe) changed = loadInput(player, dimension, c, s, held, recipe);
-    else actionBar(player, ...statusMessage(s));
+    else refuse(dimension, centre(c)); // neither fuel nor something that bakes
   } else if (takeOut(player, dimension, c, s)) {
     changed = true;
-    actionBar(player, ...statusMessage(s));
-  } else {
-    actionBar(player, ...statusMessage(s), { text: "\n" }, t(`${MSG}hint`));
   }
   if (changed) {
     saveState(key, s);
@@ -311,10 +287,10 @@ export const ovenComponent = {
     const { block, player } = e;
     if (!player) return;
     const c = { x: block.x, y: block.y, z: block.z };
-    if (playerInside(player, c)) { e.cancel = true; actionBar(player, t(`${MSG}too_close`)); return; }
+    if (playerInside(player, c)) { e.cancel = true; refuse(block.dimension, { x: c.x + 0.5, y: c.y + 0.5, z: c.z + 0.5 }); return; }
     for (const p of footprint(c)) {
       if (p.index === CONTROLLER_PART) continue;
-      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; actionBar(player, t(`${MSG}no_room`)); return; }
+      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; refuse(block.dimension, { x: p.x + 0.5, y: p.y + 0.5, z: p.z + 0.5 }); return; }
     }
     const facing = facingToward(player.location.x - (c.x + 0.5), player.location.z - (c.z + 0.5));
     pendingFacing.set(locKey(PREFIX, block.dimension.id, c), facing);

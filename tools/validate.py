@@ -121,8 +121,11 @@ scripts = glob.glob(f"{BP}/scripts/**/*.js", recursive=True)
 entities = {json.load(open(e, encoding="utf-8"))["minecraft:entity"]["description"]["identifier"]
             for e in glob.glob(f"{BP}/entities/*.json")}
 known_ids = items | blocks | TAG_ONLY | entities
+NO_TEXT = re.compile(r"onScreenDisplay|setActionBar|sendMessage\(|setTitle\(|actionBar\(")
 for p in scripts:
     src = open(p, encoding="utf-8").read()
+    if NO_TEXT.search(src):
+        err(f"{rel(p)}: shows text on screen; Baking is immersive -- use sound / particles / the station visual instead")
     m = re.search(r'const MSG = "([^"]+)"', src)
     if m:
         for suffix in set(re.findall(r"\$\{MSG\}([a-z_.]*[a-z_])", src)):

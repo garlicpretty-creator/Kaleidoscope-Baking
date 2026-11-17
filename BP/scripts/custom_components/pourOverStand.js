@@ -6,7 +6,7 @@
 import { system, world } from "@minecraft/server";
 import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
 import { getPourOverRecipe } from "../api/registry.js";
-import { actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
+import { refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
 
 export const POUR_ID = "kaleidoscope_baking:pour_over_stand";
 const PREFIX = "kb_pour";
@@ -20,13 +20,12 @@ function interact(block, player) {
   const held = heldItem(player);
   if (!held) {
     if (coffee && player.isSneaking) { giveItems(player, coffee, 1); writeJson(key, undefined); return; }
-    actionBar(player, coffee ? t(`${MSG}waiting`, itemName(coffee)) : t(`${MSG}empty`));
     return;
   }
   if (held.typeId === "minecraft:water_bucket" && coffee) {
     const recipe = getPourOverRecipe(coffee);
     if (!recipe) { writeJson(key, undefined); giveItems(player, coffee, 1); return; }
-    if (!takeCarrier(player, recipe.carrier)) { actionBar(player, t(`${MSG}need_cup`, itemName(recipe.carrier))); return; }
+    if (!takeCarrier(player, recipe.carrier)) { refuse(block.dimension, at(block)); return; }
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     giveItems(player, recipe.result, recipe.count);
@@ -37,17 +36,15 @@ function interact(block, player) {
     playMotion(block, KIND.pour, 80);
     steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
     system.runTimeout(() => { try { if (block.typeId === POUR_ID) showContents(block, KIND.pour, { fill: 0 }); } catch {} }, 160);
-    actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
     return;
   }
   if (!coffee && getPourOverRecipe(held.typeId)) {
     writeJson(key, { coffee: held.typeId });
     consumeHeld(player, 1);
     sound(block.dimension, "random.click", at(block), 0.6, 1.0);
-    actionBar(player, t(`${MSG}loaded`, itemName(held.typeId)));
     return;
   }
-  actionBar(player, coffee ? t(`${MSG}waiting`, itemName(coffee)) : t(`${MSG}not_coffee`, itemName(held.typeId)));
+  refuse(block.dimension, at(block)); // not coffee, or a filter is already loaded
 }
 
 function spill(dimension, loc) {

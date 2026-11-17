@@ -6,7 +6,7 @@
 // Breaking an untouched dessert drops it (loot table); a started one is just crumbs.
 import { applyConsumption, feed, isHungry } from "../events/consumption.js";
 import { CONTENT } from "../data/generated/content.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
+import { refuse, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
 import { crumbs } from "../utils/visuals.js";
 
 const BITES = "kaleidoscope_baking:bites";
@@ -37,7 +37,6 @@ export const dessertComponent = {
       crumbs(block.dimension, at, id);
       const left = takeBite(block, bites);
       sound(block.dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
-      actionBar(player, t(`${MSG}cut`, itemName(id), left));
       return;
     }
     if (!held && player.isSneaking && bites === 0) {
@@ -45,7 +44,7 @@ export const dessertComponent = {
       giveItems(player, id, 1);
       return;
     }
-    if (!isHungry(player) && !isCreative(player)) { actionBar(player, t(`${MSG}full`)); return; }
+    if (!isHungry(player) && !isCreative(player)) { refuse(block.dimension, at); return; }
     const meta = CONTENT.desserts[id] ?? { nutrition: 2, saturation: 0.4 };
     feed(player, meta.nutrition, meta.saturation);
     applyConsumption(player, id);
@@ -53,6 +52,5 @@ export const dessertComponent = {
     const left = takeBite(block, bites);
     sound(block.dimension, "random.burp", at, 0.5, 1.0);
     particle(block.dimension, "minecraft:crop_growth_emitter", at);
-    actionBar(player, t(`${MSG}ate`, itemName(id), left));
   }
 };

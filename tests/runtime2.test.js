@@ -16,7 +16,9 @@ const kb = n => `kaleidoscope_baking:${n}`;
 const C = name => registry.get(kb(name));
 const place = (loc, id, states) => { const b = dim.getBlock(loc); b.setPermutation(BlockPermutation.resolve(id, states)); return b; };
 const use = (comp, block, player) => C(comp).onPlayerInteract({ block, player }, { params: paramsOf(block) });
-const lastMsg = p => JSON.stringify(p.messages.at(-1));
+// Baking never writes text to the screen; a refusal is a low note (and a puff of smoke) instead.
+const refused = () => dim.sounds.at(-1) === "note.bass";
+const visualAt = b => dim.getEntities({ type: "kaleidoscope_baking:station_visual", location: { x: b.x + 0.5, y: b.y, z: b.z + 0.5 }, maxDistance: 1 })[0];
 import { readFileSync } from "node:fs";
 function paramsOf(block) {
   try {
@@ -54,7 +56,7 @@ test("decorating stand: birthday cake built layer by layer", () => {
   const b = place({ x: 8, y: 64, z: 0 }, kb("decorating_stand"));
   const p = makePlayer();
   for (const id of ["sponge_cake", "whipped_cream", "strawberry"]) { p.hold(kb(id)); use("decorating_stand", b, p); }
-  assert.match(lastMsg(p), /stand\.finish/);
+  assert.equal(visualAt(b).getProperty("kaleidoscope_baking:fill"), 3, "three layers stacked on the turntable");
   p.hold(kb("birthday_candle")); use("decorating_stand", b, p);
   assert.equal(p.inv.count(kb("birthday_cake")), 1);
 });
@@ -68,11 +70,11 @@ test("espresso machine: no power -> waits; lever power + water -> latte in a mug
   p.hold(kb("ground_coffee_medium")); use("espresso_machine", b, p);
   __mock.advance(200);
   p.hold(undefined); use("espresso_machine", b, p);
-  assert.match(lastMsg(p), /no_power/);
+  assert.ok(!visualAt(b)?.getProperty("kaleidoscope_baking:active"), "no power: no coffee stream");
   dim._power.set("13,64,0", 15); // a lever next to it
   __mock.advance(120);
   use("espresso_machine", b, p);
-  assert.match(lastMsg(p), /need_cup/);
+  assert.ok(refused(), "no mug: refused");
   p.inv.slots[8] = new ItemStack(kb("coffee_mug"), 1);
   use("espresso_machine", b, p);
   assert.equal(p.inv.count(kb("latte")), 1);
@@ -99,7 +101,7 @@ test("shaker: bubble milk tea with chosen sweetness / ice stored on the drink", 
   p.hold(undefined);
   for (let i = 0; i < 4; i++) use("drink_shaker", b, p);
   use("drink_shaker", b, p); // 5th (final) shake
-  assert.match(lastMsg(p), /need_cup/, "no cup: last shake refused, nothing lost");
+  assert.ok(refused(), "no cup: last shake refused, nothing lost");
   p.inv.slots[8] = new ItemStack(kb("takeaway_cup"), 1);
   __ui.nextValues = [4, 3]; // no sugar, no ice
   use("drink_shaker", b, p);
@@ -116,7 +118,7 @@ test("caffeine: two espressos -> palpitations, a third severe; hot cocoa calms",
   assert.ok(p.effects.has("haste"));
   __mock.eat(p, new ItemStack(kb("espresso"), 1));
   assert.ok(p.effects.has("nausea"));
-  assert.match(lastMsg(p), /palpitations/);
+  assert.ok(p.sounds.includes("mob.warden.heartbeat"), "palpitations: a heartbeat");
   p.effects.clear();
   __mock.eat(p, new ItemStack(kb("espresso"), 1));
   assert.ok(!p.effects.has("haste"), "no buzz while palpitating");
@@ -132,7 +134,7 @@ test("afternoon tea: a dessert soon after a drink gives the bonus", () => {
   const p = makePlayer();
   __mock.eat(p, new ItemStack(kb("lemonade"), 1));
   __mock.eat(p, new ItemStack(kb("butter_cookie"), 1));
-  assert.match(lastMsg(p), /tea_time/);
+  assert.ok(p.sounds.includes("random.levelup"), "afternoon tea: a chime");
   assert.ok(p.effects.has("absorption"));
 });
 
@@ -151,7 +153,7 @@ test("placed dessert: 4 bites when hungry, knife cuts a slice, full players are 
   p.hold(undefined);
   p.hunger.currentValue = 20;
   use("dessert", b, p);
-  assert.match(lastMsg(p), /dessert\.full/);
+  assert.ok(refused(), "full: refused");
   p.hunger.currentValue = 0;
   use("dessert", b, p); use("dessert", b, p);
   assert.equal(b.typeId, "minecraft:air", "last slice removes the block");
@@ -209,7 +211,7 @@ test("series compat: Harvest leads strawberries — harvests give Harvest's, rec
   // the shaker accepts Harvest's strawberry where the recipe says Baking's
   const sh = place({ x: 62, y: 64, z: 0 }, kb("drink_shaker"));
   p.hold("kaleidoscope_harvest:strawberry"); use("drink_shaker", sh, p);
-  assert.doesNotMatch(lastMsg(p), /not_ingredient/);
+  assert.ok(!refused(), "Harvest's strawberry is accepted");
   // random tick converts the Baking bush into Harvest's bush
   const b2 = place({ x: 61, y: 64, z: 0 }, kb("strawberry_bush"), { "kaleidoscope_baking:growth": 2 });
   C("plant").onRandomTick({ block: b2 }, { params: paramsOf(b2) });
