@@ -107,5 +107,35 @@
   },
   "kaleidoscope_baking:fish_pie": {
     "sound": "cloth"
+  },
+  "kaleidoscope_baking:espresso": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:americano": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cappuccino": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:mocha": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:caramel_macchiato": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cinnamon_latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_light": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_medium": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_dark": {
+    "sound": "stone"
   }
 }

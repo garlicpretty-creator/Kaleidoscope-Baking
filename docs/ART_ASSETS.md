@@ -2,11 +2,13 @@
 
 > 此檔由 `tools/gen_content.py` 自動產生，請勿手動編輯。
 
-目前所有貼圖都是程式畫的**暫代圖**。請用**同檔名**覆蓋 `RP/textures/` 底下的 PNG 即可，
-不需要改任何 JSON 或程式；之後重新執行產生器也**不會**覆蓋你放進來的檔案（除非加 `--force-art`）。
-
-- 方塊貼圖、物品圖示目前都是 **16×16**；要做更高解析度可以，但同一類請統一尺寸。
-- `pack_icon.png` 為 64×64（`BP/`、`RP/` 各一張）。
+- **方塊模型與方塊貼圖**由 `tools/art/` 以程式繪製（`python tools/art/build_models.py`，產生器也會自動執行）：
+  站點、甜點、植物、烤箱。要改外觀請改 `tools/art/*.py`，直接覆蓋這些 PNG 會在下次產生時被蓋掉。
+  每次產生都會跑 z-fight 稽核（任何兩個朝同方向的可見面重疊在同一平面就失敗），並全部使用單面材質 `alpha_test_single_sided`。
+  預覽圖：`art/previews/`（植物、烤箱）；Blockbench 檢視方式見 `tools/art/README.md`。
+- **物品圖示**由 Retro Diffusion 產生：提示詞在 `tools/art/icon_prompts.json`，選圖記錄在 `art/icons/picks.json`，
+  `python tools/art/rd_icons.py apply` 寫入 `RP/textures/items/`。
+- 方塊貼圖、物品圖示都是 **16×16**（站點與甜點為 64 寬的圖集）；`pack_icon.png` 為 64×64（`BP/`、`RP/` 各一張）。
 
 ## 烤箱（3×3×3 大型方塊）
 
@@ -30,7 +32,9 @@
 | `textures/blocks/kb_oven_firebox.png` | 火口（熄火） |
 | `textures/blocks/kb_oven_firebox_lit.png` | 火口（燃燒，會發光） |
 
-## 站點方塊（自訂模型，每個面使用整張 16×16）
+## 站點方塊（自訂模型 + 64 寬材質圖集，`tools/art/stations.py`）
+
+咖啡機、手沖架、雪克杯、裱花台、發酵籃會面向放置的玩家（模型以南面為正面）。
 
 | 檔名 | 方塊 | 模型 |
 |------|------|------|
@@ -41,9 +45,8 @@
 | `textures/blocks/kb_pour_over_stand.png` | 手沖架 | `RP/models/blocks/pour_over_stand.geo.json` |
 | `textures/blocks/kb_drink_shaker.png` | 雪克杯 | `RP/models/blocks/drink_shaker.geo.json` |
 | `textures/blocks/kb_herb_planter.png` | 香草盆栽 | `RP/models/blocks/herb_planter.geo.json` |
-| `textures/blocks/kb_planter_soil.png` | 香草盆栽的土面 | |
 
-## 作物 / 灌木（每個生長階段一張，交叉十字模型）
+## 作物 / 灌木（`tools/art/plants.py`；灌木為交叉模型，一年生作物為 # 字模型）
 
 | 植物 | 檔名 |
 |------|------|
@@ -70,21 +73,36 @@
 | `textures/blocks/kb_lemon_sapling_block_stage_0..2.png` | 檸檬樹苗 |
 | `textures/blocks/kb_lemon_leaves_*.png` | 檸檬樹葉（0–3 結果階段） |
 
-## 可擺放甜點（頂面 + 側面；模型會隨吃掉的片數改變）
+## 可擺放甜點（`tools/art/desserts.py`；圓形蛋糕 / 派，吃掉一片少一塊，切面露出內層）
 
-| 甜點 | 檔名 |
+| 甜點 | 貼圖 | 模型 |
+|------|------|------|
+| 海綿蛋糕 | `textures/blocks/kb_sponge_cake.png` | `RP/models/blocks/sponge_cake_q1..4.geo.json` |
+| 巧克力蛋糕 | `textures/blocks/kb_chocolate_cake.png` | `RP/models/blocks/chocolate_cake_q1..4.geo.json` |
+| 草莓鮮奶油蛋糕 | `textures/blocks/kb_strawberry_cream_cake.png` | `RP/models/blocks/strawberry_cream_cake_q1..4.geo.json` |
+| 生日蛋糕 | `textures/blocks/kb_birthday_cake.png` | `RP/models/blocks/birthday_cake_q1..4.geo.json` |
+| 薄荷巧克力蛋糕 | `textures/blocks/kb_mint_chocolate_cake.png` | `RP/models/blocks/mint_chocolate_cake_q1..4.geo.json` |
+| 起司蛋糕 | `textures/blocks/kb_cheesecake.png` | `RP/models/blocks/cheesecake_q1..4.geo.json` |
+| 抹茶戚風蛋糕 | `textures/blocks/kb_matcha_chiffon.png` | `RP/models/blocks/matcha_chiffon_q1..4.geo.json` |
+| 蘋果派 | `textures/blocks/kb_apple_pie.png` | `RP/models/blocks/apple_pie_q1..4.geo.json` |
+| 藍莓派 | `textures/blocks/kb_blueberry_pie.png` | `RP/models/blocks/blueberry_pie_q1..4.geo.json` |
+| 鹹派 | `textures/blocks/kb_quiche.png` | `RP/models/blocks/quiche_q1..4.geo.json` |
+| 魚肉鹹派 | `textures/blocks/kb_fish_pie.png` | `RP/models/blocks/fish_pie_q1..4.geo.json` |
+
+## 放在地上的馬克杯飲品（`tools/art/drinks.py`；一格最多 4 杯，模型 `mug_1..4` 共用）
+
+| 飲品 | 貼圖 |
 |------|------|
-| 海綿蛋糕 | `textures/blocks/kb_sponge_cake_top.png`、`_side.png` |
-| 巧克力蛋糕 | `textures/blocks/kb_chocolate_cake_top.png`、`_side.png` |
-| 草莓鮮奶油蛋糕 | `textures/blocks/kb_strawberry_cream_cake_top.png`、`_side.png` |
-| 生日蛋糕 | `textures/blocks/kb_birthday_cake_top.png`、`_side.png` |
-| 薄荷巧克力蛋糕 | `textures/blocks/kb_mint_chocolate_cake_top.png`、`_side.png` |
-| 起司蛋糕 | `textures/blocks/kb_cheesecake_top.png`、`_side.png` |
-| 抹茶戚風蛋糕 | `textures/blocks/kb_matcha_chiffon_top.png`、`_side.png` |
-| 蘋果派 | `textures/blocks/kb_apple_pie_top.png`、`_side.png` |
-| 藍莓派 | `textures/blocks/kb_blueberry_pie_top.png`、`_side.png` |
-| 鹹派 | `textures/blocks/kb_quiche_top.png`、`_side.png` |
-| 魚肉鹹派 | `textures/blocks/kb_fish_pie_top.png`、`_side.png` |
+| 濃縮咖啡 | `textures/blocks/kb_drink_espresso.png` |
+| 美式咖啡 | `textures/blocks/kb_drink_americano.png` |
+| 拿鐵 | `textures/blocks/kb_drink_latte.png` |
+| 卡布奇諾 | `textures/blocks/kb_drink_cappuccino.png` |
+| 摩卡 | `textures/blocks/kb_drink_mocha.png` |
+| 焦糖瑪奇朵 | `textures/blocks/kb_drink_caramel_macchiato.png` |
+| 肉桂拿鐵 | `textures/blocks/kb_drink_cinnamon_latte.png` |
+| 手沖咖啡（淺焙） | `textures/blocks/kb_drink_pour_over_light.png` |
+| 手沖咖啡（中焙） | `textures/blocks/kb_drink_pour_over_medium.png` |
+| 手沖咖啡（深焙） | `textures/blocks/kb_drink_pour_over_dark.png` |
 
 ## 物品圖示 `RP/textures/items/`
 

@@ -18,11 +18,11 @@
     "components": {
       "minecraft:collision_box": false,
       "minecraft:light_dampening": 0,
-      "minecraft:geometry": "geometry.kaleidoscope_baking.cross",
+      "minecraft:geometry": "geometry.kaleidoscope_baking.crop",
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_stevia_crop_stage_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:placement_filter": {
@@ -75,7 +75,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -99,7 +99,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -123,7 +123,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -147,7 +147,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -171,7 +171,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_4",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -195,7 +195,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_5",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -219,7 +219,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_6",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -243,7 +243,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_stevia_crop_stage_7",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {

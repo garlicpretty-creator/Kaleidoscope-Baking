@@ -17,6 +17,7 @@ import { espressoMachineComponent } from "./custom_components/espressoMachine.js
 import { pourOverStandComponent } from "./custom_components/pourOverStand.js";
 import { drinkShakerComponent } from "./custom_components/drinkShaker.js";
 import { dessertComponent } from "./custom_components/dessert.js";
+import { drinkStackComponent } from "./custom_components/drinkStack.js";
 import { barkComponent, herbPlanterComponent, plantComponent, treeComponent } from "./custom_components/plants.js";
 
 export const BLOCK_COMPONENTS = Object.freeze({
@@ -28,6 +29,7 @@ export const BLOCK_COMPONENTS = Object.freeze({
   "kaleidoscope_baking:pour_over_stand": pourOverStandComponent,
   "kaleidoscope_baking:drink_shaker": drinkShakerComponent,
   "kaleidoscope_baking:dessert": dessertComponent,
+  "kaleidoscope_baking:drink_stack": drinkStackComponent,
   "kaleidoscope_baking:plant": plantComponent,
   "kaleidoscope_baking:tree": treeComponent,
   "kaleidoscope_baking:bark": barkComponent,

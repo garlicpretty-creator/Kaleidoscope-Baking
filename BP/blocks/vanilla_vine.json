@@ -22,7 +22,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_vanilla_vine_stage_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:placement_filter": {
@@ -78,7 +78,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -102,7 +102,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -126,7 +126,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -150,7 +150,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {

@@ -291,10 +291,17 @@ bake("burnt_food", "焦黑的烘焙物", "Burnt Bake", ("burnt", C["black"], Non
 # ---------------------------------------------------------------------------
 # Drinks
 # ---------------------------------------------------------------------------
+DRINK_BLOCKS = []  # mug drinks that can be set down, up to 4 mugs on one block (like Cookery's teacups)
+
+
 def coffee_drink(iid, zh, en, col, n=1, sat=0.3, cup="coffee_mug", stack=16, extra_tags=()):
+    # Mug drinks with no per-item data (stack > 1) can be placed; shaken drinks keep sweetness / ice on the item.
+    placeable = cup == "coffee_mug" and stack > 1
+    if placeable:
+        DRINK_BLOCKS.append(iid)
     item(iid, zh, en, G_DRINK, ("mug" if cup == "coffee_mug" else "takeaway", C["white"], col), stack,
          ["kaleidoscope:drink", "kaleidoscope:hot_drink" if cup == "coffee_mug" else "kaleidoscope:cold_drink", *extra_tags],
-         food=drink(n, sat, cup))
+         food=drink(n, sat, cup), place=iid if placeable else None)
 
 
 coffee_drink("espresso", "濃縮咖啡", "Espresso", C["coffee"], extra_tags=["kaleidoscope:coffee"])

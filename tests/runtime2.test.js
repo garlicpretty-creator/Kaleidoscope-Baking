@@ -27,7 +27,7 @@ function paramsOf(block) {
 
 test("every block component referenced by block JSON is registered", () => {
   for (const name of ["oven", "mixing_bowl", "proofing_basket", "decorating_stand", "espresso_machine", "pour_over_stand",
-    "drink_shaker", "dessert", "plant", "tree", "bark", "herb_planter"]) assert.ok(C(name), name);
+    "drink_shaker", "drink_stack", "dessert", "plant", "tree", "bark", "herb_planter"]) assert.ok(C(name), name);
 });
 
 test("proofing basket: dough rises, twice as fast next to a fire", () => {
@@ -248,3 +248,29 @@ test("Baking API: bulk transfer registers many recipes at once", () => {
 });
 
 void world;
+
+test("placed mug drinks: up to 4 lattes on one block, taken back one by one, breaking drops them all", () => {
+  const CUPS = "kaleidoscope_baking:cup_count";
+  const b = place({ x: 60, y: 64, z: 0 }, kb("latte"), { [CUPS]: 1 });
+  const p = makePlayer();
+  p.hold(kb("latte"), 5);
+  for (let i = 0; i < 4; i++) use("drink_stack", b, p);
+  assert.equal(b.permutation.getState(CUPS), 4, "capped at four mugs");
+  assert.equal(p.inv.count(kb("latte")), 2, "three added, the fourth try refused");
+  p.hold(kb("espresso"));
+  use("drink_stack", b, p);
+  assert.equal(b.permutation.getState(CUPS), 4, "a different drink is not stacked");
+  p.hold(undefined);
+  use("drink_stack", b, p);
+  assert.equal(b.permutation.getState(CUPS), 3);
+  assert.equal(p.inv.count(kb("latte")), 1);
+  dim.spawned.length = 0;
+  const perm = b.permutation;
+  b.setType("minecraft:air");
+  C("drink_stack").onPlayerBreak({ block: b, brokenBlockPermutation: perm, player: p });
+  assert.deepEqual(dim.spawned.map(s => [s.id, s.amount]), [[kb("latte"), 3]]);
+  p.hold(undefined);
+  const one = place({ x: 61, y: 64, z: 0 }, kb("espresso"), { [CUPS]: 1 });
+  use("drink_stack", one, p);
+  assert.equal(one.typeId, "minecraft:air", "taking the last mug clears the block");
+});
