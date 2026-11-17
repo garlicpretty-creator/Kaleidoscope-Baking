@@ -17,7 +17,17 @@
           {
             "test": "has_biome_tag",
             "operator": "==",
+            "value": "bop_like_jungle"
+          },
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
             "value": "bamboo"
+          },
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
+            "value": "bop_like_bamboo"
           }
         ]
       }
