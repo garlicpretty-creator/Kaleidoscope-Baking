@@ -888,7 +888,7 @@ for folder in ("BP/items", "BP/blocks", "BP/recipes/crafting", f"BP/loot_tables/
     for dirpath, _, files in os.walk(base):
         for fn in files:
             rel = os.path.relpath(os.path.join(dirpath, fn), ROOT)
-            if rel.endswith(".json") and rel not in generated and not rel.endswith("blocks/oven.json"):
+            if rel.endswith(".json") and rel not in generated and not rel.replace(os.sep, "/").endswith("blocks/oven.json"):
                 os.remove(os.path.join(ROOT, rel))
                 print("removed stale", rel)
 
@@ -940,3 +940,7 @@ for g, title in GROUP_TITLES.items():
     lines.append("")
 with open(os.path.join(ROOT, "docs", "ART_ASSETS.md"), "w", encoding="utf-8") as f:
     f.write("\n".join(lines))
+
+# --- Item icons: the picked Retro Diffusion icons (art/icons) always win over placeholders -----------------
+import subprocess  # noqa: E402
+subprocess.run([sys.executable, os.path.join(ROOT, "tools", "art", "rd_icons.py"), "apply"], check=True)
