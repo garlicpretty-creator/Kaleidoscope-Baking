@@ -8,6 +8,7 @@ The oven block JSON is produced separately by tools/gen_oven_block.mjs.
 """
 import json
 import os
+import re
 import shutil
 import sys
 
@@ -481,6 +482,10 @@ def save_png(img, rel):
     path = os.path.join(RP, rel)
     if os.path.normcase(os.path.normpath(rel)) in ART_OWNED:
         return
+    # item icons picked from Retro Diffusion (art/icons/<id>.png) are never replaced by placeholders
+    m = re.match(r"textures[\\/]items[\\/]kb_(.+)\.png$", rel)
+    if m and os.path.exists(os.path.join(ROOT, "art", "icons", m.group(1) + ".png")):
+        return
     if os.path.exists(path) and not FORCE_ART:
         return
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -894,9 +899,12 @@ for l in LANGS:
             f.write("\n".join(lines) + "\n")
 for pack in ("RP", "BP"):
     w(f"{pack}/texts/languages.json", LANGS)
+STAR_ICON = os.path.join(ROOT, "docs", "branding", "star_icon.png")  # series star icon (docs/branding/make_branding.py)
 for pack in (BP, RP):
     p = os.path.join(pack, "pack_icon.png")
-    if FORCE_ART or not os.path.exists(p):
+    if os.path.exists(STAR_ICON):
+        Image.open(STAR_ICON).convert("RGBA").save(p)
+    elif FORCE_ART or not os.path.exists(p):
         icon = Image.new("RGBA", (64, 64), (252, 236, 210, 255))
         icon.alpha_composite(paint_item("cake", (250, 236, 200), (250, 250, 245)).resize((48, 48), Image.NEAREST), (8, 10))
         icon.save(p)
