@@ -3,7 +3,8 @@
 //   ground coffee   -> load the filter
 //   water bucket    -> pour: brews immediately into a Coffee Mug from your inventory
 //   sneak + empty   -> take the coffee back out
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
+import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
 import { getPourOverRecipe } from "../api/registry.js";
 import { actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
 
@@ -31,7 +32,11 @@ function interact(block, player) {
     giveItems(player, recipe.result, recipe.count);
     writeJson(key, undefined);
     sound(block.dimension, "bucket.empty_water", at(block), 0.6, 1.2);
-    particle(block.dimension, "minecraft:basic_smoke_particle", at(block));
+    // coffee drips through the filter and the glass server fills, then it is poured off
+    showContents(block, KIND.pour, { fill: 4, tint: 6 });
+    playMotion(block, KIND.pour, 80);
+    steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
+    system.runTimeout(() => { try { if (block.typeId === POUR_ID) showContents(block, KIND.pour, { fill: 0 }); } catch {} }, 160);
     actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
     return;
   }
@@ -50,6 +55,7 @@ function spill(dimension, loc) {
   const coffee = readJson(key)?.coffee;
   if (coffee) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, coffee, 1);
   writeJson(key, undefined);
+  removeVisual({ dimension, x: loc.x, y: loc.y, z: loc.z });
 }
 
 export const pourOverStandComponent = {

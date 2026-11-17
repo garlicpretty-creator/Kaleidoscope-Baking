@@ -846,6 +846,7 @@ for did in C.DRINK_BLOCKS:
         "minecraft:light_dampening": 0,
         "minecraft:loot": f"loot_tables/{NS}/empty.json",
         "minecraft:placement_filter": {"conditions": [{"allowed_faces": ["up"]}]},
+        "minecraft:tick": {"interval_range": [50, 110], "looping": True},  # steam now and then
         f"{NS}:drink_stack": {}
     }, states={CUPS: {"values": {"min": 1, "max": 4}}},
         permutations=perms + FACING["permutations"], traits=FACING["traits"])

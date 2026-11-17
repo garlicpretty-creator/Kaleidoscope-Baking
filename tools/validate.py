@@ -118,7 +118,9 @@ for lang, keys in lang_keys.items():
 
 # 4. Scripts: message keys, ids, syntax
 scripts = glob.glob(f"{BP}/scripts/**/*.js", recursive=True)
-known_ids = items | blocks | TAG_ONLY
+entities = {json.load(open(e, encoding="utf-8"))["minecraft:entity"]["description"]["identifier"]
+            for e in glob.glob(f"{BP}/entities/*.json")}
+known_ids = items | blocks | TAG_ONLY | entities
 for p in scripts:
     src = open(p, encoding="utf-8").read()
     m = re.search(r'const MSG = "([^"]+)"', src)

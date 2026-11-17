@@ -184,8 +184,9 @@ def spatula(t):
 def decorating_stand():
     b = [Box(-4, 0, -4, 4, 1, 4, "iron"), Box(-1, 1, -1, 1, 7, 1, "iron"),
          Box(-7, 7, -7, 7, 8, 7, {"*": "ceramic", "top": "plate"}),
-         Box(-4, 8, 1, 1, 10, 4, "bag"), Box(-5, 8, 2, -4, 9, 3, "steel"),
-         Box(-3, 8, -4, 3, 8.5, -2.5, "spatula"), Box(3, 8, -3.75, 6, 9, -2.75, "walnut")]
+         # tools at the plate's edge, clear of the cake that turns in the middle (station_visual)
+         Box(-4, 8, 5, 1, 9.5, 6.75, "bag"), Box(-5, 8, 5.5, -4, 9, 6.25, "steel"),
+         Box(-3, 8, -6.75, 3, 8.5, -5.75, "spatula"), Box(3, 8, -6.75, 6, 9, -5.75, "walnut")]
     return b, {"iron": iron, "ceramic": ceramic, "plate": plate_top, "bag": bag, "steel": steel, "spatula": spatula,
                "walnut": walnut}
 
@@ -239,6 +240,13 @@ def cup_top(t):
 
 
 @painter
+def cup_empty(t):
+    if t.u in (0, t.w - 1) or t.v in (0, t.h - 1):
+        return CERAMIC[3]
+    return CERAMIC[1]  # inside of the empty cup; the crema is station_visual contents
+
+
+@painter
 def dark(t):
     return IRON[1]
 
@@ -253,10 +261,10 @@ def espresso_machine():
          Box(-2, 8, 2, 2, 10, 4, "steel"), Box(-1.5, 7, 2, 1.5, 8, 4.5, "steel"),
          Box(-0.5, 7, 4.5, 0.5, 7.75, 7.5, "walnut"),
          Box(-4, 1, 2, 4, 2, 6, {"*": "steel", "top": "grate"}),
-         Box(-1.5, 2, 2.5, 1.5, 4.5, 5.5, {"*": "ceramic", "top": "cup_top"}),
+         Box(-1.5, 2, 2.5, 1.5, 4.5, 5.5, {"*": "ceramic", "top": "cup_empty"}),
          Box(4.5, 3.5, 2, 5, 8, 2.5, "steel"), Box(4, 8.5, 2, 5.5, 10, 3, "walnut")]
     return b, {"dark": dark, "enamel": enamel, "front": espresso_front, "steel": steel, "rail": rail,
-               "ceramic": ceramic, "cup_top": cup_top, "walnut": walnut, "grate": grate}
+               "ceramic": ceramic, "cup_top": cup_top, "cup_empty": cup_empty, "walnut": walnut, "grate": grate}
 
 
 # --------------------------------------------------------------------------------------------- pour-over stand
@@ -304,8 +312,7 @@ def pour_over_stand():
          Box(-1, 1, -6, 1, 13, -4, "walnut"), Box(-1, 11, -4, 1, 12, -1, "steel"),
          Box(-3, 11, -1, 3, 12, 5, "steel"),
          Box(-3, 12, -1, 3, 14.5, 5, "dripper"), Box(-1.5, 10, 0.5, 1.5, 11, 3.5, "ceramic"),
-         Box(-4, 1, -2, 4, 9, 6, "glass", clear=True),
-         Box(-3, 1, -1, 3, 5, 5, {"*": "coffee", "top": "coffee_top"})]
+         Box(-4, 1, -2, 4, 9, 6, "glass", clear=True)]  # the coffee in it is station_visual contents
     return b, {"walnut": walnut, "walnut_top": walnut_top, "steel": steel, "dripper": dripper, "ceramic": ceramic,
                "glass": server_glass, "coffee": coffee, "coffee_top": coffee_top}
 
@@ -337,7 +344,7 @@ def straw(t):
 
 def drink_shaker():
     b = [Box(-6, 0, -5, 6, 1, 5, {"*": "walnut", "top": "walnut_top"}),
-         Box(-6, 1, -4, 0, 8, 2, "steel"), Box(-5, 8, -3, -1, 10, 1, "steel"), Box(-4, 10, -2, -2, 11, 0, "steel"),
+         # the shaker itself is a station_visual part, so it can be shaken
          Box(1, 1, 0, 5, 8, 4, {"*": "cup", "top": "film"}),
          Box(3, 8, 1.75, 3.5, 12, 2.25, "straw", rot=(0, 0, -12), pivot=(3.25, 8, 2))]
     return b, {"walnut": walnut, "walnut_top": walnut_top, "steel": steel, "cup": tea_cup, "film": film, "straw": straw}

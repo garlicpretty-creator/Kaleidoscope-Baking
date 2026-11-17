@@ -80,12 +80,31 @@ class Block {
   setType(id) { if (id === "minecraft:air") this.dimension._blocks.delete(this._k()); else this.setPermutation(BlockPermutation.resolve(id)); }
 }
 
+class MockEntity {
+  constructor(dim, typeId, location) {
+    this.dimension = dim; this.typeId = typeId; this.location = { ...location }; this.isValid = true;
+    this._tags = []; this._props = {}; this.rotation = { x: 0, y: 0 };
+  }
+  addTag(t) { if (!this._tags.includes(t)) this._tags.push(t); return true; }
+  getTags() { return [...this._tags]; }
+  getProperty(k) { return this._props[k]; }
+  setProperty(k, v) { this._props[k] = v; }
+  setRotation(r) { this.rotation = { ...r }; }
+  triggerEvent(ev) { if (ev.endsWith(":despawn")) this.remove(); }
+  remove() { this.isValid = false; const i = this.dimension.entities.indexOf(this); if (i >= 0) this.dimension.entities.splice(i, 1); }
+}
+
 class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; }
+  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; this.entities = []; this.particles = []; }
+  spawnEntity(typeId, location) { const e = new MockEntity(this, typeId, location); this.entities.push(e); return e; }
+  getEntities(o = {}) {
+    return this.entities.filter(e => (!o.type || e.typeId === o.type) && (!o.location ||
+      Math.hypot(e.location.x - o.location.x, e.location.y - o.location.y, e.location.z - o.location.z) <= (o.maxDistance ?? Infinity)));
+  }
   getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
   spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
   playSound(id) { this.sounds.push(id); }
-  spawnParticle() {}
+  spawnParticle(id, loc) { this.particles.push({ id, loc }); }
 }
 
 const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };

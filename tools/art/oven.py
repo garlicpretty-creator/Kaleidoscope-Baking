@@ -87,7 +87,7 @@ def _arch(x, y):
     return math.hypot(x - 7.5, (y - 8) * 1.3) <= 5.0
 
 
-def firebox(x, y, lit=False):
+def firebox(x, y, lit=False, frame=0):
     if not _arch(x, y):
         if _arch(x, y + 1) or _arch(x - 1, y) or _arch(x + 1, y):
             return (96, 52, 36)  # arch voussoirs
@@ -98,9 +98,9 @@ def firebox(x, y, lit=False):
         return SOOT if noise(x, y, 21) > 0.15 else (48, 36, 30)
     # flames rise from the embers; heat decreases with height
     if y >= 13:
-        return FIRE[3] if noise(x, y, 23) > 0.5 else FIRE[2]
+        return FIRE[3] if noise(x, y, 23 + frame) > 0.5 else FIRE[2]
     h = (15 - y) / 10.0
-    flick = noise(x, y, 25)
+    flick = noise(x, y, 25 + frame * 7)
     v = 4 - int(h * 4 + flick * 1.6)
     if v < 0:
         return (52, 24, 16)

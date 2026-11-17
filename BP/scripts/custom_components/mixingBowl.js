@@ -16,6 +16,7 @@ import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
   spawnItems, stackHasTag, t, writeJson
 } from "../utils/runtime.js";
+import { KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
 const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
@@ -57,11 +58,13 @@ function interact(block, player) {
       else actionBar(player, ...contentsMessage(s));
     } else if (r.result === "progress") {
       changed = true;
+      playMotion(block, KIND.bowl, 14);
       sound(block.dimension, "block.composter.fill", at, 0.7, 1.4);
       particle(block.dimension, "minecraft:water_splash_particle", at);
       actionBar(player, t(`${MSG}whisking`, itemName(r.recipe.result), r.done, r.need));
     } else {
       changed = true;
+      playMotion(block, KIND.bowl, 14);
       giveItems(player, r.recipe.result, r.recipe.count);
       sound(block.dimension, "random.orb", at, 0.7, 1.1);
       particle(block.dimension, "minecraft:villager_happy", at);
@@ -88,6 +91,8 @@ function interact(block, player) {
   }
 
   if (changed) writeJson(key, s.items.length || s.whisks ? s : undefined);
+  // the batter shows how much is in the bowl and takes the colour of what went in
+  showContents(block, KIND.bowl, { fill: s.items.length, tint: tintOf(s.items.map(i => i.id)) });
 }
 
 /** Spill solids on removal; liquids (container already returned) are lost by design. */
@@ -97,6 +102,7 @@ function spill(dimension, loc) {
   const at = { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 };
   for (const it of s.items) if (!it.spilled) spawnItems(dimension, at, it.id, 1);
   writeJson(key, undefined);
+  removeVisual({ dimension, x: loc.x, y: loc.y, z: loc.z });
 }
 
 export const mixingBowlComponent = {

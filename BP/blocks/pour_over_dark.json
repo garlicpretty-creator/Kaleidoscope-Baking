@@ -61,6 +61,13 @@
           }
         ]
       },
+      "minecraft:tick": {
+        "interval_range": [
+          50,
+          110
+        ],
+        "looping": true
+      },
       "kaleidoscope_baking:drink_stack": {}
     },
     "permutations": [

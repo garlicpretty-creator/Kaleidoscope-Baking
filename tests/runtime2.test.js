@@ -274,3 +274,37 @@ test("placed mug drinks: up to 4 lattes on one block, taken back one by one, bre
   use("drink_stack", one, p);
   assert.equal(one.typeId, "minecraft:air", "taking the last mug clears the block");
 });
+
+test("station visuals: contents show up, motions play, breaking removes the visual", () => {
+  const VIS = "kaleidoscope_baking:station_visual";
+  const prop = (e, k) => e.getProperty(`kaleidoscope_baking:${k}`);
+  const near = b => dim.getEntities({ type: VIS, location: { x: b.x + 0.5, y: b.y, z: b.z + 0.5 }, maxDistance: 1 });
+  const p = makePlayer();
+
+  const bowl = place({ x: 70, y: 64, z: 0 }, kb("mixing_bowl"));
+  p.hold("minecraft:cocoa_beans"); use("mixing_bowl", bowl, p);
+  p.hold(kb("cocoa_powder")); use("mixing_bowl", bowl, p);
+  const v = near(bowl);
+  assert.equal(v.length, 1, "one visual per station");
+  assert.equal(prop(v[0], "kind"), 1);
+  assert.ok(prop(v[0], "fill") >= 1, "batter shows");
+  assert.equal(prop(v[0], "tint"), 1, "cocoa makes the batter chocolate");
+  use("mixing_bowl", bowl, p);
+  assert.equal(near(bowl).length, 1, "interacting again reuses the same visual");
+
+  const shaker = place({ x: 72, y: 64, z: 0 }, kb("drink_shaker"), { "minecraft:cardinal_direction": "east" });
+  C("drink_shaker").onPlace({ block: shaker }, { params: {} });
+  const sv = near(shaker);
+  assert.equal(sv.length, 1, "the shaker appears as soon as the block is placed");
+  assert.equal(sv[0].rotation.y, -90, "turned with the block");
+
+  C("drink_shaker").onPlayerBreak({ block: shaker }, { params: {} });
+  assert.equal(near(shaker).length, 0, "breaking the station removes its visual");
+});
+
+test("placed mugs steam now and then", () => {
+  const b = place({ x: 74, y: 64, z: 0 }, kb("latte"), { "kaleidoscope_baking:cup_count": 1 });
+  dim.particles.length = 0;
+  C("drink_stack").onTick({ block: b }, { params: {} });
+  assert.ok(dim.particles.some(x => x.id === "kaleidoscope_baking:steam"));
+});
