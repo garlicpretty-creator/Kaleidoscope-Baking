@@ -144,28 +144,34 @@ export function takeOneFromInventory(player, pred) {
 }
 
 // ---------------------------------------------------------------------------
-// Localized feedback
+// Non-text feedback. Series rule: no on-screen text prompts at all; players read state
+// from the blocks themselves, particles and sounds.
 // ---------------------------------------------------------------------------
-const nameKeyCache = new Map();
-/** Translation key for an item's display name (falls back to the raw id). */
-export function itemName(id) {
-  if (!nameKeyCache.has(id)) {
-    let key;
-    try { key = new ItemStack(id, 1).localizationKey; } catch {}
-    nameKeyCache.set(id, key || "");
-  }
-  const key = nameKeyCache.get(id);
-  return key ? { translate: key } : { text: id };
+const HINT_GAP = 10;
+const lastRefusal = new Map();
+/**
+ * A short, per-player "that didn't work" sound (rate-limited). `key` / `args` only name the
+ * reason at the call site (e.g. refuse(player, "oven.need_mold", mold)); nothing is shown.
+ */
+export function refuse(player, key, ...args) {
+  if (!player) return;
+  const now = system.currentTick;
+  const prev = lastRefusal.get(player.id);
+  if (prev !== undefined && now - prev < HINT_GAP) return;
+  lastRefusal.set(player.id, now);
+  try { player.playSound("note.bass", { pitch: 0.7, volume: 0.6 }); } catch {}
+}
+try { world.afterEvents.playerLeave.subscribe(ev => lastRefusal.delete(ev.playerId)); } catch {}
+
+/** A sound only this player hears (e.g. their own heartbeat). */
+export function playerSound(player, id, pitch = 1, volume = 1) {
+  try { player.playSound(id, { pitch, volume }); } catch {}
 }
 
-/** t("kaleidoscope_baking.msg.x", "plain", itemName(id), ...) -> RawMessage */
-export function t(key, ...args) {
-  const withParts = args.map(a => (typeof a === "object" && a ? a : { text: String(a) }));
-  return { translate: key, with: { rawtext: withParts } };
-}
-
-export function actionBar(player, ...parts) {
-  try { player.onScreenDisplay.setActionBar({ rawtext: parts }); } catch {}
+/** Pitch that rises with progress (0..1): 0.8 at the start, 1.6 when done. */
+export function progressPitch(fraction) {
+  const f = Math.max(0, Math.min(1, Number(fraction) || 0));
+  return 0.8 + 0.8 * f;
 }
 
 export function sound(dimension, id, loc, volume = 1, pitch = 1) {

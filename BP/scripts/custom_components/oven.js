@@ -10,7 +10,7 @@
 //   oven input      -> load into a free slot    (mold is taken from the inventory if needed)
 //   empty hand      -> take out finished / burnt items (+ molds)
 //   sneak + empty   -> also pull out unfinished items (raw input + mold come back)
-//   anything else   -> show status
+//   anything else   -> a "refused" sound (no text: see the Feedback section)
 //
 // ## State lives in a world dynamic property per oven (Baking-owned; not shared across
 // packs). One shared 1-second interval advances every known oven whose chunk is loaded;
@@ -22,19 +22,18 @@ import {
   controllerFrom, doorOutside, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
-  MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, percent, phaseOf, slotYield, tickOven
+  MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, phaseOf, slotYield, tickOven
 } from "../api/ovenLogic.js";
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
-  particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
+  consumeHeld, giveItems, heldItem, isCreative, locKey, onWorldReady, parseLocKey,
+  particle, progressPitch, readJson, refuse, safeBlock, sound, spawnItems, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
 const TICK_INTERVAL = 20;
-const MSG = "kaleidoscope_baking.msg.oven.";
 const REPLACEABLE = new Set([
   "minecraft:air", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:fern", "minecraft:large_fern",
   "minecraft:deadbush", "minecraft:leaf_litter", "minecraft:snow_layer", "minecraft:vine"
@@ -143,50 +142,55 @@ function setLit(dimension, c, facing, lit) {
 // ---------------------------------------------------------------------------
 // Feedback
 // ---------------------------------------------------------------------------
-function statusMessage(s) {
-  const parts = [t(`${MSG}status_fuel`, Math.ceil(s.fuel / 20))];
-  s.slots.forEach((slot, i) => {
-    parts.push({ text: " §7|§r " });
-    if (!slot) { parts.push(t(`${MSG}slot_empty`, i + 1)); return; }
-    const recipe = getOvenRecipeById(slot.recipe);
-    const phase = phaseOf(slot, recipe);
-    const name = itemName(phase === "unknown" ? slot.input : recipe.result);
-    if (phase === "baking") parts.push(t(`${MSG}slot_baking`, i + 1, name, percent(slot, recipe)));
-    else if (phase === "perfect") parts.push(t(`${MSG}slot_perfect`, i + 1, name));
-    else if (phase === "burnt") parts.push(t(`${MSG}slot_burnt`, i + 1, name));
-    else parts.push(t(`${MSG}slot_unknown`, i + 1, name));
-  });
-  return parts;
+// No text. The oven shows its state itself: the firebox glows while baking, smoke rises
+// from the chimney, a "ding" + happy particles when something is done, a fizz + smoke when
+// it burns. Poking it with an empty hand when there is nothing to take out replays that:
+//   fuel left -> fire crackle whose pitch rises with the fuel level + a flame at the door
+//   no fuel   -> a puff of smoke at the door
+//   per slot  -> happy particles (ready), smoke (burnt)
+function statusCue(dimension, c, s) {
+  const door = doorOutside(c, s.facing ?? "south");
+  if (s.fuel > 0) {
+    sound(dimension, "fire.fire", door, 0.7, progressPitch(s.fuel / MAX_FUEL_TICKS));
+    particle(dimension, "minecraft:basic_flame_particle", door);
+  } else {
+    particle(dimension, "minecraft:basic_smoke_particle", door);
+  }
+  for (const slot of s.slots) {
+    if (!slot) continue;
+    const phase = phaseOf(slot, getOvenRecipeById(slot.recipe));
+    if (phase === "perfect") particle(dimension, "minecraft:villager_happy", door);
+    else if (phase === "burnt" || phase === "unknown") particle(dimension, "minecraft:basic_smoke_particle", door);
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Interaction
 // ---------------------------------------------------------------------------
 function addFuel(player, dimension, c, s, held, fuel) {
-  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { actionBar(player, t(`${MSG}fuel_full`)); return; }
+  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { refuse(player, "oven.fuel_full"); return false; }
   s.fuel += fuel.ticks;
   consumeHeld(player, 1);
   if (fuel.returns && !isCreative(player)) giveItems(player, fuel.returns, 1);
-  sound(dimension, "fire.ignite", centre(c));
-  actionBar(player, t(`${MSG}fuel_added`, itemName(held.typeId), Math.ceil(s.fuel / 20)));
+  // Higher pitch = fuller firebox.
+  sound(dimension, "fire.ignite", centre(c), 1, progressPitch(s.fuel / MAX_FUEL_TICKS));
+  particle(dimension, "minecraft:basic_flame_particle", doorOutside(c, s.facing ?? "south"));
+  return true;
 }
 
 function loadInput(player, dimension, c, s, held, recipe) {
   const i = freeSlot(s);
-  if (i < 0) { actionBar(player, t(`${MSG}full`)); return false; }
+  if (i < 0) { refuse(player, "oven.full"); return false; }
   let mold = "";
   if (recipe.mold && !isCreative(player)) {
     mold = takeOneFromInventory(player, st => matchesSpec(st.typeId, recipe.mold)) ?? "";
-    if (!mold) {
-      const moldName = recipe.mold.startsWith("#") ? { text: recipe.mold } : itemName(recipe.mold);
-      actionBar(player, t(`${MSG}need_mold`, moldName));
-      return false;
-    }
+    if (!mold) { refuse(player, "oven.need_mold", recipe.mold); return false; }
   }
   s.slots[i] = { recipe: recipe.id, input: held.typeId, mold, progress: 0 };
   consumeHeld(player, 1);
-  sound(dimension, "random.click", centre(c), 0.8, 0.8);
-  actionBar(player, t(s.fuel > 0 ? `${MSG}loaded` : `${MSG}loaded_no_fuel`, itemName(held.typeId), i + 1));
+  // Click pitch rises as the four slots fill. No fuel: the firebox stays dark and smokes.
+  sound(dimension, "random.click", centre(c), 0.8, progressPitch(s.slots.filter(Boolean).length / s.slots.length));
+  if (s.fuel <= 0) particle(dimension, "minecraft:basic_smoke_particle", doorOutside(c, s.facing ?? "south"));
   return true;
 }
 
@@ -223,14 +227,13 @@ function interact(block, player) {
   if (held) {
     const fuel = getFuel(held.typeId);
     const recipe = fuel ? undefined : getOvenRecipe(held.typeId);
-    if (fuel) { addFuel(player, dimension, c, s, held, fuel); changed = true; }
+    if (fuel) changed = addFuel(player, dimension, c, s, held, fuel);
     else if (recipe) changed = loadInput(player, dimension, c, s, held, recipe);
-    else actionBar(player, ...statusMessage(s));
+    else refuse(player, "oven.not_input", held.typeId);
   } else if (takeOut(player, dimension, c, s)) {
     changed = true;
-    actionBar(player, ...statusMessage(s));
   } else {
-    actionBar(player, ...statusMessage(s), { text: "\n" }, t(`${MSG}hint`));
+    statusCue(dimension, c, s);
   }
   if (changed) {
     saveState(key, s);
@@ -281,14 +284,15 @@ function tickAll() {
 // Component
 // ---------------------------------------------------------------------------
 export const ovenComponent = {
+  // Before-events run read-only, so the refusal sound is deferred a tick.
   beforeOnPlayerPlace(e) {
     const { block, player } = e;
     if (!player) return;
     const c = { x: block.x, y: block.y, z: block.z };
-    if (playerInside(player, c)) { e.cancel = true; actionBar(player, t(`${MSG}too_close`)); return; }
+    if (playerInside(player, c)) { e.cancel = true; system.run(() => refuse(player, "oven.too_close")); return; }
     for (const p of footprint(c)) {
       if (p.index === CONTROLLER_PART) continue;
-      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; actionBar(player, t(`${MSG}no_room`)); return; }
+      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; system.run(() => refuse(player, "oven.no_room")); return; }
     }
     const facing = facingToward(player.location.x - (c.x + 0.5), player.location.z - (c.z + 0.5));
     pendingFacing.set(locKey(PREFIX, block.dimension.id, c), facing);

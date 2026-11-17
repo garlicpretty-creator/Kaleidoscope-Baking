@@ -16,13 +16,12 @@ import { BlockPermutation } from "@minecraft/server";
 import { CONTENT } from "../data/generated/content.js";
 import { maybeConvertPlant } from "../compat/index.js";
 import {
-  actionBar, consumeHeld, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, stackHasTag, t
+  consumeHeld, heldItem, isCreative, mainhand, particle, progressPitch, refuse, safeBlock, sound, spawnItems, stackHasTag
 } from "../utils/runtime.js";
 
 const GROWTH = "kaleidoscope_baking:growth";
 const STRIPPED = "kaleidoscope_baking:stripped";
 const PLANT = "kaleidoscope_baking:plant";
-const MSG = "kaleidoscope_baking.msg.planter.";
 const centre = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
 const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const stageOf = b => { try { return Number(b.permutation.getState(GROWTH)) || 0; } catch { return 0; } };
@@ -178,7 +177,7 @@ export const herbPlanterComponent = {
     const p = plantOf(block);
     if (p === "none") {
       const plant = held && BY_SEED[held.typeId];
-      if (!plant) { actionBar(player, held ? t(`${MSG}not_plant`, itemName(held.typeId)) : t(`${MSG}empty`)); return; }
+      if (!plant) { refuse(player, held ? "planter.not_plant" : "planter.empty", held?.typeId); return; }
       try { block.setPermutation(block.permutation.withState(PLANT, plant).withState(GROWTH, 0)); } catch { return; }
       consumeHeld(player, 1);
       sound(block.dimension, "dig.grass", centre(block));
@@ -195,7 +194,8 @@ export const herbPlanterComponent = {
       spawnItems(block.dimension, centre(block), PLANTER[p].seed, 1);
       try { block.setPermutation(block.permutation.withState(PLANT, "none").withState(GROWTH, 0)); } catch {}
     } else {
-      actionBar(player, t("kaleidoscope_baking.msg.planter.growing", itemName(PLANTER[p].harvest), s));
+      // Not ripe yet: the plant model shows its growth stage; a quiet rustle answers the poke.
+      sound(block.dimension, "dig.grass", centre(block), 0.3, progressPitch(s / 3));
     }
   },
   onPlayerBreak({ block, brokenBlockPermutation }) {

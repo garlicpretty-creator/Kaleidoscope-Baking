@@ -4,15 +4,18 @@
 //   dough in hand     -> add as many as fit (one kind at a time, max 16)
 //   empty hand        -> take it out once risen
 //   sneak + empty     -> take it out early (unrisen dough comes back unchanged)
+// No text. Poking it with an empty hand while the dough is still rising answers with a soft
+// squish whose pitch rises with the progress, plus a flame (warm: rising faster) or
+// snowflakes (cold: slower) particle. Risen dough puffs happy particles. Refusals (wrong
+// item, different dough, full, empty basket) play the short "refused" sound.
 import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
+import { giveItems, heldItem, isCreative, mainhand, particle, progressPitch, refuse, safeBlock, sound, spawnItems } from "../utils/runtime.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const BASKET_ID = "kaleidoscope_baking:proofing_basket";
 const PREFIX = "kb_proof";
-const MSG = "kaleidoscope_baking.msg.proof.";
 const isEmpty = s => !s.count;
 const centre = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
 const recipeOf = s => getRecipeById("proofing", s.recipe);
@@ -44,15 +47,14 @@ export function warmth(block) {
   return hot ? 2 : cold ? 0.5 : 1;
 }
 
-function status(block, s) {
-  if (!s.count) return [t(`${MSG}empty`)];
+function statusCue(block, s) {
   const r = recipeOf(s);
-  if (r && s.progress >= r.time) return [t(`${MSG}done`, itemName(r.result), s.count * r.count)];
-  const pct = r ? Math.min(99, Math.floor((s.progress / r.time) * 100)) : 0;
+  const at = { x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 };
+  if (r && s.progress >= r.time) { particle(block.dimension, "minecraft:villager_happy", at); return; }
+  sound(block.dimension, "mob.slime.small", centre(block), 0.4, progressPitch(r ? s.progress / r.time : 0));
   const w = warmth(block);
-  const parts = [t(`${MSG}status`, itemName(s.input), s.count, pct)];
-  if (w !== 1) parts.push({ text: " " }, t(w > 1 ? `${MSG}warm` : `${MSG}cold`));
-  return parts;
+  if (w > 1) particle(block.dimension, "minecraft:basic_flame_particle", at);
+  else if (w < 1) particle(block.dimension, "minecraft:snowflake_particle", at);
 }
 
 function interact(block, player) {
@@ -60,10 +62,7 @@ function interact(block, player) {
   const held = heldItem(player);
   if (held) {
     const r = addProofing(s, held.typeId, held.amount);
-    if (!r.added) {
-      actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId)));
-      return;
-    }
+    if (!r.added) { refuse(player, `proof.${r.reason}`, held.typeId); return; }
     if (!isCreative(player)) {
       const slot = mainhand(player);
       try {
@@ -73,7 +72,7 @@ function interact(block, player) {
     saveStation(PREFIX, block, s, isEmpty);
     trackStation(PREFIX, block);
     sound(block.dimension, "random.pop", centre(block), 0.4, 0.8);
-    actionBar(player, t(`${MSG}added`, itemName(held.typeId), r.added), { text: "\n" }, ...status(block, s));
+    statusCue(block, s);
     return;
   }
   const r = recipeOf(s);
@@ -85,7 +84,8 @@ function interact(block, player) {
     sound(block.dimension, "random.pop", centre(block), 0.6, 1.0);
     return;
   }
-  actionBar(player, ...status(block, s));
+  if (!s.count) { refuse(player, "proof.empty"); return; }
+  statusCue(block, s);
 }
 
 registerTicker(PREFIX, BASKET_ID, 40, normalizeProofing, isEmpty, (block, s) => {

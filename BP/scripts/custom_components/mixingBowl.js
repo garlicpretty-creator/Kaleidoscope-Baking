@@ -8,38 +8,32 @@
 //   empty hand      -> take the last ingredient back (sneak: take everything)
 // Tools are recognised by item TAG (`kaleidoscope_baking:whisk` / `:frother`), so other packs
 // can ship their own tools without Baking knowing their ids.
+//
+// No text prompts: adding pops a little higher the fuller the bowl is, and a soft chime
+// plays once the mix matches a recipe (= ready to whisk). Each stroke splashes with a pitch
+// that rises until it is done. Wrong tool / not an ingredient / full / empty bowl play the
+// short "refused" sound.
 // ============================================================================
 import { world } from "@minecraft/server";
 import { addToBowl, currentRecipe, normalizeBowl, takeFromBowl, whiskBowl } from "../api/mixingLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
+import { MAX_MIXING_INGREDIENTS } from "../api/registry.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
-  spawnItems, stackHasTag, t, writeJson
+  consumeHeld, giveItems, heldItem, isCreative, locKey, particle, progressPitch, readJson, refuse, sound,
+  spawnItems, stackHasTag, writeJson
 } from "../utils/runtime.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
 const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
-// How to name a tool spec in hints.
-const TOOL_NAMES = {
-  "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk",
-  "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother"
-};
 const PREFIX = "kb_bowl";
-const MSG = "kaleidoscope_baking.msg.bowl.";
 
 const keyOf = block => locKey(PREFIX, block.dimension.id, block);
 const top = block => ({ x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });
 const isTool = stack => TOOL_TAGS.some(tag => stackHasTag(stack, tag));
-const toolName = spec => (TOOL_NAMES[spec] ? itemName(TOOL_NAMES[spec]) : { text: spec });
 
-function contentsMessage(s) {
-  if (!s.items.length) return [t(`${MSG}empty`)];
-  const parts = [t(`${MSG}contents`, s.items.length)];
-  s.items.forEach((it, i) => { parts.push({ text: i ? "§7, §r" : " " }, itemName(it.id)); });
-  const recipe = currentRecipe(s);
-  parts.push({ text: "\n" });
-  parts.push(recipe ? t(`${MSG}ready`, itemName(recipe.result), toolName(recipe.tool), recipe.whisks) : t(`${MSG}no_recipe`));
-  return parts;
+/** After adding: a soft chime when the mix now makes something. */
+function readyCue(block, s) {
+  if (currentRecipe(s)) sound(block.dimension, "random.orb", top(block), 0.3, 1.8);
 }
 
 function interact(block, player) {
@@ -53,19 +47,16 @@ function interact(block, player) {
     const r = whiskBowl(s, held.typeId);
     if (r.result === "none") {
       const any = currentRecipe(s);
-      if (any) actionBar(player, t(`${MSG}wrong_tool`, toolName(any.tool)));
-      else actionBar(player, ...contentsMessage(s));
+      refuse(player, any ? "bowl.wrong_tool" : "bowl.no_recipe", any?.tool);
     } else if (r.result === "progress") {
       changed = true;
-      sound(block.dimension, "block.composter.fill", at, 0.7, 1.4);
+      sound(block.dimension, "block.composter.fill", at, 0.7, progressPitch(r.done / r.need));
       particle(block.dimension, "minecraft:water_splash_particle", at);
-      actionBar(player, t(`${MSG}whisking`, itemName(r.recipe.result), r.done, r.need));
     } else {
       changed = true;
       giveItems(player, r.recipe.result, r.recipe.count);
       sound(block.dimension, "random.orb", at, 0.7, 1.1);
       particle(block.dimension, "minecraft:villager_happy", at);
-      actionBar(player, t(`${MSG}done`, itemName(r.recipe.result), r.recipe.count));
     }
   } else if (held) {
     const container = CONTAINER_RETURNS[held.typeId];
@@ -74,17 +65,18 @@ function interact(block, player) {
       changed = true;
       consumeHeld(player, 1);
       if (container && !isCreative(player)) giveItems(player, container, 1);
-      sound(block.dimension, "random.pop", at, 0.4, 1.5);
-      actionBar(player, ...contentsMessage(s));
+      sound(block.dimension, "random.pop", at, 0.4, progressPitch(s.items.length / MAX_MIXING_INGREDIENTS));
+      readyCue(block, s);
     } else {
-      actionBar(player, t(r.reason === "full" ? `${MSG}full` : `${MSG}not_ingredient`, itemName(held.typeId)));
+      refuse(player, r.reason === "full" ? "bowl.full" : "bowl.not_ingredient", held.typeId);
     }
   } else {
     const before = s.items.length;
     const back = takeFromBowl(s, player.isSneaking);
     changed = s.items.length !== before;
     for (const id of back) giveItems(player, id, 1);
-    actionBar(player, ...contentsMessage(s));
+    if (changed) sound(block.dimension, "random.pop", at, 0.4, 0.8);
+    else refuse(player, "bowl.empty");
   }
 
   if (changed) writeJson(key, s.items.length || s.whisks ? s : undefined);

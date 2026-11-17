@@ -6,14 +6,20 @@
 //   sneak + empty    -> pour everything back out
 // The chosen sweetness / ice are stored on the drink (ItemStack dynamic properties + lore),
 // which is why hand-shaken drinks do not stack. events/consumption.js applies them.
+// No text prompts (the sweetness / ice form is opened deliberately, so it stays):
+//   adding           -> pop, pitch rises with how full it is; a soft chime once the mix
+//                       matches a recipe (= ready to shake)
+//   shaking          -> rattle + splash, pitch rises with each shake until done
+//   anything refused -> the short "refused" sound
 import { ItemStack, world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { addToShaker, normalizeShaker, shake, shakerRecipe, takeFromShaker, ICE, SWEETNESS } from "../api/stationLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
+import { MAX_SHAKER_INGREDIENTS } from "../api/registry.js";
 import { ICE_PROP, SWEET_PROP } from "../events/consumption.js";
 import {
-  actionBar, consumeHeld, giveItems, giveStack, hasInInventory, heldItem, isCreative, itemName, particle, sound, spawnItems,
-  t, takeCarrier
+  consumeHeld, giveItems, giveStack, hasInInventory, heldItem, isCreative, particle, progressPitch, refuse, sound,
+  spawnItems, takeCarrier
 } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
 
@@ -28,13 +34,9 @@ const top = b => ({ x: b.x + 0.5, y: b.y + 0.9, z: b.z + 0.5 });
 const COLD_ICE = ICE.filter(i => i !== "hot");
 const HOT_ICE = ["warm", "hot"];
 
-function contents(s) {
-  if (!s.items.length) return [t(`${MSG}empty`)];
-  const parts = [t(`${MSG}contents`, s.items.length)];
-  s.items.forEach((it, i) => parts.push({ text: i ? "§7, §r" : " " }, itemName(it.id)));
-  const r = shakerRecipe(s);
-  parts.push({ text: "\n" }, r ? t(`${MSG}ready`, itemName(r.result), r.shakes) : t(`${MSG}no_recipe`));
-  return parts;
+/** After adding: a soft chime when the mix now makes something. */
+function readyCue(block, s) {
+  if (shakerRecipe(s)) sound(block.dimension, "random.orb", top(block), 0.3, 1.8);
 }
 
 function makeDrink(recipe, sweet, ice) {
@@ -56,8 +58,6 @@ function deliver(player, block, recipe, sweet, ice) {
   if (stack) giveStack(player, stack); else giveItems(player, recipe.result, recipe.count);
   sound(block.dimension, "random.orb", top(block), 0.6, 1.2);
   particle(block.dimension, "minecraft:villager_happy", top(block));
-  actionBar(player, t(`${MSG}done`, itemName(recipe.result),
-    { translate: `${NS_MSG}sweet.${recipe.sweetness ? sweet : "none"}` }, { translate: `${NS_MSG}ice.${ice}` }));
 }
 
 /** Ask for sweetness / ice, then hand over the drink. Falls back to defaults. */
@@ -89,26 +89,30 @@ function interact(block, player) {
   if (held) {
     const back = CONTAINER_RETURNS[held.typeId];
     const r = addToShaker(s, held.typeId, !!back);
-    if (!r.ok) { actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId))); return; }
+    if (!r.ok) { refuse(player, `shaker.${r.reason}`, held.typeId); return; }
     consumeHeld(player, 1);
     if (back && !isCreative(player)) giveItems(player, back, 1);
-    sound(block.dimension, "random.pop", top(block), 0.4, 1.4);
-    actionBar(player, ...contents(s));
+    sound(block.dimension, "random.pop", top(block), 0.4, progressPitch(s.items.length / MAX_SHAKER_INGREDIENTS));
+    readyCue(block, s);
   } else if (player.isSneaking) {
-    for (const id of takeFromShaker(s)) giveItems(player, id, 1);
-    actionBar(player, ...contents(s));
+    const back = takeFromShaker(s);
+    if (!back.length) { refuse(player, "shaker.empty"); return; }
+    for (const id of back) giveItems(player, id, 1);
+    sound(block.dimension, "bucket.empty_water", top(block), 0.4, 1.3);
   } else {
     const recipe = shakerRecipe(s);
-    if (!recipe) { actionBar(player, ...contents(s)); return; }
+    if (!recipe) { refuse(player, s.items.length ? "shaker.no_recipe" : "shaker.empty"); return; }
     // Check the cup BEFORE the final shake so the ingredients are never lost.
     if (s.shakes + 1 >= recipe.shakes && recipe.carrier && !isCreative(player) && !hasInInventory(player, st => st.typeId === recipe.carrier)) {
-      actionBar(player, t(`${MSG}need_cup`, itemName(recipe.carrier)));
+      refuse(player, "shaker.need_cup", recipe.carrier);
       return;
     }
     const r = shake(s);
-    sound(block.dimension, "block.chain.place", top(block), 0.5, 1.6);
-    if (r.result === "progress") actionBar(player, t(`${MSG}shaking`, itemName(r.recipe.result), r.done, r.need));
-    else if (r.result === "done") {
+    if (r.result === "progress") {
+      // Each shake rattles a little higher; the last one is the "done" chime in deliver().
+      sound(block.dimension, "block.chain.place", top(block), 0.5, progressPitch(r.done / r.need));
+      particle(block.dimension, "minecraft:water_splash_particle", top(block));
+    } else if (r.result === "done") {
       takeCarrier(player, r.recipe.carrier);
       customise(player, block, r.recipe);
     }

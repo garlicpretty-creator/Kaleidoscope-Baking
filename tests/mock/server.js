@@ -81,11 +81,14 @@ class Block {
 }
 
 class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; }
+  constructor(id) {
+    this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = [];
+    this.sounds = []; this.soundLog = []; this.particles = [];
+  }
   getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
   spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
-  playSound(id) { this.sounds.push(id); }
-  spawnParticle() {}
+  playSound(id, location, opts) { this.sounds.push(id); this.soundLog.push({ id, location, pitch: opts?.pitch ?? 1, volume: opts?.volume ?? 1 }); }
+  spawnParticle(id, location) { this.particles.push({ id, location }); }
 }
 
 const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };
@@ -96,7 +99,7 @@ export const world = {
   getDynamicProperty: k => dynamic.get(k),
   setDynamicProperty: (k, v) => (v === undefined ? dynamic.delete(k) : dynamic.set(k, v)),
   getDimension: () => overworld,
-  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs() },
+  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs(), playerLeave: subs() },
   getAllPlayers: () => players
 };
 const players = [];
@@ -143,12 +146,21 @@ export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) 
   const saturation = { currentValue: 0, effectiveMax: 20, setCurrentValue(v) { this.currentValue = v; } };
   const p = {
     id: `p${++playerIds}`, typeId: "minecraft:player", effects: new Map(), hunger, saturation,
-    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], inv,
+    location: { x, y, z }, dimension: overworld, isSneaking: false, inv,
+    // Anything pushed as on-screen text lands in `messages` (the series rule: it must stay empty).
+    messages: [], sounds: [], fades: [],
+    playSound(id, opts) { p.sounds.push({ id, pitch: opts?.pitch ?? 1, volume: opts?.volume ?? 1 }); },
+    sendMessage(m) { p.messages.push({ chat: m }); },
+    camera: { fade(o) { p.fades.push(o); } },
     addEffect(id, duration, opts) { p.effects.set(id, { duration, amplifier: opts?.amplifier ?? 0 }); },
     removeEffect(id) { p.effects.delete(id); },
     getDynamicProperty: k => props.get(k), setDynamicProperty: (k, v) => (v === undefined ? props.delete(k) : props.set(k, v)),
     getGameMode: () => (creative ? GameMode.Creative : GameMode.Survival),
-    onScreenDisplay: { setActionBar: m => p.messages.push(m) },
+    onScreenDisplay: {
+      setActionBar: m => p.messages.push({ actionbar: m }),
+      setTitle: (m, o) => p.messages.push({ title: m, subtitle: o?.subtitle }),
+      updateSubtitle: m => p.messages.push({ subtitle: m })
+    },
     getComponent(name) {
       if (name === "minecraft:inventory") return { container: inv };
       if (name === "minecraft:player.hunger") return hunger;

@@ -16,13 +16,12 @@ import {
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import { all } from "../api/registry.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
+  consumeHeld, giveItems, heldItem, isCreative, particle, progressPitch, refuse, safeBlock, sound, spawnItems, takeCarrier
 } from "../utils/runtime.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const ESPRESSO_ID = "kaleidoscope_baking:espresso_machine";
 const PREFIX = "kb_espresso";
-const MSG = "kaleidoscope_baking.msg.espresso.";
 const TICK = 10;
 const isEmpty = s => !s.water && !s.coffee && !s.additive && !s.ready;
 const spout = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
@@ -42,18 +41,21 @@ function carrierFor(resultId) {
   return all("espresso").find(r => r.result === resultId)?.carrier ?? "";
 }
 
-function status(block, s) {
-  const parts = [t(`${MSG}status`, s.water)];
-  if (s.ready) return [...parts, t(`${MSG}ready`, itemName(s.ready))];
+// No text. Poking it with an empty hand (nothing to take) answers with:
+//   brewing          -> a click whose pitch rises with the brew progress + steam
+//   unpowered / dry  -> the "refused" sound (and no steam: it is not brewing)
+//   idle             -> a slosh whose pitch rises with the water in the tank (refused if dry)
+function statusCue(block, s, player) {
   const recipe = espressoRecipe(s);
-  if (!recipe) {
-    parts.push(t(`${MSG}idle`));
-    if (s.additive) parts.push({ text: " §7+§r " }, itemName(s.additive));
-    return parts;
+  if (recipe) {
+    if (redstonePower(block) <= 0) { refuse(player, "espresso.no_power"); return; }
+    if (s.water <= 0) { refuse(player, "espresso.no_water"); return; }
+    sound(block.dimension, "random.click", spout(block), 0.6, progressPitch(s.progress / recipe.time));
+    particle(block.dimension, "minecraft:basic_smoke_particle", { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
+    return;
   }
-  if (redstonePower(block) <= 0) return [...parts, t(`${MSG}no_power`)];
-  if (s.water <= 0) return [...parts, t(`${MSG}no_water`)];
-  return [...parts, t(`${MSG}brewing`, itemName(recipe.result), Math.min(99, Math.floor((s.progress / recipe.time) * 100)))];
+  if (s.water > 0) sound(block.dimension, "bucket.empty_water", spout(block), 0.3, progressPitch(s.water / ESPRESSO_WATER_MAX));
+  else refuse(player, "espresso.no_water");
 }
 
 function interact(block, player) {
@@ -64,19 +66,21 @@ function interact(block, player) {
   if (!held) {
     if (s.ready) {
       const cup = carrierFor(s.ready);
-      if (!takeCarrier(player, cup)) { actionBar(player, t(`${MSG}need_cup`, itemName(cup))); return; }
+      if (!takeCarrier(player, cup)) { refuse(player, "espresso.need_cup", cup); return; }
       giveItems(player, s.ready, 1);
       s.ready = "";
       sound(block.dimension, "random.pop", spout(block), 0.6, 1.1);
       save();
       return;
     }
-    if (player.isSneaking) {
+    if (player.isSneaking && (s.coffee || s.additive)) {
       for (const id of [s.coffee, s.additive]) if (id && !CONTAINER_RETURNS[id]) giveItems(player, id, 1);
       s.coffee = ""; s.additive = ""; s.progress = 0;
       save(); untrackStation(PREFIX, block);
+      sound(block.dimension, "random.pop", spout(block), 0.5, 0.9);
+      return;
     }
-    actionBar(player, ...status(block, s));
+    statusCue(block, s, player);
     return;
   }
 
@@ -86,22 +90,24 @@ function interact(block, player) {
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     sound(block.dimension, "bucket.empty_water", spout(block));
-    actionBar(player, t(`${MSG}water_filled`));
+    particle(block.dimension, "minecraft:water_splash_particle", spout(block));
     save();
     return;
   }
   let r = loadEspressoCoffee(s, id);
   if (r.reason === "not_coffee") r = loadEspressoAdditive(s, id);
   if (!r.ok) {
-    const key = r.reason === "not_additive" ? "not_coffee" : r.reason;
-    actionBar(player, t(`${MSG}${key}`, itemName(id)));
+    refuse(player, `espresso.${r.reason === "not_additive" ? "not_coffee" : r.reason}`, id);
     return;
   }
   consumeHeld(player, 1);
   const back = CONTAINER_RETURNS[id];
   if (back && !isCreative(player)) giveItems(player, back, 1);
   sound(block.dimension, "random.click", spout(block), 0.7, 1.3);
-  actionBar(player, t(`${MSG}loaded`, itemName(id)), { text: "\n" }, ...status(block, s));
+  // Loaded but it can't start: the refused sound tells the player something is missing
+  // (redstone power or water); otherwise steam starts rising on the next tick.
+  if (espressoRecipe(s) && redstonePower(block) <= 0) refuse(player, "espresso.no_power");
+  else if (espressoRecipe(s) && s.water <= 0) refuse(player, "espresso.no_water");
   save();
 }
 

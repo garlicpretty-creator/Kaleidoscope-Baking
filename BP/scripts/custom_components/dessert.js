@@ -4,15 +4,15 @@
 //   kitchen knife         -> cut a slice off as a Cake Slice item (any Cookery-tagged knife)
 //   sneak + empty, whole  -> pick the untouched dessert back up
 // Breaking an untouched dessert drops it (loot table); a started one is just crumbs.
+// No text: the model shows how many slices are left; not hungry = the "refused" sound.
 import { applyConsumption, feed, isHungry } from "../events/consumption.js";
 import { CONTENT } from "../data/generated/content.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
+import { giveItems, heldItem, isCreative, particle, refuse, sound, stackHasTag } from "../utils/runtime.js";
 
 const BITES = "kaleidoscope_baking:bites";
 const SLICES = 4;
 const SLICE_ITEM = "kaleidoscope_baking:cake_slice";
 const KNIFE_TAG = "kaleidoscope_cookery:kitchen_knife";
-const MSG = "kaleidoscope_baking.msg.dessert.";
 
 function bitesOf(block) { try { return Number(block.permutation.getState(BITES)) || 0; } catch { return 0; } }
 
@@ -33,9 +33,8 @@ export const dessertComponent = {
 
     if (held && stackHasTag(held, KNIFE_TAG)) {
       giveItems(player, SLICE_ITEM, 1);
-      const left = takeBite(block, bites);
+      takeBite(block, bites);
       sound(block.dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
-      actionBar(player, t(`${MSG}cut`, itemName(id), left));
       return;
     }
     if (!held && player.isSneaking && bites === 0) {
@@ -43,13 +42,12 @@ export const dessertComponent = {
       giveItems(player, id, 1);
       return;
     }
-    if (!isHungry(player) && !isCreative(player)) { actionBar(player, t(`${MSG}full`)); return; }
+    if (!isHungry(player) && !isCreative(player)) { refuse(player, "dessert.full"); return; }
     const meta = CONTENT.desserts[id] ?? { nutrition: 2, saturation: 0.4 };
     feed(player, meta.nutrition, meta.saturation);
     applyConsumption(player, id);
-    const left = takeBite(block, bites);
+    takeBite(block, bites);
     sound(block.dimension, "random.burp", at, 0.5, 1.0);
     particle(block.dimension, "minecraft:crop_growth_emitter", at);
-    actionBar(player, t(`${MSG}ate`, itemName(id), left));
   }
 };

@@ -16,7 +16,16 @@ const kb = n => `kaleidoscope_baking:${n}`;
 const C = name => registry.get(kb(name));
 const place = (loc, id, states) => { const b = dim.getBlock(loc); b.setPermutation(BlockPermutation.resolve(id, states)); return b; };
 const use = (comp, block, player) => C(comp).onPlayerInteract({ block, player }, { params: paramsOf(block) });
-const lastMsg = p => JSON.stringify(p.messages.at(-1));
+// No text prompts: refusals are a per-player "note.bass" (rate-limited); the rest is sound /
+// particles at the block, or (caffeine) a heartbeat only the player hears.
+const refusals = p => p.sounds.filter(s => s.id === "note.bass").length;
+function expectRefused(p, fn, why) {
+  system.currentTick += 10; // past the refusal rate limit
+  const before = refusals(p);
+  fn();
+  assert.equal(refusals(p), before + 1, why ?? "refused sound");
+}
+const lastSound = () => dim.soundLog.at(-1);
 import { readFileSync } from "node:fs";
 function paramsOf(block) {
   try {
@@ -53,8 +62,10 @@ test("proofing basket: dough rises, twice as fast next to a fire", () => {
 test("decorating stand: birthday cake built layer by layer", () => {
   const b = place({ x: 8, y: 64, z: 0 }, kb("decorating_stand"));
   const p = makePlayer();
+  p.hold(kb("strawberry"));
+  expectRefused(p, () => use("decorating_stand", b, p), "not a base");
   for (const id of ["sponge_cake", "whipped_cream", "strawberry"]) { p.hold(kb(id)); use("decorating_stand", b, p); }
-  assert.match(lastMsg(p), /stand\.finish/);
+  assert.deepEqual([lastSound().id, lastSound().pitch], ["random.orb", 1.8], "soft chime: could be finished now");
   p.hold(kb("birthday_candle")); use("decorating_stand", b, p);
   assert.equal(p.inv.count(kb("birthday_cake")), 1);
 });
@@ -67,12 +78,11 @@ test("espresso machine: no power -> waits; lever power + water -> latte in a mug
   p.hold(kb("frothed_milk")); use("espresso_machine", b, p);
   p.hold(kb("ground_coffee_medium")); use("espresso_machine", b, p);
   __mock.advance(200);
-  p.hold(undefined); use("espresso_machine", b, p);
-  assert.match(lastMsg(p), /no_power/);
+  p.hold(undefined);
+  expectRefused(p, () => use("espresso_machine", b, p), "no redstone power");
   dim._power.set("13,64,0", 15); // a lever next to it
   __mock.advance(120);
-  use("espresso_machine", b, p);
-  assert.match(lastMsg(p), /need_cup/);
+  expectRefused(p, () => use("espresso_machine", b, p), "needs a mug");
   p.inv.slots[8] = new ItemStack(kb("coffee_mug"), 1);
   use("espresso_machine", b, p);
   assert.equal(p.inv.count(kb("latte")), 1);
@@ -98,8 +108,9 @@ test("shaker: bubble milk tea with chosen sweetness / ice stored on the drink", 
   assert.equal(p.inv.count("minecraft:bucket"), 1, "milk bucket returned");
   p.hold(undefined);
   for (let i = 0; i < 4; i++) use("drink_shaker", b, p);
-  use("drink_shaker", b, p); // 5th (final) shake
-  assert.match(lastMsg(p), /need_cup/, "no cup: last shake refused, nothing lost");
+  const shakes = dim.soundLog.filter(s => s.id === "block.chain.place").slice(-4).map(s => s.pitch);
+  assert.ok(shakes.every((v, i) => !i || v > shakes[i - 1]), "each shake rattles higher");
+  expectRefused(p, () => use("drink_shaker", b, p), "no cup: last shake refused, nothing lost"); // 5th (final) shake
   p.inv.slots[8] = new ItemStack(kb("takeaway_cup"), 1);
   __ui.nextValues = [4, 3]; // no sugar, no ice
   use("drink_shaker", b, p);
@@ -116,11 +127,14 @@ test("caffeine: two espressos -> palpitations, a third severe; hot cocoa calms",
   assert.ok(p.effects.has("haste"));
   __mock.eat(p, new ItemStack(kb("espresso"), 1));
   assert.ok(p.effects.has("nausea"));
-  assert.match(lastMsg(p), /palpitations/);
+  assert.equal(p.sounds.at(-1).id, "mob.warden.heartbeat", "palpitations: a heartbeat only they hear");
+  const beat = p.sounds.at(-1).pitch;
   p.effects.clear();
   __mock.eat(p, new ItemStack(kb("espresso"), 1));
   assert.ok(!p.effects.has("haste"), "no buzz while palpitating");
   assert.ok(p.effects.has("weakness"));
+  assert.ok(p.sounds.at(-1).id === "mob.warden.heartbeat" && p.sounds.at(-1).pitch > beat, "severe: faster beat");
+  assert.equal(p.fades.length, 1, "severe: a brief red flash");
   assert.equal(p.getDynamicProperty("kaleidoscope_baking:caffeine"), 6);
   __mock.eat(p, new ItemStack(kb("hot_cocoa"), 1));
   assert.equal(p.getDynamicProperty("kaleidoscope_baking:caffeine"), 5);
@@ -132,7 +146,8 @@ test("afternoon tea: a dessert soon after a drink gives the bonus", () => {
   const p = makePlayer();
   __mock.eat(p, new ItemStack(kb("lemonade"), 1));
   __mock.eat(p, new ItemStack(kb("butter_cookie"), 1));
-  assert.match(lastMsg(p), /tea_time/);
+  assert.equal(p.sounds.at(-1).id, "random.levelup", "tea-time chime");
+  assert.equal(dim.particles.at(-1).id, "minecraft:heart_particle");
   assert.ok(p.effects.has("absorption"));
 });
 
@@ -150,8 +165,8 @@ test("placed dessert: 4 bites when hungry, knife cuts a slice, full players are 
   assert.equal(p.inv.count(kb("cake_slice")), 1);
   p.hold(undefined);
   p.hunger.currentValue = 20;
-  use("dessert", b, p);
-  assert.match(lastMsg(p), /dessert\.full/);
+  expectRefused(p, () => use("dessert", b, p), "not hungry");
+  assert.equal(b.permutation.getState("kaleidoscope_baking:bites"), 2, "nothing eaten");
   p.hunger.currentValue = 0;
   use("dessert", b, p); use("dessert", b, p);
   assert.equal(b.typeId, "minecraft:air", "last slice removes the block");
@@ -208,8 +223,11 @@ test("series compat: Harvest leads strawberries — harvests give Harvest's, rec
   assert.ok(dim.spawned.some(s => s.id === "kaleidoscope_harvest:strawberry"), "lead pack's item handed out");
   // the shaker accepts Harvest's strawberry where the recipe says Baking's
   const sh = place({ x: 62, y: 64, z: 0 }, kb("drink_shaker"));
+  system.currentTick += 10;
+  const before = refusals(p);
   p.hold("kaleidoscope_harvest:strawberry"); use("drink_shaker", sh, p);
-  assert.doesNotMatch(lastMsg(p), /not_ingredient/);
+  assert.equal(refusals(p), before, "accepted, not refused");
+  assert.equal(lastSound().id, "random.pop");
   // random tick converts the Baking bush into Harvest's bush
   const b2 = place({ x: 61, y: 64, z: 0 }, kb("strawberry_bush"), { "kaleidoscope_baking:growth": 2 });
   C("plant").onRandomTick({ block: b2 }, { params: paramsOf(b2) });
@@ -247,7 +265,6 @@ test("Baking API: bulk transfer registers many recipes at once", () => {
   });
 });
 
-void world;
 
 test("placed mug drinks: up to 4 lattes on one block, taken back one by one, breaking drops them all", () => {
   const CUPS = "kaleidoscope_baking:cup_count";
@@ -273,4 +290,27 @@ test("placed mug drinks: up to 4 lattes on one block, taken back one by one, bre
   const one = place({ x: 61, y: 64, z: 0 }, kb("espresso"), { [CUPS]: 1 });
   use("drink_stack", one, p);
   assert.equal(one.typeId, "minecraft:air", "taking the last mug clears the block");
+});
+
+test("pour-over / proofing / planter: refusals and status without text", () => {
+  const p = makePlayer();
+  const pour = place({ x: 70, y: 64, z: 0 }, kb("pour_over_stand"));
+  p.hold(undefined);
+  expectRefused(p, () => use("pour_over_stand", pour, p), "empty filter");
+  p.hold("minecraft:dirt");
+  expectRefused(p, () => use("pour_over_stand", pour, p), "not coffee");
+  const basket = place({ x: 72, y: 64, z: 0 }, kb("proofing_basket"));
+  p.hold(undefined);
+  expectRefused(p, () => use("proofing_basket", basket, p), "empty basket");
+  p.hold(kb("bread_dough"), 1); use("proofing_basket", basket, p);
+  p.hold(undefined);
+  use("proofing_basket", basket, p);
+  assert.equal(lastSound().id, "mob.slime.small", "still rising: a squish");
+  const planter = place({ x: 74, y: 64, z: 0 }, kb("herb_planter"));
+  p.hold("minecraft:dirt");
+  expectRefused(p, () => use("herb_planter", planter, p), "not a plant");
+});
+
+test("series rule: no on-screen text is ever pushed", () => {
+  for (const p of world.getAllPlayers()) assert.deepEqual(p.messages, [], `player ${p.id}`);
 });
