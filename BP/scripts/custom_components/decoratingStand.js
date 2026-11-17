@@ -7,7 +7,7 @@
 // finished with an empty hand; otherwise the last layer completes it automatically.
 import { world } from "@minecraft/server";
 import { addToStand, normalizeStand, popStand, standNextOptions, standRecipe } from "../api/stationLogic.js";
-import { actionBar, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
+import { refuse, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
 import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
@@ -17,28 +17,11 @@ const MSG = "kaleidoscope_baking.msg.stand.";
 const isEmpty = s => !s.base;
 const top = b => ({ x: b.x + 0.5, y: b.y + 0.9, z: b.z + 0.5 });
 
-function specName(spec) { return spec.startsWith("#") ? { text: spec } : itemName(spec); }
-
-function status(s) {
-  if (!s.base) return [t(`${MSG}empty`)];
-  const parts = [t(`${MSG}status`), itemName(s.base)];
-  for (const l of s.layers) parts.push({ text: " §7+§r " }, itemName(l));
-  const next = standNextOptions(s);
-  if (next.length) {
-    parts.push({ text: "\n" }, t(`${MSG}next`));
-    next.forEach((n, i) => parts.push({ text: i ? " / " : "" }, specName(n)));
-  }
-  const done = standRecipe(s);
-  if (done) parts.push({ text: "\n" }, t(`${MSG}finish`, itemName(done.result)));
-  return parts;
-}
-
 function finish(block, player, s, recipe) {
   giveItems(player, recipe.result, recipe.count);
   s.base = ""; s.layers = [];
   sound(block.dimension, "random.levelup", top(block), 0.5, 1.6);
   particle(block.dimension, "minecraft:villager_happy", top(block));
-  actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
 }
 
 function interact(block, player) {
@@ -46,22 +29,19 @@ function interact(block, player) {
   const held = heldItem(player);
   if (held) {
     const r = addToStand(s, held.typeId);
-    if (!r.ok) { actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId))); return; }
+    if (!r.ok) { refuse(block.dimension, top(block)); return; }
     consumeHeld(player, 1);
     sound(block.dimension, "random.pop", top(block), 0.5, 1.3);
     if (r.complete) finish(block, player, s, r.complete);
-    else actionBar(player, ...status(s));
   } else if (player.isSneaking) {
     let id;
     while ((id = popStand(s))) giveItems(player, id, 1);
-    actionBar(player, ...status(s));
   } else {
     const done = standRecipe(s);
     if (done) finish(block, player, s, done);
     else {
       const id = popStand(s);
       if (id) giveItems(player, id, 1);
-      actionBar(player, ...status(s));
     }
   }
   saveStation(PREFIX, block, s, isEmpty);
