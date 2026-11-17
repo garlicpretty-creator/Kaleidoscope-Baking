@@ -951,6 +951,9 @@ for pack in (BP, RP):
     p = os.path.join(pack, "pack_icon.png")
     if os.path.exists(STAR_ICON):
         Image.open(STAR_ICON).convert("RGBA").save(p)
+        if pack == RP:  # the same star lists Baking in Cookery's guidebook (scripts/integrations/guidebookData.js ICON)
+            os.makedirs(os.path.join(RP, "textures", "ui"), exist_ok=True)
+            Image.open(STAR_ICON).convert("RGBA").resize((128, 128), Image.NEAREST).save(os.path.join(RP, "textures", "ui", "kb_guidebook.png"))
     elif FORCE_ART or not os.path.exists(p):
         icon = Image.new("RGBA", (64, 64), (252, 236, 210, 255))
         icon.alpha_composite(paint_item("cake", (250, 236, 200), (250, 250, 245)).resize((48, 48), Image.NEAREST), (8, 10))

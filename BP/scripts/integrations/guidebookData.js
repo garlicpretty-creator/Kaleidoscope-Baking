@@ -9,7 +9,7 @@ import { COOKERY_REGISTRATIONS } from "./cookeryData.js";
 
 export const GUIDEBOOK_ID = "kaleidoscope_baking:guidebook";
 const LOCALES = ["zh_TW", "zh_CN", "en_US"];
-const ICON = "textures/items/kb_sponge_cake";
+const ICON = "textures/ui/kb_guidebook"; // the series star (tools/gen_content.py copies it from docs/branding)
 
 // A representative item for each #tag so the guidebook can show an icon / name.
 const TAG_EXAMPLES = {
@@ -71,10 +71,10 @@ const HELP = {
 };
 
 const TEXT = {
-  zh_TW: { title: "烘焙", intro: "森羅物語：烘焙的全部物品與配方。", all: "全部", select: "選擇一個項目。", language_note: "語言跟隨食譜書設定。", back: "返回",
+  zh_TW: { title: "森羅物語：烘焙", intro: "森羅物語：烘焙的全部物品與配方。", all: "全部", select: "選擇一個項目。", language_note: "語言跟隨食譜書設定。", back: "返回",
     item: "物品", block: "方塊", item_block: "物品＋方塊", settings: "烘焙設定", settings_title: "烘焙設定", save: "儲存",
     auto_convert: "兩個模組都安裝時，自動把烘焙的植物換成主導模組的版本", auto_convert_note: "關閉後只保留配方互通，不會改動世界中的方塊。" },
-  en_US: { title: "Baking", intro: "Everything in Kaleidoscope Baking.", all: "All Entries", select: "Select an entry.", language_note: "Uses the guidebook language setting.", back: "Back",
+  en_US: { title: "Kaleidoscope Baking", intro: "Everything in Kaleidoscope Baking.", all: "All Entries", select: "Select an entry.", language_note: "Uses the guidebook language setting.", back: "Back",
     item: "Item", block: "Block", item_block: "Item + Block", settings: "Baking Settings", settings_title: "Baking Settings", save: "Save",
     auto_convert: "Convert Baking plants to the lead pack's version when both are installed", auto_convert_note: "When off, recipes still accept both versions, but world blocks are left alone." }
 };
@@ -127,6 +127,7 @@ export function buildGuidebook(version = "1") {
   for (const l of LOCALES) {
     const base = TEXT[l] ?? (l === "zh_CN" ? TEXT.zh_TW : TEXT.en_US);
     text[l] = { ...base };
+    if (l === "zh_CN") text[l].title = "森罗物语：烘焙"; // the rest of zh_CN falls back to zh_TW; the list title is shown beside the other add-ons'
     for (const [gid, n] of Object.entries(CONTENT.groups)) text[l][`cat_${gid}`] = n[l];
   }
   return {
