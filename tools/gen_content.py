@@ -17,6 +17,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import content as C  # noqa: E402
 from messages import MSG  # noqa: E402
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "art"))
+import build_models as ART  # noqa: E402  (tools/art: block models + block textures)
+import stations as ART_STATIONS  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BP, RP = os.path.join(ROOT, "BP"), os.path.join(ROOT, "RP")
 NS = C.NS
@@ -24,6 +28,16 @@ FORCE_ART = "--force-art" in sys.argv
 GROWTH = f"{NS}:growth"
 LANGS = ["zh_TW", "zh_CN", "en_US"]
 generated = set()
+
+# Block models and block textures are drawn by tools/art (build_models.py). It runs first; the placeholder painter
+# below never overwrites a file it owns, even with --force-art.
+ART_OUT = ART.build_all()
+if ART_OUT["problems"]:
+    sys.exit("tools/art z-fight audit failed:\n" + "\n".join(ART_OUT["problems"]))
+generated.update(ART.WRITTEN)
+ART_OWNED = {os.path.normcase(os.path.join("textures", "blocks", f)) for f in os.listdir(os.path.join(ROOT, "RP", "textures", "blocks"))
+             if f.endswith(".png") and f != "kb_empty.png"}
+MAT = "alpha_test_single_sided"  # one-sided faces: the two sides of a plane, or two touching faces, never z-fight
 
 
 def kb(n):
@@ -465,6 +479,8 @@ def paint_block(kind, c1, c2=None):
 
 def save_png(img, rel):
     path = os.path.join(RP, rel)
+    if os.path.normcase(os.path.normpath(rel)) in ART_OWNED:
+        return
     if os.path.exists(path) and not FORCE_ART:
         return
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -564,6 +580,11 @@ name(f"tile.{kb('oven')}.name", "烤箱", "Oven")
 sounds[kb("oven")] = "stone"
 
 # --- Stations -------------------------------------------------------------
+# Directional stations face the player who placed them (models are drawn facing south).
+FACING_ROT = {"south": 0, "east": 90, "north": 180, "west": 270}  # +y rotation turns the south-facing front toward east
+FACING = {"traits": {"minecraft:placement_direction": {"enabled_states": ["minecraft:cardinal_direction"], "y_rotation_offset": 180}},
+          "permutations": [{"condition": f"q.block_state('minecraft:cardinal_direction') == '{d}'",
+                            "components": {"minecraft:transformation": {"rotation": [0, r, 0]}}} for d, r in FACING_ROT.items()]}
 for st in C.STATIONS:
     sid = st["id"]
     tex(f"kb_{sid}", f"kb_{sid}")
@@ -573,24 +594,21 @@ for st in C.STATIONS:
     name(f"tile.{kb(sid)}.name", it["zh"], it["en"])
     if sid == "herb_planter":
         continue
-    gid = f"geometry.{NS}.{sid}"
-    w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": [cube(o, s) for o, s in st["cubes"]]}]))
-    xs = [o[0] for o, s in st["cubes"]] + [o[0] + s[0] for o, s in st["cubes"]]
-    ys = [o[1] + s[1] for o, s in st["cubes"]]
-    zs = [o[2] for o, s in st["cubes"]] + [o[2] + s[2] for o, s in st["cubes"]]
-    box = {"origin": [max(-8, min(xs)), 0, max(-8, min(zs))], "size": [min(16, max(xs) - min(xs)), min(16, max(ys)), min(16, max(zs) - min(zs))]}
+    gid = f"geometry.{NS}.{sid}"  # RP/models/blocks/<sid>.geo.json, drawn by tools/art/stations.py
+    box = ART_OUT["bounds"][sid]
+    directional = sid in ART_STATIONS.DIRECTIONAL
     block(sid, {
         "minecraft:geometry": gid,
-        "minecraft:material_instances": {"*": {"texture": f"kb_{sid}", "render_method": "alpha_test"}},
+        "minecraft:material_instances": {"*": {"texture": f"kb_{sid}", "render_method": MAT}},
         "minecraft:collision_box": box, "minecraft:selection_box": box,
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 1.0},
         "minecraft:light_dampening": 0,
         "minecraft:map_color": "#%02X%02X%02X" % tuple(st["tex"][:3]),
         f"{NS}:{sid}": {}
-    })
+    }, **(FACING if directional else {}))
 
 # --- Crops / bushes ------------------------------------------------------
-w("RP/models/blocks/cross.geo.json", geo(f"geometry.{NS}.cross", [{"name": "plant", "pivot": [0, 0, 0], "cubes": cross_cubes()}]))
+# RP/models/blocks/cross.geo.json (bushes, saplings) and crop.geo.json (annual crops, '#' layout) come from tools/art.
 CROP_META = []
 for cp in C.CROPS:
     bid, n = cp["id"], cp["stages"]
@@ -612,15 +630,15 @@ for cp in C.CROPS:
     for s in range(n):
         hgt = max(4, int(16 * (s + 1) / n))
         perms.append({"condition": cond(GROWTH, s), "components": {
-            "minecraft:material_instances": {"*": {"texture": f"kb_{bid}_stage_{s}", "render_method": "alpha_test"}},
+            "minecraft:material_instances": {"*": {"texture": f"kb_{bid}_stage_{s}", "render_method": MAT}},
             "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, hgt, 12]},
             "minecraft:loot": mature if s == n - 1 else immature}})
     params = {"max": n - 1, "chance": cp["chance"], "min_light": 9, "kind": cp["kind"],
               "harvest": kb(harvest), "harvest_min": lo, "harvest_max": hi, "reset": cp["reset"], "spread": cp["spread"]}
     block(bid, {
         "minecraft:collision_box": False, "minecraft:light_dampening": 0,
-        "minecraft:geometry": f"geometry.{NS}.cross",
-        "minecraft:material_instances": {"*": {"texture": f"kb_{bid}_stage_0", "render_method": "alpha_test"}},
+        "minecraft:geometry": f"geometry.{NS}." + ("crop" if cp["kind"] == "annual" else "cross"),
+        "minecraft:material_instances": {"*": {"texture": f"kb_{bid}_stage_0", "render_method": MAT}},
         "minecraft:placement_filter": {"conditions": [{"allowed_faces": ["up"], "block_filter": C.PLACE_ON[cp["place_on"]]}]},
         "minecraft:liquid_detection": {"detection_rules": [{"liquid_type": "water", "on_liquid_touches": "popped"}]},
         "minecraft:movable": {"movement_type": "popped"},
@@ -667,14 +685,14 @@ for tr in C.TREES:
     block(sap, {
         "minecraft:collision_box": False, "minecraft:light_dampening": 0,
         "minecraft:geometry": f"geometry.{NS}.cross",
-        "minecraft:material_instances": {"*": {"texture": f"kb_{sap}_stage_0", "render_method": "alpha_test"}},
+        "minecraft:material_instances": {"*": {"texture": f"kb_{sap}_stage_0", "render_method": MAT}},
         "minecraft:placement_filter": {"conditions": [{"allowed_faces": ["up"], "block_filter": C.SOIL}]},
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.0},
         "minecraft:loot": sap_loot,
         f"{NS}:tree": {"tree": tr["id"]}
     }, states={GROWTH: {"values": {"min": 0, "max": 2}}},
         permutations=[{"condition": cond(GROWTH, s), "components": {"minecraft:material_instances": {
-            "*": {"texture": f"kb_{sap}_stage_{s}", "render_method": "alpha_test"}}}} for s in range(3)])
+            "*": {"texture": f"kb_{sap}_stage_{s}", "render_method": MAT}}}} for s in range(3)])
     name(f"tile.{kb(sap)}.name", tr["zh"] + "苗", tr["en"] + " Sapling")
     sounds[kb(sap)] = "grass"
     leaves = tr["leaves"]
@@ -709,7 +727,7 @@ for tr in C.TREES:
         save_png(paint_block("leaves", tr["leaf"], (250, 235, 90) if fruit and s == stages - 1 else None), f"textures/blocks/kb_{leaves}_{s}.png")
     leaf_base = {
         "minecraft:geometry": "minecraft:geometry.full_block",
-        "minecraft:material_instances": {"*": {"texture": f"kb_{leaves}_0", "render_method": "alpha_test"}},
+        "minecraft:material_instances": {"*": {"texture": f"kb_{leaves}_0", "render_method": MAT}},
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.3},
         "minecraft:light_dampening": 1,
         "minecraft:flammable": {"catch_chance_modifier": 30, "destroy_chance_modifier": 60},
@@ -723,7 +741,7 @@ for tr in C.TREES:
                                     "harvest_min": 1, "harvest_max": 2, "reset": 0, "spread": False}
         block(leaves, leaf_base, states={GROWTH: {"values": {"min": 0, "max": 3}}}, category="nature",
               permutations=[{"condition": cond(GROWTH, s), "components": {
-                  "minecraft:material_instances": {"*": {"texture": f"kb_{leaves}_{s}", "render_method": "alpha_test"}},
+                  "minecraft:material_instances": {"*": {"texture": f"kb_{leaves}_{s}", "render_method": MAT}},
                   **({"minecraft:loot": ripe} if s == 3 else {})}} for s in range(4)])
     else:
         block(leaves, leaf_base, category="nature")
@@ -748,21 +766,15 @@ for tr in C.TREES:
 
 # --- Herb planter -----------------------------------------------------------
 PLANT_STATE = f"{NS}:plant"
-planter_cubes = [cube([-5, 0, -5], [10, 6, 10], top="soil", material="pot")]
-w("RP/models/blocks/herb_planter.geo.json", geo(f"geometry.{NS}.herb_planter", [
-    {"name": "pot", "pivot": [0, 0, 0], "cubes": planter_cubes},
-    {"name": "plant", "pivot": [0, 6, 0], "cubes": [dict(c, origin=[c["origin"][0], 6, c["origin"][2]], size=[16, 10, 0]) for c in cross_cubes("cross")]}]))
-tex("kb_planter_soil", "kb_planter_soil")
-save_png(paint_block("stripes", (90, 60, 40)), "textures/blocks/kb_planter_soil.png")
+# RP/models/blocks/herb_planter.geo.json comes from tools/art (pot + soil in its own atlas; the plant planes use the
+# `cross` material instance, swapped per plant and growth stage below).
 tex("kb_empty", "kb_empty")
 save_png(Image.new("RGBA", (16, 16), T), "textures/blocks/kb_empty.png")
 
 
 def planter_mat(cross_tex):
-    return {"*": {"texture": "kb_herb_planter", "render_method": "alpha_test"},
-            "pot": {"texture": "kb_herb_planter", "render_method": "alpha_test"},
-            "soil": {"texture": "kb_planter_soil", "render_method": "alpha_test"},
-            "cross": {"texture": cross_tex, "render_method": "alpha_test"}}
+    return {"*": {"texture": "kb_herb_planter", "render_method": MAT},
+            "cross": {"texture": cross_tex, "render_method": MAT}}
 
 
 planter_perms = []
@@ -773,8 +785,8 @@ for p in C.PLANTER_PLANTS:
 block("herb_planter", {
     "minecraft:geometry": f"geometry.{NS}.herb_planter",
     "minecraft:material_instances": planter_mat("kb_empty"),
-    "minecraft:collision_box": {"origin": [-5, 0, -5], "size": [10, 6, 10]},
-    "minecraft:selection_box": {"origin": [-5, 0, -5], "size": [10, 12, 10]},
+    "minecraft:collision_box": {"origin": [-6, 0, -6], "size": [12, 6.5, 12]},
+    "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, 12, 12]},
     "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.6},
     "minecraft:light_dampening": 0,
     "minecraft:map_color": "#B4644A",
@@ -787,27 +799,20 @@ for p in C.PLANTER_PLANTS:
 
 # --- Placeable desserts -----------------------------------------------------
 BITES = f"{NS}:bites"
-QUARTERS = [([0, 0, -7], [7, 0, 7]), ([-7, 0, -7], [7, 0, 7]), ([-7, 0, 0], [7, 0, 7]), ([0, 0, 0], [7, 0, 7])]
-heights = sorted({d["height"] for d in C.DESSERTS})
-for h in heights:
-    for q in range(1, 5):
-        cubes = [cube([o[0], 0, o[2]], [s[0], h, s[2]], top="top") for o, s in QUARTERS[:q]]
-        w(f"RP/models/blocks/dessert_h{h}_q{q}.geo.json", geo(f"geometry.{NS}.dessert_h{h}_q{q}", [{"name": "d", "pivot": [0, 0, 0], "cubes": cubes}]))
+# Models RP/models/blocks/<id>_q<1..4>.geo.json and the atlas textures/blocks/kb_<id>.png come from
+# tools/art/desserts.py (round cake / pie, q = quarters left; cut faces show the layers, toppings leave with their slice).
 DESSERT_META = {}
 for ds in C.DESSERTS:
     did, h = ds["id"], ds["height"]
-    tex(f"kb_{did}_top", f"kb_{did}_top")
-    tex(f"kb_{did}_side", f"kb_{did}_side")
-    save_png(paint_block("dessert_top", ds["top"], (220, 40, 60) if "strawberry" in did or "birthday" in did else None), f"textures/blocks/kb_{did}_top.png")
-    save_png(paint_block("dessert_side", ds["side"]), f"textures/blocks/kb_{did}_side.png")
-    mats = {"*": {"texture": f"kb_{did}_side", "render_method": "alpha_test"}, "top": {"texture": f"kb_{did}_top", "render_method": "alpha_test"}}
+    tex(f"kb_{did}_block", f"kb_{did}")
+    mats = {"*": {"texture": f"kb_{did}_block", "render_method": MAT}}
     whole = loot(f"desserts/{did}", [pool(did)])
     empty = f"loot_tables/{NS}/empty.json"
     block(did, {
-        "minecraft:geometry": f"geometry.{NS}.dessert_h{h}_q4",
+        "minecraft:geometry": f"geometry.{NS}.{did}_q4",
         "minecraft:material_instances": mats,
         "minecraft:collision_box": {"origin": [-7, 0, -7], "size": [14, h, 14]},
-        "minecraft:selection_box": {"origin": [-7, 0, -7], "size": [14, h, 14]},
+        "minecraft:selection_box": ART_OUT["desserts"][did]["bounds"],
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.3},
         "minecraft:light_dampening": 0,
         "minecraft:loot": whole,
@@ -815,13 +820,38 @@ for ds in C.DESSERTS:
         f"{NS}:dessert": {"slices": 4}
     }, states={BITES: {"values": {"min": 0, "max": 3}}},
         permutations=[{"condition": cond(BITES, b), "components": {
-            "minecraft:geometry": f"geometry.{NS}.dessert_h{h}_q{4 - b}",
+            "minecraft:geometry": f"geometry.{NS}.{did}_q{4 - b}",
             "minecraft:loot": whole if b == 0 else empty}} for b in range(1, 4)])
     it = next(i for i in C.ITEMS if i["id"] == did)
     name(f"tile.{kb(did)}.name", it["zh"], it["en"])
     sounds[kb(did)] = "cloth"
     DESSERT_META[kb(did)] = {"nutrition": ds["n"], "saturation": ds["sat"]}
 w(f"BP/loot_tables/{NS}/empty.json", {"pools": []})
+
+# --- Placed mug drinks (up to 4 per block) -------------------------------------
+# Models RP/models/blocks/mug_<1..4>.geo.json are shared; each drink has its own atlas textures/blocks/kb_drink_<id>.png
+# (tools/art/drinks.py). The drink_stack component adds / takes mugs; breaking drops every mug.
+CUPS = f"{NS}:cup_count"
+for did in C.DRINK_BLOCKS:
+    tex(f"kb_{did}_drink", f"kb_drink_{did}")
+    perms = [{"condition": cond(CUPS, n), "components": {"minecraft:geometry": f"geometry.{NS}.mug_{n}",
+                                                        "minecraft:selection_box": ART_OUT["mugs"][n]}} for n in range(1, 5)]
+    block(did, {
+        "minecraft:geometry": f"geometry.{NS}.mug_1",
+        "minecraft:material_instances": {"*": {"texture": f"kb_{did}_drink", "render_method": MAT}},
+        "minecraft:collision_box": False,
+        "minecraft:selection_box": ART_OUT["mugs"][1],
+        "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
+        "minecraft:movable": {"movement_type": "popped"},
+        "minecraft:light_dampening": 0,
+        "minecraft:loot": f"loot_tables/{NS}/empty.json",
+        "minecraft:placement_filter": {"conditions": [{"allowed_faces": ["up"]}]},
+        f"{NS}:drink_stack": {}
+    }, states={CUPS: {"values": {"min": 1, "max": 4}}},
+        permutations=perms + FACING["permutations"], traits=FACING["traits"])
+    it = next(i for i in C.ITEMS if i["id"] == did)
+    name(f"tile.{kb(did)}.name", it["zh"], it["en"])
+    sounds[kb(did)] = "stone"
 
 # --- Crafting ---------------------------------------------------------------
 for rid, pattern, key, count in C.CRAFTING:
@@ -899,10 +929,13 @@ print(f"generated: {len(C.ITEMS)} items, {len(C.CROPS)} crops, {len(C.TREES)} tr
 GROUP_TITLES = {g: zh for g, (zh, en) in C.GROUP_NAMES.items()}
 lines = ["# 美術資源清單（給美術）", "",
          "> 此檔由 `tools/gen_content.py` 自動產生，請勿手動編輯。",
-         "", "目前所有貼圖都是程式畫的**暫代圖**。請用**同檔名**覆蓋 `RP/textures/` 底下的 PNG 即可，",
-         "不需要改任何 JSON 或程式；之後重新執行產生器也**不會**覆蓋你放進來的檔案（除非加 `--force-art`）。",
-         "", "- 方塊貼圖、物品圖示目前都是 **16×16**；要做更高解析度可以，但同一類請統一尺寸。",
-         "- `pack_icon.png` 為 64×64（`BP/`、`RP/` 各一張）。", "",
+         "", "- **方塊模型與方塊貼圖**由 `tools/art/` 以程式繪製（`python tools/art/build_models.py`，產生器也會自動執行）：",
+         "  站點、甜點、植物、烤箱。要改外觀請改 `tools/art/*.py`，直接覆蓋這些 PNG 會在下次產生時被蓋掉。",
+         "  每次產生都會跑 z-fight 稽核（任何兩個朝同方向的可見面重疊在同一平面就失敗），並全部使用單面材質 `alpha_test_single_sided`。",
+         "  預覽圖：`art/previews/`（植物、烤箱）；Blockbench 檢視方式見 `tools/art/README.md`。",
+         "- **物品圖示**由 Retro Diffusion 產生：提示詞在 `tools/art/icon_prompts.json`，選圖記錄在 `art/icons/picks.json`，",
+         "  `python tools/art/rd_icons.py apply` 寫入 `RP/textures/items/`。",
+         "- 方塊貼圖、物品圖示都是 **16×16**（站點與甜點為 64 寬的圖集）；`pack_icon.png` 為 64×64（`BP/`、`RP/` 各一張）。", "",
          "## 烤箱（3×3×3 大型方塊）", "",
          "烤箱由 27 個完整方塊組成，每張貼圖是**一格的一個面**。正面（朝向放置的玩家）中央是爐門，下方中央是火口；頂面中央是煙囪。",
          "", "```", "正面                      頂面",
@@ -915,12 +948,13 @@ lines = ["# 美術資源清單（給美術）", "",
          "| `textures/blocks/kb_oven_brick.png` | 外牆 |", "| `textures/blocks/kb_oven_top.png` | 頂面 |",
          "| `textures/blocks/kb_oven_chimney.png` | 煙囪 |", "| `textures/blocks/kb_oven_door.png` | 爐門 |",
          "| `textures/blocks/kb_oven_firebox.png` | 火口（熄火） |", "| `textures/blocks/kb_oven_firebox_lit.png` | 火口（燃燒，會發光） |", "",
-         "## 站點方塊（自訂模型，每個面使用整張 16×16）", "", "| 檔名 | 方塊 | 模型 |", "|------|------|------|"]
+         "## 站點方塊（自訂模型 + 64 寬材質圖集，`tools/art/stations.py`）", "",
+         "咖啡機、手沖架、雪克杯、裱花台、發酵籃會面向放置的玩家（模型以南面為正面）。", "",
+         "| 檔名 | 方塊 | 模型 |", "|------|------|------|"]
 for st in C.STATIONS:
     it = next(i for i in C.ITEMS if i["id"] == st["id"])
     lines.append(f"| `textures/blocks/kb_{st['id']}.png` | {it['zh']} | `RP/models/blocks/{st['id']}.geo.json` |")
-lines += ["| `textures/blocks/kb_planter_soil.png` | 香草盆栽的土面 | |", "",
-          "## 作物 / 灌木（每個生長階段一張，交叉十字模型）", "", "| 植物 | 檔名 |", "|------|------|"]
+lines += ["", "## 作物 / 灌木（`tools/art/plants.py`；灌木為交叉模型，一年生作物為 # 字模型）", "", "| 植物 | 檔名 |", "|------|------|"]
 for cp in C.CROPS:
     lines.append(f"| {cp['zh']} | `textures/blocks/kb_{cp['id']}_stage_0..{cp['stages'] - 1}.png` |")
 lines += ["", "## 樹", "", "| 檔名 | 用途 |", "|------|------|"]
@@ -929,10 +963,16 @@ for tr in C.TREES:
     if not tr["log"].startswith("minecraft:"):
         lines.append(f"| `textures/blocks/kb_{tr['log']}_side / _stripped / _top.png` | {tr['zh'][:-1]}原木（側面 / 剝皮 / 頂面） |")
     lines.append(f"| `textures/blocks/kb_{tr['leaves']}_*.png` | {tr['zh'][:-1]}樹葉" + ("（0–3 結果階段）" if tr.get("fruit") else "") + " |")
-lines += ["", "## 可擺放甜點（頂面 + 側面；模型會隨吃掉的片數改變）", "", "| 甜點 | 檔名 |", "|------|------|"]
+lines += ["", "## 可擺放甜點（`tools/art/desserts.py`；圓形蛋糕 / 派，吃掉一片少一塊，切面露出內層）", "",
+          "| 甜點 | 貼圖 | 模型 |", "|------|------|------|"]
 for ds in C.DESSERTS:
     it = next(i for i in C.ITEMS if i["id"] == ds["id"])
-    lines.append(f"| {it['zh']} | `textures/blocks/kb_{ds['id']}_top.png`、`_side.png` |")
+    lines.append(f"| {it['zh']} | `textures/blocks/kb_{ds['id']}.png` | `RP/models/blocks/{ds['id']}_q1..4.geo.json` |")
+lines += ["", "## 放在地上的馬克杯飲品（`tools/art/drinks.py`；一格最多 4 杯，模型 `mug_1..4` 共用）", "",
+          "| 飲品 | 貼圖 |", "|------|------|"]
+for did in C.DRINK_BLOCKS:
+    it = next(i for i in C.ITEMS if i["id"] == did)
+    lines.append(f"| {it['zh']} | `textures/blocks/kb_drink_{did}.png` |")
 lines += ["", "## 物品圖示 `RP/textures/items/`", ""]
 for g, title in GROUP_TITLES.items():
     lines += [f"### {title}", "", "| 檔名 | 物品 |", "|------|------|"]

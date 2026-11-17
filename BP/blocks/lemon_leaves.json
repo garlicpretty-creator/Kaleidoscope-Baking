@@ -20,7 +20,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_lemon_leaves_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:destructible_by_mining": {
@@ -55,7 +55,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_lemon_leaves_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -66,7 +66,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_lemon_leaves_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -77,7 +77,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_lemon_leaves_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -88,7 +88,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_lemon_leaves_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/lemon_leaves_ripe.json"

@@ -1,0 +1,189 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:pour_over_medium",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:cup_count": {
+          "values": {
+            "min": 1,
+            "max": 4
+          }
+        }
+      },
+      "traits": {
+        "minecraft:placement_direction": {
+          "enabled_states": [
+            "minecraft:cardinal_direction"
+          ],
+          "y_rotation_offset": 180
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.mug_1",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_pour_over_medium_drink",
+          "render_method": "alpha_test_single_sided"
+        }
+      },
+      "minecraft:collision_box": false,
+      "minecraft:selection_box": {
+        "origin": [
+          -3,
+          0,
+          -3
+        ],
+        "size": [
+          7.75,
+          5,
+          7
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.1
+      },
+      "minecraft:movable": {
+        "movement_type": "popped"
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json",
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ]
+          }
+        ]
+      },
+      "kaleidoscope_baking:drink_stack": {}
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:cup_count') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.mug_1",
+          "minecraft:selection_box": {
+            "origin": [
+              -3,
+              0,
+              -3
+            ],
+            "size": [
+              7.75,
+              5,
+              7
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:cup_count') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.mug_2",
+          "minecraft:selection_box": {
+            "origin": [
+              -7,
+              0,
+              -6
+            ],
+            "size": [
+              14.75,
+              5,
+              11
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:cup_count') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.mug_3",
+          "minecraft:selection_box": {
+            "origin": [
+              -7,
+              0,
+              -7
+            ],
+            "size": [
+              14.75,
+              5,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:cup_count') == 4",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.mug_4",
+          "minecraft:selection_box": {
+            "origin": [
+              -7,
+              0,
+              -7
+            ],
+            "size": [
+              14.75,
+              5,
+              14
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              90,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              180,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+        "components": {
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              270,
+              0
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

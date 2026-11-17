@@ -28,43 +28,35 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_herb_planter",
-          "render_method": "alpha_test"
-        },
-        "pot": {
-          "texture": "kb_herb_planter",
-          "render_method": "alpha_test"
-        },
-        "soil": {
-          "texture": "kb_planter_soil",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         },
         "cross": {
           "texture": "kb_empty",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:collision_box": {
         "origin": [
-          -5,
+          -6,
           0,
-          -5
+          -6
         ],
         "size": [
-          10,
-          6,
-          10
+          12,
+          6.5,
+          12
         ]
       },
       "minecraft:selection_box": {
         "origin": [
-          -5,
+          -6,
           0,
-          -5
+          -6
         ],
         "size": [
-          10,
           12,
-          10
+          12,
+          12
         ]
       },
       "minecraft:destructible_by_mining": {
@@ -81,19 +73,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_rosemary_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -104,19 +88,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_rosemary_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -127,19 +103,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_rosemary_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -150,19 +118,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_rosemary_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -173,19 +133,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_thyme_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -196,19 +148,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_thyme_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -219,19 +163,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_thyme_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -242,19 +178,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_thyme_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -265,19 +193,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_lavender_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -288,19 +208,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_lavender_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -311,19 +223,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_lavender_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -334,19 +238,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_lavender_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -357,19 +253,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_mint_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -380,19 +268,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_mint_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -403,19 +283,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_mint_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -426,19 +298,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_mint_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -449,19 +313,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_strawberry_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -472,19 +328,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_strawberry_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -495,19 +343,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_strawberry_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }
@@ -518,19 +358,11 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "pot": {
-              "texture": "kb_herb_planter",
-              "render_method": "alpha_test"
-            },
-            "soil": {
-              "texture": "kb_planter_soil",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             },
             "cross": {
               "texture": "kb_strawberry_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           }
         }

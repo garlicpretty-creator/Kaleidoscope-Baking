@@ -18,6 +18,10 @@
           "kaleidoscope:coffee"
         ]
       },
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:cinnamon_latte",
+        "replace_block_item": true
+      },
       "minecraft:food": {
         "nutrition": 2,
         "saturation_modifier": 0.3,
