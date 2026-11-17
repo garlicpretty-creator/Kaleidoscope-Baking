@@ -434,3 +434,151 @@ def bounds_of(boxes):
     lo = [max(-8, lo[0]), max(0, lo[1]), max(-8, lo[2])]
     hi = [min(8, hi[0]), min(16, hi[1]), min(8, hi[2])]
     return {"origin": [_num(v) for v in lo], "size": [_num(hi[i] - lo[i]) for i in range(3)]}
+
+
+# ============================================================================================= painted (unique-UV) models
+# Cookery-style: few boxes, every visible face gets its own region of the texture (one texel per model pixel) and is
+# painted from world coordinates, so detail lives in the texture instead of in extra geometry.
+class Texel:
+    """What a painter sees for one texel: the face, its texel (u, v) in a w x h face, and the json position."""
+    __slots__ = ("box", "face", "u", "v", "w", "h", "x", "y", "z")
+
+    def __init__(self, box, face, u, v, w, h, x, y, z):
+        self.box, self.face, self.u, self.v, self.w, self.h, self.x, self.y, self.z = box, face, u, v, w, h, x, y, z
+
+    @property
+    def side(self):
+        return self.face in ("north", "south", "east", "west")
+
+
+def _texel_pos(b, face, u, v, w, h):
+    (x0, y0, z0), (x1, y1, z1) = b.lo, b.hi
+    fu = (u + 0.5) / w
+    fv = (v + 0.5) / h
+    if face == "south":
+        return x1 - fu * (x1 - x0), y1 - fv * (y1 - y0), z1
+    if face == "north":
+        return x0 + fu * (x1 - x0), y1 - fv * (y1 - y0), z0
+    if face == "east":   # json low-x side
+        return x0, y1 - fv * (y1 - y0), z1 - fu * (z1 - z0)
+    if face == "west":
+        return x1, y1 - fv * (y1 - y0), z0 + fu * (z1 - z0)
+    x = x1 - fu * (x1 - x0)
+    z = z0 + fv * (z1 - z0)
+    return x, (y1 if face == "up" else y0), z
+
+
+def edge_shade(c, t, k=1.0):
+    """Hand-painted look: lit top edge, shaded bottom edge and darker vertical edges on sides; a soft rim on tops."""
+    r = 1.0
+    if t.side and t.h >= 2:
+        if t.v == 0:
+            r *= 1.12
+        elif t.v == t.h - 1:
+            r *= 0.82
+    if t.side and t.w >= 3 and t.u in (0, t.w - 1):
+        r *= 0.9
+    if not t.side and t.w >= 3 and t.h >= 3 and (t.u in (0, t.w - 1) or t.v in (0, t.h - 1)):
+        r *= 0.92 if t.face == "up" else 0.8
+    r = 1 + (r - 1) * k
+    a = c[3] if len(c) > 3 else 255
+    return tuple(max(0, min(255, int(round(ch * r)))) for ch in c[:3]) + (a,)
+
+
+def _sig(b, f):
+    return (tuple(round(v, 3) for v in b.lo), tuple(round(v, 3) for v in b.hi), f, b.mat if isinstance(b.mat, str) else b.material(f))
+
+
+class Painted:
+    """Packs every visible face of one or more models (variants sharing one texture, e.g. the 4 slice states of a cake)
+    into a texture, one region per distinct face, painted with `painters[material](texel)`."""
+
+    def __init__(self, variants, width=64, shade=True):
+        if variants and isinstance(variants[0], Box):
+            variants = [variants]
+        self.shade = shade
+        self.faces, self.index = [], {}
+        for boxes in variants:
+            vis = visible_faces(boxes)
+            for b in boxes:
+                if b.full_uv:
+                    continue
+                for f in vis[id(b)]:
+                    k = _sig(b, f)
+                    if k in self.index:
+                        continue
+                    fw, fh = _face_wh(b, f)
+                    self.index[k] = len(self.faces)
+                    self.faces.append((b, f, max(1, math.ceil(fw - 1e-6)), max(1, math.ceil(fh - 1e-6))))
+        order = sorted(range(len(self.faces)), key=lambda i: (-self.faces[i][3], -self.faces[i][2]))
+        self.pos = {}
+        x = y = row = 0
+        self.width = width
+        for i in order:
+            _, _, w, h = self.faces[i]
+            if x + w > width:
+                x, y, row = 0, y + row, 0
+            self.pos[i] = (x, y)
+            x += w
+            row = max(row, h)
+        used = y + row
+        self.height = 16
+        while self.height < used:
+            self.height *= 2
+
+    def image(self, painters):
+        img = Image.new("RGBA", (self.width, self.height), (0, 0, 0, 0))
+        for i, (b, f, w, h) in enumerate(self.faces):
+            px, py = self.pos[i]
+            paint = painters[b.material(f)]
+            for v in range(h):
+                for u in range(w):
+                    t = Texel(b, f, u, v, w, h, *_texel_pos(b, f, u, v, w, h))
+                    c = tuple(paint(t))
+                    if len(c) == 3:
+                        c = c + (255,)
+                    if self.shade and c[3] and getattr(paint, "shade", True):
+                        c = edge_shade(c, t, getattr(paint, "shade_k", 1.0))
+                    img.putpixel((px + u, py + v), c)
+        return img
+
+    def geometry(self, gid, boxes, bounds=(2, 2.5, 0.75)):
+        vis = visible_faces(boxes)
+        bones, order = {}, []
+        for b in boxes:
+            if b.bone not in bones:
+                bones[b.bone] = []
+                order.append(b.bone)
+            uv = {}
+            for f in vis[id(b)]:
+                if b.full_uv:
+                    pos, size = ([self.width, 0], [-self.width, self.height]) if f in b.mirror else ([0, 0], [self.width, self.height])
+                else:
+                    i = self.index[_sig(b, f)]
+                    pos, size = list(self.pos[i]), [self.faces[i][2], self.faces[i][3]]
+                face = {"uv": [_num(pos[0]), _num(pos[1])], "uv_size": [_num(size[0]), _num(size[1])]}
+                if b.instance:
+                    face["material_instance"] = b.instance
+                uv[f] = face
+            if not uv:
+                continue
+            cube = {"origin": [_num(v) for v in b.lo], "size": [_num(v) for v in b.size()], "uv": uv}
+            if b.rot:
+                cube["rotation"] = list(b.rot)
+                cube["pivot"] = list(b.pivot or (0, 0, 0))
+            bones[b.bone].append(cube)
+        return {"format_version": "1.21.60", "minecraft:geometry": [{
+            "description": {"identifier": gid, "texture_width": self.width, "texture_height": self.height,
+                            "visible_bounds_width": bounds[0], "visible_bounds_height": bounds[1],
+                            "visible_bounds_offset": [0, bounds[2], 0]},
+            "bones": [{"name": n, "pivot": [0, 0, 0], "cubes": bones[n]} for n in order if bones[n]]}]}
+
+
+def painter(fn, shade=True, shade_k=1.0):
+    fn.shade, fn.shade_k = shade, shade_k
+    return fn
+
+
+def count_faces(boxes):
+    vis = visible_faces(boxes)
+    return len([b for b in boxes if vis[id(b)]]), sum(len(v) for v in vis.values())

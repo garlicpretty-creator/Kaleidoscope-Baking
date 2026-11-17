@@ -22,6 +22,7 @@ import stations  # noqa: E402
 NS = "kaleidoscope_baking"
 
 
+STATS = {}  # model -> (cubes, faces)
 WRITTEN = []  # repo-relative paths of every JSON file this build wrote
 
 
@@ -37,26 +38,43 @@ def write_json(rel, data):
 def build_stations():
     problems, bounds = [], {}
     for sid, fn in stations.MODELS.items():
-        boxes = fn()
-        atlas = stations.ATLASES[sid]
+        boxes, painters = fn()
         problems += kit.audit(boxes, sid)
-        write_json(f"RP/models/blocks/{sid}.geo.json", kit.geometry(f"geometry.{NS}.{sid}", boxes, atlas))
-        atlas.image().save(os.path.join(RP, "textures", "blocks", f"kb_{sid}.png"))
-        bounds[sid] = kit.bounds_of([b for b in boxes if b.bone == "root" or not b.instance])
+        tex = kit.Painted(boxes)
+        write_json(f"RP/models/blocks/{sid}.geo.json", tex.geometry(f"geometry.{NS}.{sid}", boxes))
+        tex.image(painters).save(os.path.join(RP, "textures", "blocks", f"kb_{sid}.png"))
+        bounds[sid] = kit.bounds_of([b for b in boxes if not b.instance])
+        STATS[sid] = kit.count_faces(boxes)
     return problems, bounds
 
 
 def build_desserts():
     problems, info = [], {}
     for did in desserts.DESSERTS:
-        per_q, atlas = desserts.models(did)
+        per_q, painters = desserts.models(did)
+        tex = kit.Painted(list(per_q.values()), shade=False)  # one texture for all four slice states
         for q, boxes in per_q.items():
             problems += kit.audit(boxes, f"{did}_q{q}")
-            write_json(f"RP/models/blocks/{did}_q{q}.geo.json", kit.geometry(f"geometry.{NS}.{did}_q{q}", boxes, atlas))
-        atlas.image().save(os.path.join(RP, "textures", "blocks", f"kb_{did}.png"))
+            write_json(f"RP/models/blocks/{did}_q{q}.geo.json", tex.geometry(f"geometry.{NS}.{did}_q{q}", boxes))
+        tex.image(painters).save(os.path.join(RP, "textures", "blocks", f"kb_{did}.png"))
         whole = per_q[4]
         info[did] = {"bounds": kit.bounds_of(whole), "height": max(b.hi[1] for b in whole)}
+        STATS[did] = kit.count_faces(whole)
     return problems, info
+
+
+def build_drinks():
+    problems, bounds = [], {}
+    per_n = drinks.models()
+    tex = kit.Painted(list(per_n.values()))  # one layout shared by every drink texture
+    for n, boxes in per_n.items():
+        problems += kit.audit(boxes, f"mug_{n}")
+        write_json(f"RP/models/blocks/mug_{n}.geo.json", tex.geometry(f"geometry.{NS}.mug_{n}", boxes))
+        bounds[n] = kit.bounds_of(boxes)
+    STATS["mug_4"] = kit.count_faces(per_n[4])
+    for did in drinks.DRINKS:
+        tex.image(drinks.painters_for(did)).save(os.path.join(RP, "textures", "blocks", f"kb_drink_{did}.png"))
+    return problems, bounds
 
 
 def plane(x0, z0, x1, z1, h=16, y0=0):
@@ -121,18 +139,6 @@ def oven_preview(t, path, s=8):
     im.save(path)
 
 
-def build_drinks():
-    problems, bounds = [], {}
-    ref = drinks.atlas_for(next(iter(drinks.DRINKS)))  # every drink atlas shares this layout
-    for n, boxes in drinks.models().items():
-        problems += kit.audit(boxes, f"mug_{n}")
-        write_json(f"RP/models/blocks/mug_{n}.geo.json", kit.geometry(f"geometry.{NS}.mug_{n}", boxes, ref))
-        bounds[n] = kit.bounds_of(boxes)
-    for did in drinks.DRINKS:
-        drinks.atlas_for(did).image().save(os.path.join(RP, "textures", "blocks", f"kb_drink_{did}.png"))
-    return problems, bounds
-
-
 def build_all():
     problems, bounds = build_stations()
     p2, dessert_info = build_desserts()
@@ -149,5 +155,7 @@ if __name__ == "__main__":
     out = build_all()
     for p in out["problems"]:
         print(p)
+    for k, (c, f) in sorted(STATS.items()):
+        print(f"{k:24} {c:3} cubes {f:4} faces")
     print(f"{len(out['problems'])} problems")
     sys.exit(1 if out["problems"] else 0)
