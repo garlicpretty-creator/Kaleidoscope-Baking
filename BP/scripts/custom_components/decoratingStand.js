@@ -9,6 +9,7 @@ import { world } from "@minecraft/server";
 import { addToStand, normalizeStand, popStand, standNextOptions, standRecipe } from "../api/stationLogic.js";
 import { actionBar, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
+import { clearDisplays, setFill, syncDisplay } from "../utils/display.js";
 
 export const STAND_ID = "kaleidoscope_baking:decorating_stand";
 const PREFIX = "kb_stand";
@@ -64,6 +65,13 @@ function interact(block, player) {
     }
   }
   saveStation(PREFIX, block, s, isEmpty);
+  refresh(block, s);
+}
+
+/** Cake on the plate when a base is placed; the top-most layer floats above it. */
+function refresh(block, s) {
+  setFill(block, s.base ? 1 : 0);
+  syncDisplay(block, "top", s.base ? (s.layers.at(-1) ?? s.base) : undefined, { x: 0.5, y: 0.85, z: 0.5 });
 }
 
 function spill(dimension, loc) {
@@ -72,6 +80,7 @@ function spill(dimension, loc) {
   let id;
   while ((id = popStand(s))) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.8, z: loc.z + 0.5 }, id, 1);
   saveStation(PREFIX, fake, s, isEmpty);
+  clearDisplays(dimension, loc);
 }
 
 export const decoratingStandComponent = {

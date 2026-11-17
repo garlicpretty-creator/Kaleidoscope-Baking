@@ -12,17 +12,19 @@
 import { world } from "@minecraft/server";
 import { addToBowl, currentRecipe, normalizeBowl, takeFromBowl, whiskBowl } from "../api/mixingLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
+import { setFill } from "../utils/display.js";
 import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
   spawnItems, stackHasTag, t, writeJson
 } from "../utils/runtime.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
-const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
+const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother", "kaleidoscope_baking:piping_bag"];
 // How to name a tool spec in hints.
 const TOOL_NAMES = {
   "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk",
-  "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother"
+  "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother",
+  "#kaleidoscope_baking:piping_bag": "kaleidoscope_baking:piping_bag"
 };
 const PREFIX = "kb_bowl";
 const MSG = "kaleidoscope_baking.msg.bowl.";
@@ -87,7 +89,10 @@ function interact(block, player) {
     actionBar(player, ...contentsMessage(s));
   }
 
-  if (changed) writeJson(key, s.items.length || s.whisks ? s : undefined);
+  if (changed) {
+    writeJson(key, s.items.length || s.whisks ? s : undefined);
+    setFill(block, Math.ceil(s.items.length / 3));
+  }
 }
 
 /** Spill solids on removal; liquids (container already returned) are lost by design. */

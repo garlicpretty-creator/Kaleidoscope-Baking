@@ -41,6 +41,10 @@
 | `textures/blocks/kb_pour_over_stand.png` | 手沖架 | `RP/models/blocks/pour_over_stand.geo.json` |
 | `textures/blocks/kb_drink_shaker.png` | 雪克杯 | `RP/models/blocks/drink_shaker.geo.json` |
 | `textures/blocks/kb_herb_planter.png` | 香草盆栽 | `RP/models/blocks/herb_planter.geo.json` |
+| `textures/blocks/kb_cake_stand.png` | 蛋糕架 | `RP/models/blocks/cake_stand.geo.json` |
+| `textures/blocks/kb_tea_tray.png` | 三層點心架 | `RP/models/blocks/tea_tray.geo.json` |
+| `textures/blocks/kb_bread_display.png` | 麵包展示櫃 | `RP/models/blocks/bread_display.geo.json` |
+| `textures/blocks/kb_pastry_case.png` | 甜點櫥窗 | `RP/models/blocks/pastry_case.geo.json` |
 | `textures/blocks/kb_planter_soil.png` | 香草盆栽的土面 | |
 
 ## 作物 / 灌木（每個生長階段一張，交叉十字模型）
@@ -59,6 +63,7 @@
 | 草莓 | `textures/blocks/kb_strawberry_bush_stage_0..3.png` |
 | 藍莓 | `textures/blocks/kb_blueberry_bush_stage_0..3.png` |
 | 覆盆子 | `textures/blocks/kb_raspberry_bush_stage_0..3.png` |
+| 鳳梨 | `textures/blocks/kb_pineapple_crop_stage_0..7.png` |
 
 ## 樹
 
@@ -100,6 +105,10 @@
 | `kb_pour_over_stand.png` | 手沖架 |
 | `kb_drink_shaker.png` | 雪克杯 |
 | `kb_herb_planter.png` | 香草盆栽 |
+| `kb_cake_stand.png` | 蛋糕架 |
+| `kb_tea_tray.png` | 三層點心架 |
+| `kb_bread_display.png` | 麵包展示櫃 |
+| `kb_pastry_case.png` | 甜點櫥窗 |
 
 ### 烘焙工具
 
@@ -118,6 +127,12 @@
 | `kb_coffee_mug.png` | 馬克杯 |
 | `kb_takeaway_cup.png` | 外帶杯 |
 | `kb_birthday_candle.png` | 生日蠟燭 |
+| `kb_piping_bag.png` | 擠花袋 |
+| `kb_madeleine_mold.png` | 瑪德蓮模 |
+| `kb_pineapple_cake_mold.png` | 鳳梨酥模 |
+| `kb_cookie_cutter.png` | 餅乾切模 |
+| `kb_empty_jar.png` | 空罐子 |
+| `kb_butter_jar.png` | 奶油罐 |
 
 ### 烘焙材料
 
@@ -196,6 +211,31 @@
 | `kb_raw_quiche.png` | 鹹派生胚 |
 | `kb_raw_fish_pie.png` | 魚肉鹹派生胚 |
 | `kb_raw_egg_tart.png` | 蛋塔生胚 |
+| `kb_puff_pastry_dough.png` | 千層麵團 |
+| `kb_laminated_dough_1.png` | 千層麵團（一擀） |
+| `kb_laminated_dough_2.png` | 千層麵團（二擀） |
+| `kb_puff_pastry.png` | 千層酥皮 |
+| `kb_puff_pastry_sheet.png` | 烤酥皮 |
+| `kb_madeleine_batter.png` | 瑪德蓮麵糊 |
+| `kb_ma_lai_go_batter.png` | 馬拉糕粉漿 |
+| `kb_palmier_dough.png` | 蝴蝶酥生胚 |
+| `kb_raw_portuguese_tart.png` | 葡式蛋塔生胚 |
+| `kb_raw_pastry_soup.png` | 酥皮濃湯生胚 |
+| `kb_raw_egg_yolk_pastry.png` | 蛋黃酥生胚 |
+| `kb_raw_pineapple_cake.png` | 鳳梨酥生胚 |
+| `kb_shaped_cookie_dough.png` | 造型餅乾麵團 |
+| `kb_icing_white.png` | 白色糖霜 |
+| `kb_icing_pink.png` | 粉紅色糖霜 |
+| `kb_icing_blue.png` | 藍色糖霜 |
+| `kb_icing_green.png` | 綠色糖霜 |
+| `kb_icing_yellow.png` | 黃色糖霜 |
+| `kb_icing_cocoa.png` | 可可色糖霜 |
+| `kb_salted_egg.png` | 鹹蛋 |
+| `kb_salted_egg_yolk.png` | 鹹蛋黃 |
+| `kb_pineapple_jam.png` | 鳳梨醬 |
+| `kb_bread_crumbs.png` | 麵包屑 |
+| `kb_coffee_grounds.png` | 咖啡渣 |
+| `kb_fruit_pulp.png` | 果渣 |
 
 ### 烘焙植物
 
@@ -231,6 +271,8 @@
 | `kb_lemon_sapling.png` | 檸檬樹苗 |
 | `kb_lemon.png` | 檸檬 |
 | `kb_lemon_slice.png` | 檸檬片 |
+| `kb_pineapple.png` | 鳳梨 |
+| `kb_pineapple_crown.png` | 鳳梨冠芽 |
 
 ### 烘焙美食
 
@@ -276,6 +318,23 @@
 | `kb_sesame_ball.png` | 芝麻球 |
 | `kb_sesame_mooncake.png` | 芝麻月餅 |
 | `kb_burnt_food.png` | 焦黑的烘焙物 |
+| `kb_napoleon.png` | 拿破崙派 |
+| `kb_palmier.png` | 蝴蝶酥 |
+| `kb_portuguese_egg_tart.png` | 葡式蛋塔 |
+| `kb_pastry_soup.png` | 酥皮濃湯 |
+| `kb_cream_soup.png` | 奶油濃湯 |
+| `kb_madeleine.png` | 瑪德蓮 |
+| `kb_egg_yolk_pastry.png` | 蛋黃酥 |
+| `kb_pineapple_cake.png` | 鳳梨酥 |
+| `kb_ma_lai_go.png` | 馬拉糕 |
+| `kb_shaped_cookie.png` | 造型餅乾 |
+| `kb_iced_cookie_white.png` | 白色糖霜餅乾 |
+| `kb_iced_cookie_pink.png` | 粉紅色糖霜餅乾 |
+| `kb_iced_cookie_blue.png` | 藍色糖霜餅乾 |
+| `kb_iced_cookie_green.png` | 綠色糖霜餅乾 |
+| `kb_iced_cookie_yellow.png` | 黃色糖霜餅乾 |
+| `kb_iced_cookie_cocoa.png` | 可可色糖霜餅乾 |
+| `kb_fried_fish.png` | 炸魚排 |
 
 ### 咖啡館飲品
 

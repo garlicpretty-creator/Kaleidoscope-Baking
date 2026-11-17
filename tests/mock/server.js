@@ -81,13 +81,31 @@ class Block {
 }
 
 class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; }
+  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; this.entities = new Set(); }
   getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
+  spawnEntity(typeId, location) {
+    const dim = this;
+    const e = {
+      id: `e${++entityIds}`, typeId, location: { ...location }, tags: new Set(), held: undefined, isValid: true,
+      addTag(t) { e.tags.add(t); }, removeTag(t) { e.tags.delete(t); }, getTags() { return [...e.tags]; }, hasTag(t) { return e.tags.has(t); },
+      teleport(l) { e.location = { ...l }; },
+      runCommand(cmd) { const m = cmd.match(/slot\.weapon\.mainhand 0 (\S+)/); if (m) e.held = m[1]; },
+      triggerEvent(ev) { if (ev.endsWith("despawn")) e.remove(); },
+      remove() { e.isValid = false; dim.entities.delete(e); }
+    };
+    this.entities.add(e);
+    return e;
+  }
+  getEntities({ type, location, maxDistance } = {}) {
+    return [...this.entities].filter(e => (!type || e.typeId === type) && (!location ||
+      Math.hypot(e.location.x - location.x, e.location.y - location.y, e.location.z - location.z) <= (maxDistance ?? Infinity)));
+  }
   spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
   playSound(id) { this.sounds.push(id); }
   spawnParticle() {}
 }
 
+let entityIds = 0;
 const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };
 const dynamic = new Map();
 const overworld = new Dimension("minecraft:overworld");
@@ -96,7 +114,8 @@ export const world = {
   getDynamicProperty: k => dynamic.get(k),
   setDynamicProperty: (k, v) => (v === undefined ? dynamic.delete(k) : dynamic.set(k, v)),
   getDimension: () => overworld,
-  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs() },
+  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs(), entityLoad: subs() },
+  beforeEvents: { playerInteractWithBlock: subs() },
   getAllPlayers: () => players
 };
 const players = [];
@@ -186,5 +205,6 @@ export const __mock = {
     this.flush();
     return registry;
   },
+  interactBefore(ev) { world.beforeEvents.playerInteractWithBlock._fire(ev); this.flush(); return ev; },
   explode(block, permutation) { world.afterEvents.blockExplode._fire({ block, dimension: block.dimension, explodedBlockPermutation: permutation }); }
 };

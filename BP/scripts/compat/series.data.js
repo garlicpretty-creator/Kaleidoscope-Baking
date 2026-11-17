@@ -27,6 +27,8 @@ const kb = n => `kaleidoscope_baking:${n}`;
  * baking:   our item
  * category: decides the lead pack (see SERIES.leads)
  * primary:  candidate ids in the lead pack (first one that exists wins)
+ * confirmed: set to true once the lead pack's id is verified — tools/gen_compat_recipes.mjs
+ *           then generates 1:1 crafting-table swap recipes for it (unconfirmed guesses get none)
  * block:    optional plant-block mapping for in-world auto-conversion:
  *           {baking, primary:[candidates], bakingMax, primaryState, primaryMax}
  */
@@ -54,6 +56,10 @@ export const EQUIVALENTS = Object.freeze([
     block: { baking: kb("raspberry_bush"), primary: [`${F}:raspberry_bush`], bakingMax: 3, primaryState: `${F}:growth`, primaryMax: 3 } },
   { baking: kb("lemon"), category: "fruit", primary: [`${F}:lemon`] },
   { baking: kb("lemon_sapling"), category: "fruit", primary: [`${F}:lemon_sapling`] },
+  // 1.1
+  { baking: kb("pineapple"), category: "fruit", primary: [`${F}:pineapple`],
+    block: { baking: kb("pineapple_crop"), primary: [`${F}:pineapple_crop`, `${F}:pineapple`], bakingMax: 7, primaryState: `${F}:growth`, primaryMax: 7 } },
+  { baking: kb("pineapple_crown"), category: "fruit", primary: [`${F}:pineapple_crown`, `${F}:pineapple_seeds`] },
 
   // Crafting materials -> 樂牧
   { baking: kb("butter"), category: "material", primary: [`${R}:butter`] },

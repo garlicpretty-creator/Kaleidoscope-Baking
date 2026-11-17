@@ -41,7 +41,11 @@ function optional(raw, clean) {
 }
 const base = (raw, extension) => {
   const id = cleanId(raw?.id), result = cleanId(raw?.result);
-  return id && result ? { id, result, count: positiveInt(raw?.count, 1, 64), extension } : undefined;
+  // byproduct (1.1): optional extra item handed out when the recipe completes
+  // (coffee grounds from brewing, fruit pulp from fresh-fruit drinks...).
+  const byproduct = optional(raw?.byproduct, cleanId);
+  if (!id || !result || byproduct === undefined) return undefined;
+  return { id, result, count: positiveInt(raw?.count, 1, 64), byproduct, extension };
 };
 
 const NORMALIZE = {
@@ -105,7 +109,10 @@ const NORMALIZE = {
 export const RECIPE_KINDS = Object.freeze(Object.keys(NORMALIZE));
 
 export const KB_CAPABILITIES = Object.freeze([
-  ...RECIPE_KINDS, "ingredient_tags", "fuels", "food_effects", "bulk", "whisk_tag", "frother_tag", "mold_tag"
+  ...RECIPE_KINDS, "ingredient_tags", "fuels", "food_effects", "bulk", "whisk_tag", "frother_tag", "mold_tag",
+  // 1.1
+  "byproducts", "piping_bag_tag", "query_ingredient", "caffeine_adjust", "dessert_component",
+  "display_rules", "guidebook_live"
 ]);
 
 export function normalizeRecipe(kind, raw, extension = true) {

@@ -15,7 +15,9 @@ Baking broadcasts `api_ready` five times after the world loads. Listen for it **
 after your own startup; registering twice is harmless.
 
 Capabilities: `mixing_bowl`, `oven`, `proofing`, `decorating`, `espresso`, `pour_over`, `shaker`,
-`ingredient_tags`, `fuels`, `food_effects`, `bulk`, `whisk_tag`, `frother_tag`, `mold_tag`.
+`ingredient_tags`, `fuels`, `food_effects`, `bulk`, `whisk_tag`, `frother_tag`, `mold_tag`, and since 1.1:
+`byproducts`, `piping_bag_tag`, `query_ingredient`, `caffeine_adjust`, `dessert_component`, `display_rules`,
+`guidebook_live`. Check a capability before using a 1.1 feature.
 
 ## Rules
 
@@ -147,9 +149,68 @@ system.afterEvents.scriptEventReceive.subscribe(ev => {
 system.run(() => system.sendScriptEvent("kaleidoscope_baking:api_ping", "my_addon"));
 ```
 
+## 1.1 additions
+
+### By-products
+
+`mixing_bowl`, `oven`, `proofing`, `decorating`, `espresso`, `pour_over` and `shaker` recipes accept an
+optional `byproduct` item id, handed out once when the recipe completes (Baking uses it for coffee
+grounds and fruit pulp). Currently the espresso machine, pour-over stand and shaker hand it out.
+
+### Piping bag tool
+
+`mixing_bowl` recipes may set `"tool": "#kaleidoscope_baking:piping_bag"`; any item tagged
+`kaleidoscope_baking:piping_bag` works.
+
+### `kaleidoscope_baking:query_ingredient`
+
+```js
+{ "api": 1, "id": "minecraft:egg", "reply": "my_addon:ingredient_info" }   // reply is optional
+```
+
+Baking answers on `reply` (default `kaleidoscope_baking:ingredient_info`) with
+`{ "api": 1, "id": "minecraft:egg", "tags": ["kaleidoscope:egg"] }` — runtime / built-in tags plus the
+item's own `kaleidoscope:*` JSON tags.
+
+### `kaleidoscope_baking:caffeine_adjust`
+
+```js
+{ "api": 1, "player": "<player name or id>", "delta": -2 }   // -10..10, never below 0
+```
+
+### `kaleidoscope_baking:register_display_rule`
+
+```js
+{ "api": 1, "source": "my_addon", "id": "my_addon:soup_pot", "mode": "deny" }   // "allow" | "deny"
+```
+
+Decides whether an item may go into Baking's tea tray, bread display and pastry case. Without a
+rule, items with Baking food values, common vanilla foods and Cookery items are allowed.
+
+### Public block component `kaleidoscope_baking:dessert`
+
+Your own whole-cake block can be eaten slice by slice with Baking's logic (knife slices, effects,
+afternoon tea). Give the block a `kaleidoscope_baking:bites` integer state `0..slices-1` and:
+
+```json
+"kaleidoscope_baking:dessert": { "slices": 4, "nutrition": 3, "saturation": 0.5, "slice_item": "my_addon:cake_slice" }
+```
+
+Change the geometry per `bites` value with permutations, like Baking's own desserts.
+
+### Guidebook
+
+Recipes you register after the world loaded now appear in Cookery's guidebook "Baking" tab too
+(Baking republishes 2 s after the last registration). No action needed.
+
 ## Series packs (漁歌 / 豐收 / 草本 / 樂牧)
 
 When the same thing exists in Baking and in a series pack, the lead pack's version wins
 (herbs → 草本, fruits/crops → 豐收, crafting materials → 樂牧, baked goods → Baking). Baking
 handles this itself from `BP/scripts/compat/series.data.js`; series packs only need to use their
 real ids there (or tell the Baking team) and, ideally, tag their items with `kaleidoscope:*`.
+Marking an entry `confirmed: true` lets `node tools/gen_compat_recipes.mjs` generate 1:1 swap recipes.
+
+Since 1.1 Baking also sends its by-products into the series packs' own APIs when they announce
+themselves (`BP/scripts/compat/reverse.data.js`; event names are placeholders until confirmed):
+bread crumbs → 漁歌 bait, fruit pulp → 豐收 compost / 樂牧 feed, coffee grounds → 豐收 / 草本 fertilizer.

@@ -371,6 +371,9 @@ def paint_item(shape, c1, c2):
     elif s == "shaker":
         d.rectangle([5, 4, 10, 15], fill=a, outline=o)
         d.rectangle([6, 1, 9, 4], fill=lighter(c1))
+    elif s == "piping":
+        d.polygon([(3, 2), (12, 2), (8, 13)], fill=a, outline=o)
+        d.rectangle([7, 13, 8, 15], fill=rgba(c2))
     elif s == "planter":
         d.polygon([(3, 9), (12, 9), (11, 15), (4, 15)], fill=a, outline=o)
         d.line([8, 9, 8, 3], fill=rgba(c2))
@@ -540,6 +543,13 @@ for it in C.ITEMS:
         comps["minecraft:hand_equipped"] = True
     if it["extra"].get("durability"):
         comps["minecraft:durability"] = {"max_durability": it["extra"]["durability"]}
+    if it["extra"].get("compostable"):
+        comps["minecraft:compostable"] = {"composting_chance": it["extra"]["compostable"]}
+    if iid in getattr(C, "HOT_CUP_DRINKS", []):
+        comps["minecraft:block_placer"] = {"block": kb(iid), "replace_block_item": True}
+        tags = comps.setdefault("minecraft:tags", {"tags": []})["tags"]
+        if "kaleidoscope_cookery:placeable_food" not in tags:
+            tags.append("kaleidoscope_cookery:placeable_food")
     f = it["food"]
     if f:
         comps["minecraft:food"] = {"nutrition": f["n"], "saturation_modifier": f["sat"], "can_always_eat": f["always"]}
@@ -574,20 +584,125 @@ for st in C.STATIONS:
     if sid == "herb_planter":
         continue
     gid = f"geometry.{NS}.{sid}"
-    w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": [cube(o, s) for o, s in st["cubes"]]}]))
-    xs = [o[0] for o, s in st["cubes"]] + [o[0] + s[0] for o, s in st["cubes"]]
-    ys = [o[1] + s[1] for o, s in st["cubes"]]
-    zs = [o[2] for o, s in st["cubes"]] + [o[2] + s[2] for o, s in st["cubes"]]
+    base_cubes = [cube(o, sz) for o, sz in st["cubes"]]
+    w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": base_cubes}]))
+    xs = [o[0] for o, s_ in st["cubes"]] + [o[0] + s_[0] for o, s_ in st["cubes"]]
+    ys = [o[1] + s_[1] for o, s_ in st["cubes"]]
+    zs = [o[2] for o, s_ in st["cubes"]] + [o[2] + s_[2] for o, s_ in st["cubes"]]
     box = {"origin": [max(-8, min(xs)), 0, max(-8, min(zs))], "size": [min(16, max(xs) - min(xs)), min(16, max(ys)), min(16, max(zs) - min(zs))]}
+    mats = {"*": {"texture": f"kb_{sid}", "render_method": "alpha_test"}}
+    states, perms = None, None
+    fill = getattr(C, "STATION_FILL", {}).get(sid)
+    if fill:
+        FILL = f"{NS}:fill"
+        tex(f"kb_{sid}_fill", f"kb_{sid}_fill")
+        save_png(paint_block("stripes", fill["color"]), f"textures/blocks/kb_{sid}_fill.png")
+        mats["fill"] = {"texture": f"kb_{sid}_fill", "render_method": "alpha_test"}
+        states = {FILL: {"values": {"min": 0, "max": fill["levels"]}}}
+        perms = []
+        for lv in range(1, fill["levels"] + 1):
+            extra = [cube(o, sz, material="fill") for o, sz in fill["cubes"](lv)]
+            w(f"RP/models/blocks/{sid}_fill{lv}.geo.json", geo(f"{gid}_fill{lv}", [{"name": "root", "pivot": [0, 0, 0], "cubes": base_cubes + extra}]))
+            perms.append({"condition": cond(FILL, lv), "components": {"minecraft:geometry": f"{gid}_fill{lv}"}})
     block(sid, {
         "minecraft:geometry": gid,
-        "minecraft:material_instances": {"*": {"texture": f"kb_{sid}", "render_method": "alpha_test"}},
+        "minecraft:material_instances": mats,
         "minecraft:collision_box": box, "minecraft:selection_box": box,
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 1.0},
         "minecraft:light_dampening": 0,
         "minecraft:map_color": "#%02X%02X%02X" % tuple(st["tex"][:3]),
         f"{NS}:{sid}": {}
-    })
+    }, states=states, permutations=perms)
+
+# --- Placeable cups (1.1) -----------------------------------------------------
+CUP_SPOTS = [(-6, -6), (1, -6), (-6, 1), (1, 1)]
+
+
+def cups_geo(c, f):
+    cubes = []
+    for i, (x, z) in enumerate(CUP_SPOTS[:c]):
+        cubes.append(cube([x, 0, z], [5, 6, 5], top="fill" if i < f else "mug", material="mug"))
+    gid = f"geometry.{NS}.cups_{c}_{f}"
+    w(f"RP/models/blocks/cups_{c}_{f}.geo.json", geo(gid, [{"name": "cups", "pivot": [0, 0, 0], "cubes": cubes}]))
+    return gid
+
+
+CUP_GEOS = {(c, f): cups_geo(c, f) for c in range(1, 5) for f in range(0, c + 1)}
+tex("kb_mug", "kb_mug")
+save_png(paint_block("stripes", (245, 245, 240)), "textures/blocks/kb_mug.png")
+CUP_COUNT, TEA_COUNT = "kaleidoscope_cookery:cup_count", "kaleidoscope_cookery:tea_count"
+cup_box = {"origin": [-6, 0, -6], "size": [12, 6, 12]}
+for did in getattr(C, "HOT_CUP_DRINKS", []):
+    it = next(i for i in C.ITEMS if i["id"] == did)
+    tex(f"kb_fill_{did}", f"kb_fill_{did}")
+    save_png(paint_block("stripes", it["art"][2] or it["art"][1]), f"textures/blocks/kb_fill_{did}.png")
+    perms = []
+    for c in range(1, 5):
+        for f in range(1, 5):
+            perms.append({"condition": f"{cond(CUP_COUNT, c)} && {cond(TEA_COUNT, f)}",
+                          "components": {"minecraft:geometry": CUP_GEOS[(c, min(f, c))]}})
+    block(did, {
+        "minecraft:geometry": CUP_GEOS[(1, 1)],
+        "minecraft:material_instances": {"*": {"texture": "kb_mug", "render_method": "alpha_test"},
+                                         "mug": {"texture": "kb_mug", "render_method": "alpha_test"},
+                                         "fill": {"texture": f"kb_fill_{did}", "render_method": "alpha_test"}},
+        "minecraft:collision_box": False, "minecraft:selection_box": cup_box,
+        "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
+        "minecraft:movable": {"movement_type": "popped"},
+        "minecraft:light_dampening": 0,
+        "minecraft:loot": f"loot_tables/{NS}/empty.json",
+        "kaleidoscope_cookery:cup_stack": {"filled": True, "item": kb(did), "empty_item": kb("coffee_mug"), "max_count": 4}
+    }, states={CUP_COUNT: {"values": {"min": 1, "max": 4}}, TEA_COUNT: {"values": {"min": 1, "max": 4}}}, permutations=perms)
+    name(f"tile.{kb(did)}.name", it["zh"], it["en"])
+    sounds[kb(did)] = "glass"
+# Hand-shaken drinks: one generic block, the drinks themselves are kept in world data
+CUPS = f"{NS}:cups"
+tex("kb_fill_shaken", "kb_fill_shaken")
+save_png(paint_block("stripes", (190, 150, 110)), "textures/blocks/kb_fill_shaken.png")
+block("drink_cups", {
+    "minecraft:geometry": CUP_GEOS[(1, 1)],
+    "minecraft:material_instances": {"*": {"texture": "kb_mug", "render_method": "alpha_test"},
+                                     "mug": {"texture": "kb_mug", "render_method": "alpha_test"},
+                                     "fill": {"texture": "kb_fill_shaken", "render_method": "alpha_test"}},
+    "minecraft:collision_box": False, "minecraft:selection_box": cup_box,
+    "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
+    "minecraft:light_dampening": 0,
+    "minecraft:loot": f"loot_tables/{NS}/empty.json",
+    f"{NS}:drink_cups": {}
+}, states={CUPS: {"values": {"min": 1, "max": 4}}},
+    permutations=[{"condition": cond(CUPS, c), "components": {"minecraft:geometry": CUP_GEOS[(c, c)]}} for c in range(2, 5)])
+name(f"tile.{kb('drink_cups')}.name", "手搖杯", "Hand-Shaken Drinks")
+sounds[kb("drink_cups")] = "glass"
+
+# --- Display entity (1.1): shows one item on a station (Cookery millstone pattern) ---
+w(f"BP/entities/{NS}_display.json", {"format_version": "1.16.0", "minecraft:entity": {
+    "description": {"identifier": kb("display"), "is_spawnable": False, "is_summonable": True, "is_experimental": False},
+    "component_groups": {f"{NS}:despawn": {"minecraft:instant_despawn": {"remove_child_entities": False}}},
+    "components": {
+        "minecraft:damage_sensor": {"triggers": {"cause": "all", "deals_damage": False}},
+        "minecraft:persistent": {}, "minecraft:physics": {"has_collision": False, "has_gravity": False},
+        "minecraft:scale": 0, "minecraft:type_family": {"family": ["kb_display"]},
+        "minecraft:health": {"value": 1, "max": 1, "min": 1}, "minecraft:collision_box": {"width": 0, "height": 0},
+        "minecraft:body_rotation_axis_aligned": {}, "minecraft:body_rotation_blocked": {},
+        "minecraft:knockback_resistance": {"value": 1}, "minecraft:movement": {"value": 0},
+        "minecraft:pushable": {"is_pushable": False, "is_pushable_by_piston": False}},
+    "events": {f"{NS}:despawn": {"add": {"component_groups": [f"{NS}:despawn"]}}}}})
+w(f"RP/entity/{NS}_display.entity.json", {"format_version": "1.10.0", "minecraft:client_entity": {"description": {
+    "identifier": kb("display"), "materials": {"default": "zombie"}, "textures": {"default": "textures/entity/kb_display"},
+    "geometry": {"default": f"geometry.{NS}.display"}, "animations": {"pose": f"animation.{NS}.display.pose"},
+    "scripts": {"scale": "0.8", "animate": ["pose"]}, "render_controllers": ["controller.render.default"],
+    "enable_attachables": False}}})
+w(f"RP/models/entity/{NS}_display.geo.json", {"format_version": "1.16.0", "minecraft:geometry": [{
+    "description": {"identifier": f"geometry.{NS}.display", "texture_width": 16, "texture_height": 16,
+                    "visible_bounds_width": 2, "visible_bounds_height": 2, "visible_bounds_offset": [0, 0.5, 0]},
+    "bones": [{"name": "rightitem", "pivot": [0, 0, 0]}]}]})
+w(f"RP/animations/{NS}_display.animation.json", {"format_version": "1.8.0", "animations": {
+    f"animation.{NS}.display.pose": {"loop": True, "bones": {"rightitem": {"position": [0, 2, 0], "rotation": [0, 0, 0]}}}}})
+ent_tex = os.path.join(RP, "textures", "entity", "kb_display.png")
+if not os.path.exists(ent_tex):
+    os.makedirs(os.path.dirname(ent_tex), exist_ok=True)
+    Image.new("RGBA", (16, 16), T).save(ent_tex)
+name(f"entity.{kb('display')}.name", "展示", "Display")
 
 # --- Crops / bushes ------------------------------------------------------
 w("RP/models/blocks/cross.geo.json", geo(f"geometry.{NS}.cross", [{"name": "plant", "pivot": [0, 0, 0], "cubes": cross_cubes()}]))
@@ -830,6 +945,12 @@ for rid, pattern, key, count in C.CRAFTING:
         "key": {k: {"item": v} for k, v in key.items()}, "result": {"item": kb(rid), "count": count},
         "unlock": [{"item": v} for v in list(dict.fromkeys(key.values()))[:2]]}})
 
+for rid, ingredients, count in getattr(C, "CRAFTING_SHAPELESS", []):
+    w(f"BP/recipes/crafting/{rid}.json", {"format_version": "1.20.10", "minecraft:recipe_shapeless": {
+        "description": {"identifier": kb(rid)}, "tags": ["crafting_table"],
+        "ingredients": [{"item": i} for i in ingredients], "result": {"item": kb(rid), "count": count},
+        "unlock": [{"item": ingredients[0]}]}})
+
 # --- Catalog / textures / sounds / lang --------------------------------------
 groups = {}
 for it in C.ITEMS:
@@ -874,6 +995,8 @@ index = {
               for i in C.ITEMS},
     "groups": {g.split(".")[-1]: {"zh_TW": zh, "zh_CN": zh_cn(zh), "en_US": en} for g, (zh, en) in C.GROUP_NAMES.items()},
     "crops": CROP_META, "trees": TREE_META, "planter": PLANTER_META, "desserts": DESSERT_META,
+    "shakenDrinks": [kb(d) for d in getattr(C, "SHAKEN_DRINKS", [])],
+    "hotCupDrinks": [kb(d) for d in getattr(C, "HOT_CUP_DRINKS", [])],
 }
 js = ("// GENERATED by tools/gen_content.py from tools/content.py — do not edit by hand.\n"
       f"export const CONTENT = Object.freeze({json.dumps(index, ensure_ascii=False, indent=1)});\n")
@@ -883,7 +1006,7 @@ with open(path, "w", encoding="utf-8") as f:
     f.write(js)
 
 # Remove stale generated JSON (items/blocks that no longer exist in content.py)
-for folder in ("BP/items", "BP/blocks", "BP/recipes/crafting", f"BP/loot_tables/{NS}", f"BP/features/{NS}", f"BP/feature_rules/{NS}", "RP/models/blocks"):
+for folder in ("BP/entities", "RP/entity", "RP/models/entity", "RP/animations", "BP/items", "BP/blocks", "BP/recipes/crafting", f"BP/loot_tables/{NS}", f"BP/features/{NS}", f"BP/feature_rules/{NS}", "RP/models/blocks"):
     base = os.path.join(ROOT, folder)
     for dirpath, _, files in os.walk(base):
         for fn in files:

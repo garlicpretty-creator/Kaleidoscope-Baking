@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:butter_jar",
+      "menu_category": {
+        "category": "equipment",
+        "group": "kaleidoscope_baking:itemGroup.name.tools"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_butter_jar",
+      "minecraft:max_stack_size": 1,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope_baking:oil_container"
+        ]
+      }
+    }
+  }
+}

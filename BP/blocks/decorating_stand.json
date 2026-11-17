@@ -5,6 +5,14 @@
       "identifier": "kaleidoscope_baking:decorating_stand",
       "menu_category": {
         "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:fill": {
+          "values": {
+            "min": 0,
+            "max": 1
+          }
+        }
       }
     },
     "components": {
@@ -12,6 +20,10 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_decorating_stand",
+          "render_method": "alpha_test"
+        },
+        "fill": {
+          "texture": "kb_decorating_stand_fill",
           "render_method": "alpha_test"
         }
       },
@@ -45,6 +57,14 @@
       "minecraft:light_dampening": 0,
       "minecraft:map_color": "#FAFAF5",
       "kaleidoscope_baking:decorating_stand": {}
-    }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:fill') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.decorating_stand_fill1"
+        }
+      }
+    ]
   }
 }

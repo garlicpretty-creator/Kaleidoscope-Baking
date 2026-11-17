@@ -4,6 +4,7 @@
 //   water bucket    -> pour: brews immediately into a Coffee Mug from your inventory
 //   sneak + empty   -> take the coffee back out
 import { world } from "@minecraft/server";
+import { setFill } from "../utils/display.js";
 import { getPourOverRecipe } from "../api/registry.js";
 import { actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
 
@@ -18,7 +19,7 @@ function interact(block, player) {
   const coffee = readJson(key)?.coffee ?? "";
   const held = heldItem(player);
   if (!held) {
-    if (coffee && player.isSneaking) { giveItems(player, coffee, 1); writeJson(key, undefined); return; }
+    if (coffee && player.isSneaking) { giveItems(player, coffee, 1); writeJson(key, undefined); setFill(block, 0); return; }
     actionBar(player, coffee ? t(`${MSG}waiting`, itemName(coffee)) : t(`${MSG}empty`));
     return;
   }
@@ -29,7 +30,9 @@ function interact(block, player) {
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     giveItems(player, recipe.result, recipe.count);
+    if (recipe.byproduct) giveItems(player, recipe.byproduct, 1);
     writeJson(key, undefined);
+    setFill(block, 0);
     sound(block.dimension, "bucket.empty_water", at(block), 0.6, 1.2);
     particle(block.dimension, "minecraft:basic_smoke_particle", at(block));
     actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
@@ -37,6 +40,7 @@ function interact(block, player) {
   }
   if (!coffee && getPourOverRecipe(held.typeId)) {
     writeJson(key, { coffee: held.typeId });
+    setFill(block, 1);
     consumeHeld(player, 1);
     sound(block.dimension, "random.click", at(block), 0.6, 1.0);
     actionBar(player, t(`${MSG}loaded`, itemName(held.typeId)));

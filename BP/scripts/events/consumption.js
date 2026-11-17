@@ -17,7 +17,7 @@ export const CAFFEINE_PROP = "kaleidoscope_baking:caffeine";
 export const SWEET_PROP = "kaleidoscope_baking:sweet";
 export const ICE_PROP = "kaleidoscope_baking:ice";
 const MSG = "kaleidoscope_baking.msg.";
-const TEA_TIME_WINDOW = 600;
+export const TEA_TIME_WINDOW = 600;
 const COFFEE_EFFECTS = new Set(["haste", "speed"]);
 const lastEaten = new Map(); // playerId -> {drink:tick, dessert:tick}
 
@@ -53,8 +53,11 @@ function addSaturation(player, amount) {
   } catch {}
 }
 
-/** Apply everything Baking does when `itemId` (optionally the consumed stack) is consumed. */
-export function applyConsumption(player, itemId, stack) {
+/**
+ * Apply everything Baking does when `itemId` (optionally the consumed stack) is consumed.
+ * opts.teaWindow: afternoon-tea window in ticks (the three-tier tea tray widens it to 60 s).
+ */
+export function applyConsumption(player, itemId, stack, opts = {}) {
   const fx = getFoodEffect(itemId);
   if (!fx) return;
   const before = getCaffeine(player);
@@ -94,7 +97,7 @@ export function applyConsumption(player, itemId, stack) {
     const now = system.currentTick;
     const rec = lastEaten.get(player.id) ?? {};
     const other = fx.category === "drink" ? rec.dessert : rec.drink;
-    if (other !== undefined && now - other <= TEA_TIME_WINDOW) {
+    if (other !== undefined && now - other <= (opts.teaWindow ?? TEA_TIME_WINDOW)) {
       feed(player, 2, 0.6);
       effect(player, "absorption", 30);
       actionBar(player, t(`${MSG}tea_time`));

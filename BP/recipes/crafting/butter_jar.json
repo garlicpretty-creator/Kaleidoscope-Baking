@@ -1,0 +1,37 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "kaleidoscope_baking:butter_jar"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "kaleidoscope_baking:empty_jar"
+      },
+      {
+        "item": "kaleidoscope_baking:butter"
+      },
+      {
+        "item": "kaleidoscope_baking:butter"
+      },
+      {
+        "item": "kaleidoscope_baking:butter"
+      },
+      {
+        "item": "kaleidoscope_baking:butter"
+      }
+    ],
+    "result": {
+      "item": "kaleidoscope_baking:butter_jar",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "kaleidoscope_baking:empty_jar"
+      }
+    ]
+  }
+}

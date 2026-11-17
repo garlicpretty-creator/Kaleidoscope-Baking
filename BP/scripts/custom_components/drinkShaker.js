@@ -16,6 +16,7 @@ import {
   t, takeCarrier
 } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
+import { setFill } from "../utils/display.js";
 
 export const SHAKER_ID = "kaleidoscope_baking:drink_shaker";
 const PREFIX = "kb_shaker";
@@ -54,6 +55,7 @@ function makeDrink(recipe, sweet, ice) {
 function deliver(player, block, recipe, sweet, ice) {
   const stack = makeDrink(recipe, sweet, ice);
   if (stack) giveStack(player, stack); else giveItems(player, recipe.result, recipe.count);
+  if (recipe.byproduct) giveItems(player, recipe.byproduct, 1);
   sound(block.dimension, "random.orb", top(block), 0.6, 1.2);
   particle(block.dimension, "minecraft:villager_happy", top(block));
   actionBar(player, t(`${MSG}done`, itemName(recipe.result),
@@ -114,6 +116,7 @@ function interact(block, player) {
     }
   }
   saveStation(PREFIX, block, s, isEmpty);
+  setFill(block, s.items.length ? 1 : 0);
 }
 
 function spill(dimension, loc) {

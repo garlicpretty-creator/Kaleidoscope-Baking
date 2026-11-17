@@ -1,0 +1,21 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:raw_pastry_soup",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.ingredients"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_raw_pastry_soup",
+      "minecraft:max_stack_size": 16,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:dough"
+        ]
+      }
+    }
+  }
+}

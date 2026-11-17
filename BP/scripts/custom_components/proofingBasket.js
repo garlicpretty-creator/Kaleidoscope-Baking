@@ -8,6 +8,7 @@ import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
 import { actionBar, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
+import { setFill } from "../utils/display.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const BASKET_ID = "kaleidoscope_baking:proofing_basket";
@@ -72,6 +73,7 @@ function interact(block, player) {
     }
     saveStation(PREFIX, block, s, isEmpty);
     trackStation(PREFIX, block);
+    setFill(block, 1);
     sound(block.dimension, "random.pop", centre(block), 0.4, 0.8);
     actionBar(player, t(`${MSG}added`, itemName(held.typeId), r.added), { text: "\n" }, ...status(block, s));
     return;
@@ -82,6 +84,7 @@ function interact(block, player) {
     for (const y of proofingYield(s, r)) giveItems(player, y.id, y.count);
     saveStation(PREFIX, block, { count: 0 }, () => true);
     untrackStation(PREFIX, block);
+    setFill(block, 0);
     sound(block.dimension, "random.pop", centre(block), 0.6, 1.0);
     return;
   }
@@ -91,7 +94,9 @@ function interact(block, player) {
 registerTicker(PREFIX, BASKET_ID, 40, normalizeProofing, isEmpty, (block, s) => {
   const r = recipeOf(s);
   if (!r) return { state: s, keep: false };
-  if (tickProofing(s, 40, warmth(block), r)) {
+  const done = tickProofing(s, 40, warmth(block), r);
+  setFill(block, done ? 3 : s.progress * 2 >= r.time ? 2 : 1);
+  if (done) {
     particle(block.dimension, "minecraft:villager_happy", { x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });
     return { state: s, keep: false };
   }

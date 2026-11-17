@@ -1,0 +1,167 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:caramel_macchiato",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_cookery:cup_count": {
+          "values": {
+            "min": 1,
+            "max": 4
+          }
+        },
+        "kaleidoscope_cookery:tea_count": {
+          "values": {
+            "min": 1,
+            "max": 4
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.cups_1_1",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_mug",
+          "render_method": "alpha_test"
+        },
+        "mug": {
+          "texture": "kb_mug",
+          "render_method": "alpha_test"
+        },
+        "fill": {
+          "texture": "kb_fill_caramel_macchiato",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:collision_box": false,
+      "minecraft:selection_box": {
+        "origin": [
+          -6,
+          0,
+          -6
+        ],
+        "size": [
+          12,
+          6,
+          12
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.1
+      },
+      "minecraft:movable": {
+        "movement_type": "popped"
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json",
+      "kaleidoscope_cookery:cup_stack": {
+        "filled": true,
+        "item": "kaleidoscope_baking:caramel_macchiato",
+        "empty_item": "kaleidoscope_baking:coffee_mug",
+        "max_count": 4
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 1 && q.block_state('kaleidoscope_cookery:tea_count') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_1_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 1 && q.block_state('kaleidoscope_cookery:tea_count') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_1_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 1 && q.block_state('kaleidoscope_cookery:tea_count') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_1_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 1 && q.block_state('kaleidoscope_cookery:tea_count') == 4",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_1_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 2 && q.block_state('kaleidoscope_cookery:tea_count') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_2_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 2 && q.block_state('kaleidoscope_cookery:tea_count') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_2_2"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 2 && q.block_state('kaleidoscope_cookery:tea_count') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_2_2"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 2 && q.block_state('kaleidoscope_cookery:tea_count') == 4",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_2_2"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 3 && q.block_state('kaleidoscope_cookery:tea_count') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_3_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 3 && q.block_state('kaleidoscope_cookery:tea_count') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_3_2"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 3 && q.block_state('kaleidoscope_cookery:tea_count') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_3_3"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 3 && q.block_state('kaleidoscope_cookery:tea_count') == 4",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_3_3"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 4 && q.block_state('kaleidoscope_cookery:tea_count') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_4_1"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 4 && q.block_state('kaleidoscope_cookery:tea_count') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_4_2"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 4 && q.block_state('kaleidoscope_cookery:tea_count') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_4_3"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_cookery:cup_count') == 4 && q.block_state('kaleidoscope_cookery:tea_count') == 4",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.cups_4_4"
+        }
+      }
+    ]
+  }
+}

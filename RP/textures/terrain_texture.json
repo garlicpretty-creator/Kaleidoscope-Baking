@@ -25,23 +25,89 @@
     "kb_mixing_bowl": {
       "textures": "textures/blocks/kb_mixing_bowl"
     },
+    "kb_mixing_bowl_fill": {
+      "textures": "textures/blocks/kb_mixing_bowl_fill"
+    },
     "kb_proofing_basket": {
       "textures": "textures/blocks/kb_proofing_basket"
+    },
+    "kb_proofing_basket_fill": {
+      "textures": "textures/blocks/kb_proofing_basket_fill"
     },
     "kb_decorating_stand": {
       "textures": "textures/blocks/kb_decorating_stand"
     },
+    "kb_decorating_stand_fill": {
+      "textures": "textures/blocks/kb_decorating_stand_fill"
+    },
     "kb_espresso_machine": {
       "textures": "textures/blocks/kb_espresso_machine"
+    },
+    "kb_espresso_machine_fill": {
+      "textures": "textures/blocks/kb_espresso_machine_fill"
     },
     "kb_pour_over_stand": {
       "textures": "textures/blocks/kb_pour_over_stand"
     },
+    "kb_pour_over_stand_fill": {
+      "textures": "textures/blocks/kb_pour_over_stand_fill"
+    },
     "kb_drink_shaker": {
       "textures": "textures/blocks/kb_drink_shaker"
     },
+    "kb_drink_shaker_fill": {
+      "textures": "textures/blocks/kb_drink_shaker_fill"
+    },
     "kb_herb_planter": {
       "textures": "textures/blocks/kb_herb_planter"
+    },
+    "kb_cake_stand": {
+      "textures": "textures/blocks/kb_cake_stand"
+    },
+    "kb_tea_tray": {
+      "textures": "textures/blocks/kb_tea_tray"
+    },
+    "kb_bread_display": {
+      "textures": "textures/blocks/kb_bread_display"
+    },
+    "kb_pastry_case": {
+      "textures": "textures/blocks/kb_pastry_case"
+    },
+    "kb_mug": {
+      "textures": "textures/blocks/kb_mug"
+    },
+    "kb_fill_espresso": {
+      "textures": "textures/blocks/kb_fill_espresso"
+    },
+    "kb_fill_americano": {
+      "textures": "textures/blocks/kb_fill_americano"
+    },
+    "kb_fill_latte": {
+      "textures": "textures/blocks/kb_fill_latte"
+    },
+    "kb_fill_cappuccino": {
+      "textures": "textures/blocks/kb_fill_cappuccino"
+    },
+    "kb_fill_mocha": {
+      "textures": "textures/blocks/kb_fill_mocha"
+    },
+    "kb_fill_caramel_macchiato": {
+      "textures": "textures/blocks/kb_fill_caramel_macchiato"
+    },
+    "kb_fill_cinnamon_latte": {
+      "textures": "textures/blocks/kb_fill_cinnamon_latte"
+    },
+    "kb_fill_pour_over_light": {
+      "textures": "textures/blocks/kb_fill_pour_over_light"
+    },
+    "kb_fill_pour_over_medium": {
+      "textures": "textures/blocks/kb_fill_pour_over_medium"
+    },
+    "kb_fill_pour_over_dark": {
+      "textures": "textures/blocks/kb_fill_pour_over_dark"
+    },
+    "kb_fill_shaken": {
+      "textures": "textures/blocks/kb_fill_shaken"
     },
     "kb_rosemary_bush_stage_0": {
       "textures": "textures/blocks/kb_rosemary_bush_stage_0"
@@ -222,6 +288,30 @@
     },
     "kb_raspberry_bush_stage_3": {
       "textures": "textures/blocks/kb_raspberry_bush_stage_3"
+    },
+    "kb_pineapple_crop_stage_0": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_0"
+    },
+    "kb_pineapple_crop_stage_1": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_1"
+    },
+    "kb_pineapple_crop_stage_2": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_2"
+    },
+    "kb_pineapple_crop_stage_3": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_3"
+    },
+    "kb_pineapple_crop_stage_4": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_4"
+    },
+    "kb_pineapple_crop_stage_5": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_5"
+    },
+    "kb_pineapple_crop_stage_6": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_6"
+    },
+    "kb_pineapple_crop_stage_7": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_7"
     },
     "kb_cinnamon_sapling_block_stage_0": {
       "textures": "textures/blocks/kb_cinnamon_sapling_block_stage_0"

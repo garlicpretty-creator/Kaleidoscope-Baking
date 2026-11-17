@@ -26,6 +26,8 @@ import {
 } from "../api/ovenLogic.js";
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
+import { clearDisplays, syncDisplay } from "../utils/display.js";
+import { FRONT } from "../utils/ovenGeometry.js";
 import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
   particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
@@ -130,7 +132,23 @@ function destroyOven(dimension, c, dropOvenItem) {
   if (s) for (const slot of s.slots) for (const y of slotYield(slot, getOvenRecipeById(slot?.recipe))) spawnItems(dimension, at, y.id, y.count);
   if (dropOvenItem) spawnItems(dimension, at, OVEN_ID, 1);
   removeStructure(dimension, c);
+  clearDisplays(dimension, c);
   untrack(key);
+}
+
+/** The first loaded slot is shown in front of the door: the raw input while baking, the result when done. */
+function refreshDisplay(dimension, c, facing, s) {
+  const ctrl = safeBlock(dimension, c);
+  if (!ctrl) return;
+  const slot = s?.slots.find(x => x);
+  let show;
+  if (slot) {
+    const r = getOvenRecipeById(slot.recipe);
+    const p = phaseOf(slot, r);
+    show = p === "perfect" ? r.result : p === "burnt" ? r.burntResult : slot.input;
+  }
+  const f = FRONT[facing] ?? FRONT.south;
+  syncDisplay(ctrl, "door", show, { x: 0.5 + f.x * 1.7, y: 1.25, z: 0.5 + f.z * 1.7 });
 }
 
 function setLit(dimension, c, facing, lit) {
@@ -235,6 +253,7 @@ function interact(block, player) {
   if (changed) {
     saveState(key, s);
     setLit(dimension, c, facing, isLit(s, getOvenRecipeById));
+    refreshDisplay(dimension, c, facing, s);
   }
 }
 
@@ -265,6 +284,7 @@ function tickAll() {
       particle(dimension, "minecraft:campfire_smoke_particle", { x: o.loc.x + 0.5, y: o.loc.y + top.dy + 1.1, z: o.loc.z + 0.5 });
     }
     const door = doorOutside(o.loc, facing);
+    if (res.events.length) refreshDisplay(dimension, o.loc, facing, s);
     for (const ev of res.events) {
       if (ev.phase === "perfect") {
         sound(dimension, "random.orb", door, 0.8, 1.2);

@@ -32,12 +32,16 @@ function light(block) {
   try { return block.above()?.getLightLevel?.() ?? block.getLightLevel?.() ?? 15; } catch { return 15; }
 }
 
+// Coffee grounds (1.1 by-product) work as a gentle fertiliser: always +1 stage.
+const FERTILISERS = { "minecraft:bone_meal": () => randInt(1, 3), "kaleidoscope_baking:coffee_grounds": () => 1 };
+
 function boneMeal(block, player, held, max, onMax) {
-  if (held?.typeId !== "minecraft:bone_meal") return false;
+  const gain = FERTILISERS[held?.typeId];
+  if (!gain) return false;
   const s = stageOf(block);
   if (s >= max && !onMax) return false;
   if (s >= max) onMax();
-  else setStage(block, Math.min(max, s + (isCreative(player) ? max : randInt(1, 3))));
+  else setStage(block, Math.min(max, s + (isCreative(player) ? max : gain())));
   consumeHeld(player, 1);
   sound(block.dimension, "item.bone_meal.use", centre(block));
   particle(block.dimension, "minecraft:crop_growth_emitter", centre(block));

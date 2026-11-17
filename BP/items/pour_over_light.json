@@ -15,8 +15,13 @@
         "tags": [
           "kaleidoscope:drink",
           "kaleidoscope:hot_drink",
-          "kaleidoscope:coffee"
+          "kaleidoscope:coffee",
+          "kaleidoscope_cookery:placeable_food"
         ]
+      },
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:pour_over_light",
+        "replace_block_item": true
       },
       "minecraft:food": {
         "nutrition": 2,

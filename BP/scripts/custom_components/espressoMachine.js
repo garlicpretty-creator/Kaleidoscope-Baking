@@ -18,6 +18,7 @@ import { all } from "../api/registry.js";
 import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
 } from "../utils/runtime.js";
+import { setFill } from "../utils/display.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const ESPRESSO_ID = "kaleidoscope_baking:espresso_machine";
@@ -66,7 +67,10 @@ function interact(block, player) {
       const cup = carrierFor(s.ready);
       if (!takeCarrier(player, cup)) { actionBar(player, t(`${MSG}need_cup`, itemName(cup))); return; }
       giveItems(player, s.ready, 1);
+      const by = all("espresso").find(r => r.result === s.ready)?.byproduct;
+      if (by) giveItems(player, by, 1);
       s.ready = "";
+      setFill(block, 0);
       sound(block.dimension, "random.pop", spout(block), 0.6, 1.1);
       save();
       return;
@@ -109,6 +113,7 @@ registerTicker(PREFIX, ESPRESSO_ID, TICK, normalizeEspresso, isEmpty, (block, s)
   const res = tickEspresso(s, TICK, redstonePower(block));
   if (res.state === "brewing") particle(block.dimension, "minecraft:basic_smoke_particle", { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
   if (res.state === "done") {
+    setFill(block, 1);
     sound(block.dimension, "random.orb", spout(block), 0.6, 1.4);
     particle(block.dimension, "minecraft:villager_happy", spout(block));
   }

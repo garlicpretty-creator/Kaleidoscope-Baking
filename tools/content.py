@@ -346,3 +346,117 @@ CRAFTING = [
 STATIONS.append(dict(id="herb_planter", cubes=None, tex=(180, 100, 70), sound="stone"))
 item("herb_planter", "香草盆栽", "Herb Planter", G_STATIONS, ("planter", (180, 100, 70), C["green"]), 64, place="herb_planter")
 PLANTER_PLANTS = ["rosemary", "thyme", "lavender", "mint", "strawberry"]
+
+# ===========================================================================
+# 1.1 additions (docs/PROPOSAL-1.1.zh-TW.md)
+# ===========================================================================
+# Tools / molds / containers
+item("piping_bag", "擠花袋", "Piping Bag", G_TOOLS, ("piping", C["white"], C["pink"]), 1, [f"{NS}:piping_bag"], hand=True)
+for mid, zh, en, shape in [("madeleine_mold", "瑪德蓮模", "Madeleine Mold", "mold_muffin"),
+                           ("pineapple_cake_mold", "鳳梨酥模", "Pineapple Cake Mold", "mold_loaf"),
+                           ("cookie_cutter", "餅乾切模", "Cookie Cutter", "mold_round")]:
+    item(mid, zh, en, G_TOOLS, (shape, C["iron"], C["grey"]), 16, [f"{NS}:mold"])
+item("empty_jar", "空罐子", "Empty Jar", G_TOOLS, ("jar", (230, 240, 245), None), 64)
+item("butter_jar", "奶油罐", "Butter Jar", G_TOOLS, ("jar", C["butter"], None), 1, [f"{NS}:oil_container"])
+
+# Puff pastry chain (rolled three times on Cookery's chopping board with the rolling pin)
+ing("puff_pastry_dough", "千層麵團", "Puff Pastry Dough", ("ball", C["butter"], None), ["kaleidoscope:dough"], 16)
+ing("laminated_dough_1", "千層麵團（一擀）", "Laminated Dough (1st fold)", ("slice", C["dough"], C["butter"]), ["kaleidoscope:dough"], 16)
+ing("laminated_dough_2", "千層麵團（二擀）", "Laminated Dough (2nd fold)", ("slice", C["dough"], C["butter"]), ["kaleidoscope:dough"], 16)
+ing("puff_pastry", "千層酥皮", "Puff Pastry", ("flatbread", C["butter"], C["cream"]), ["kaleidoscope:dough", "kaleidoscope:puff_pastry"], 16)
+ing("puff_pastry_sheet", "烤酥皮", "Baked Puff Pastry", ("flatbread", C["caramel"], C["butter"]), ["kaleidoscope:pastry"], 16)
+# Batters / raw items
+for iid, zh, en, col in [("madeleine_batter", "瑪德蓮麵糊", "Madeleine Batter", C["lemon"]),
+                         ("ma_lai_go_batter", "馬拉糕粉漿", "Ma Lai Go Batter", C["caramel"])]:
+    ing(iid, zh, en, ("bowl_fill", col, None), ["kaleidoscope:batter"], 16)
+for iid, zh, en, col in [("palmier_dough", "蝴蝶酥生胚", "Raw Palmier", C["butter"]),
+                         ("raw_portuguese_tart", "葡式蛋塔生胚", "Raw Portuguese Tart", C["yellow"]),
+                         ("raw_pastry_soup", "酥皮濃湯生胚", "Raw Pastry-Topped Soup", C["tan"]),
+                         ("raw_egg_yolk_pastry", "蛋黃酥生胚", "Raw Egg Yolk Pastry", C["butter"]),
+                         ("raw_pineapple_cake", "鳳梨酥生胚", "Raw Pineapple Cake", C["yellow"]),
+                         ("shaped_cookie_dough", "造型餅乾麵團", "Shaped Cookie Dough", C["dough"])]:
+    ing(iid, zh, en, ("pie", C["dough"], col), ["kaleidoscope:dough"], 16)
+# Icing (6 colours)
+ICING_COLORS = [("white", "白", "White", C["white"], ""), ("pink", "粉紅", "Pink", C["pink"], "minecraft:pink_dye"),
+                ("blue", "藍", "Blue", (120, 160, 230), "minecraft:light_blue_dye"), ("green", "綠", "Green", (140, 210, 120), "minecraft:lime_dye"),
+                ("yellow", "黃", "Yellow", C["lemon"], "minecraft:yellow_dye"), ("cocoa", "可可", "Cocoa", C["choc"], f"{NS}:cocoa_powder")]
+for col, zh, en, rgb, _ in ICING_COLORS:
+    ing(f"icing_{col}", f"{zh}色糖霜", f"{en} Icing", ("bowl_fill", rgb, None), ["kaleidoscope:icing"])
+# Salted egg, pineapple
+ing("salted_egg", "鹹蛋", "Salted Egg", ("ball", (210, 220, 210), None), ["kaleidoscope:egg_product"])
+ing("salted_egg_yolk", "鹹蛋黃", "Salted Egg Yolk", ("ball", C["orange"], None), ["kaleidoscope:egg_product"])
+ing("pineapple_jam", "鳳梨醬", "Pineapple Jam", ("jar", C["lemon"], None), ["kaleidoscope:jam"], 16)
+plant_item("pineapple", "鳳梨", "Pineapple", ("lemon", C["yellow"], C["green"]), ["kaleidoscope:fruit"])
+plant_item("pineapple_crown", "鳳梨冠芽", "Pineapple Crown", ("cutting", C["green"], C["yellow"]), ["kaleidoscope:seed"],
+           place="pineapple_crop", place_on="farmland")
+crop("pineapple_crop", "鳳梨", "Pineapple", "annual", "pineapple_crown", ("pineapple", 1, 1), 8, "farmland", C["green"], C["yellow"],
+     chance=9, wild=["savanna", "beach"])
+# By-products (also sent to series packs through reverse registration)
+ing("bread_crumbs", "麵包屑", "Bread Crumbs", ("powder", C["tan"], C["crust"]), ["kaleidoscope:bread_crumbs"], compostable=50)
+ing("coffee_grounds", "咖啡渣", "Coffee Grounds", ("powder", C["dkbrown"], None), ["kaleidoscope:fertilizer"], compostable=65)
+ing("fruit_pulp", "果渣", "Fruit Pulp", ("powder", (200, 120, 90), None), ["kaleidoscope:fruit_pulp", "kaleidoscope:feed"], compostable=85)
+
+# New foods
+bake("napoleon", "拿破崙派", "Napoleon", ("slice_cake", C["butter"], C["white"]), 6, 0.7, PASTRY)
+bake("palmier", "蝴蝶酥", "Palmier", ("cookie", C["caramel"], C["butter"]), 3, 0.4, COOKIE)
+bake("portuguese_egg_tart", "葡式蛋塔", "Portuguese Egg Tart", ("tart", C["caramel"], (230, 160, 60)), 5, 0.6, PASTRY)
+item("pastry_soup", "酥皮濃湯", "Pastry-Topped Soup", G_FOOD, ("bun", C["caramel"], C["butter"]), 16, ["kaleidoscope:soup"],
+     food=food(9, 0.8, 2.0))
+item("cream_soup", "奶油濃湯", "Cream Soup", G_FOOD, ("bowl_fill", C["cream"], C["green"]), 16, ["kaleidoscope:soup"],
+     food=food(7, 0.7, 1.6, converts="minecraft:bowl"))
+bake("madeleine", "瑪德蓮", "Madeleine", ("cookie", C["butter"], C["lemon"]), 3, 0.5, PASTRY)
+bake("egg_yolk_pastry", "蛋黃酥", "Egg Yolk Pastry", ("mooncake", C["butter"], C["orange"]), 6, 0.7, PASTRY, 16)
+bake("pineapple_cake", "鳳梨酥", "Pineapple Cake", ("loaf", C["butter"], C["yellow"]), 4, 0.6, PASTRY)
+bake("ma_lai_go", "馬拉糕", "Ma Lai Go", ("fagao", C["caramel"], C["tan"]), 5, 0.6, PASTRY)
+bake("shaped_cookie", "造型餅乾", "Shaped Cookie", ("cookie", C["tan"], C["crust"]), 2, 0.3, COOKIE)
+for col, zh, en, rgb, _ in ICING_COLORS:
+    bake(f"iced_cookie_{col}", f"{zh}色糖霜餅乾", f"{en} Iced Cookie", ("cookie", C["tan"], rgb), 3, 0.4, COOKIE)
+bake("fried_fish", "炸魚排", "Breaded Fried Fish", ("fish", C["caramel"], C["tan"]), 7, 0.8, ["kaleidoscope:cooked_fish", "kaleidoscope:fish"])
+
+# Placement / display blocks
+STATIONS.append(dict(id="cake_stand", cubes=[([-1, 0, -1], [2, 6, 2]), ([-4, 0, -4], [8, 1, 8]), ([-7, 6, -7], [14, 1, 14])],
+                     tex=C["white"], sound="stone"))
+item("cake_stand", "蛋糕架", "Cake Stand", G_STATIONS, ("stand", C["white"], C["white"]), 64, place="cake_stand")
+STATIONS.append(dict(id="tea_tray", cubes=[([-1, 0, -1], [2, 15, 2]), ([-6, 2, -6], [12, 1, 12]), ([-5, 7, -5], [10, 1, 10]),
+                                           ([-4, 12, -4], [8, 1, 8])], tex=(220, 190, 120), sound="metal"))
+item("tea_tray", "三層點心架", "Three-Tier Tea Tray", G_STATIONS, ("stand", (220, 190, 120), C["pink"]), 64, place="tea_tray")
+STATIONS.append(dict(id="bread_display", cubes=[([-8, 0, -8], [16, 2, 16]), ([-8, 2, 6], [16, 12, 2]), ([-8, 7, -8], [16, 1, 16]),
+                                                ([-8, 14, -8], [16, 2, 16])], tex=C["tan"], sound="wood"))
+item("bread_display", "麵包展示櫃", "Bread Display", G_STATIONS, ("machine", C["tan"], C["crust"]), 64, place="bread_display")
+STATIONS.append(dict(id="pastry_case", cubes=[([-8, 0, -8], [16, 3, 16]), ([-8, 3, 6], [16, 11, 2]), ([-8, 14, -8], [16, 2, 16])],
+                     tex=(200, 225, 235), sound="glass"))
+item("pastry_case", "甜點櫥窗", "Pastry Case", G_STATIONS, ("machine", (200, 225, 235), C["pink"]), 64, place="pastry_case")
+
+# Hot drinks placeable as stacked cups through Cookery's public cup_stack component
+HOT_CUP_DRINKS = ["espresso", "americano", "latte", "cappuccino", "mocha", "caramel_macchiato", "cinnamon_latte",
+                  "pour_over_light", "pour_over_medium", "pour_over_dark"]
+# Hand-shaken drinks (stack 1, sweetness/ice) are placed by sneaking into a `drink_cups` block.
+SHAKEN_DRINKS = ["bubble_milk_tea", "brown_sugar_pearl_milk", "pearl_black_tea_latte", "oolong_milk_foam", "lavender_milk_tea",
+                 "yuanyang", "lemon_green_tea", "lemon_black_tea", "matcha_latte", "mint_mocha", "iced_coffee",
+                 "vanilla_milkshake", "lemonade", "strawberry_milk", "hot_cocoa"]
+
+CRAFTING += [
+    ("cake_stand", [" S ", " S ", "SSS"], {"S": "minecraft:smooth_quartz_slab"}, 1),
+    ("tea_tray", ["N", "G", "N"], {"N": "minecraft:gold_nugget", "G": "minecraft:gold_ingot"}, 1),
+    ("bread_display", ["PPP", "G G", "PPP"], {"P": "minecraft:oak_planks", "G": "minecraft:glass_pane"}, 1),
+    ("pastry_case", ["GGG", "G G", "III"], {"G": "minecraft:glass", "I": "minecraft:iron_ingot"}, 1),
+    ("piping_bag", [" S", "P "], {"S": "minecraft:string", "P": "minecraft:paper"}, 1),
+    ("madeleine_mold", ["NNN", "NNN"], {"N": "minecraft:iron_nugget"}, 1),
+    ("pineapple_cake_mold", ["NIN"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
+    ("cookie_cutter", [" N ", "N N", " N "], {"N": "minecraft:iron_nugget"}, 1),
+    ("empty_jar", ["G G", " G "], {"G": "minecraft:glass"}, 2),
+]
+CRAFTING_SHAPELESS = [
+    ("butter_jar", [f"{NS}:empty_jar", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter"], 1),
+]
+
+# Block-state visuals for stations: state `kaleidoscope_baking:fill` 0..levels; each level adds
+# cubes (block pixels) drawn with the station's "fill" texture.
+STATION_FILL = {
+    "mixing_bowl": dict(levels=3, color=C["cream"], cubes=lambda lv: [([-4, 1, -4], [8, lv + 1, 8])]),
+    "proofing_basket": dict(levels=3, color=C["dough"], cubes=lambda lv: [([-4, 1, -4], [8, lv + 1, 8])]),
+    "decorating_stand": dict(levels=1, color=C["cream"], cubes=lambda lv: [([-5, 7, -5], [10, 5, 10])]),
+    "espresso_machine": dict(levels=1, color=C["white"], cubes=lambda lv: [([-2, 2, -4], [4, 4, 4])]),
+    "pour_over_stand": dict(levels=1, color=C["dkbrown"], cubes=lambda lv: [([-3, 11, -3], [6, 1, 6])]),
+    "drink_shaker": dict(levels=1, color=C["latte"], cubes=lambda lv: [([-4, 13, -4], [8, 1, 8])]),
+}

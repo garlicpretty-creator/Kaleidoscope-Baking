@@ -568,6 +568,168 @@
     },
     "kb_herb_planter": {
       "textures": "textures/items/kb_herb_planter"
+    },
+    "kb_piping_bag": {
+      "textures": "textures/items/kb_piping_bag"
+    },
+    "kb_madeleine_mold": {
+      "textures": "textures/items/kb_madeleine_mold"
+    },
+    "kb_pineapple_cake_mold": {
+      "textures": "textures/items/kb_pineapple_cake_mold"
+    },
+    "kb_cookie_cutter": {
+      "textures": "textures/items/kb_cookie_cutter"
+    },
+    "kb_empty_jar": {
+      "textures": "textures/items/kb_empty_jar"
+    },
+    "kb_butter_jar": {
+      "textures": "textures/items/kb_butter_jar"
+    },
+    "kb_puff_pastry_dough": {
+      "textures": "textures/items/kb_puff_pastry_dough"
+    },
+    "kb_laminated_dough_1": {
+      "textures": "textures/items/kb_laminated_dough_1"
+    },
+    "kb_laminated_dough_2": {
+      "textures": "textures/items/kb_laminated_dough_2"
+    },
+    "kb_puff_pastry": {
+      "textures": "textures/items/kb_puff_pastry"
+    },
+    "kb_puff_pastry_sheet": {
+      "textures": "textures/items/kb_puff_pastry_sheet"
+    },
+    "kb_madeleine_batter": {
+      "textures": "textures/items/kb_madeleine_batter"
+    },
+    "kb_ma_lai_go_batter": {
+      "textures": "textures/items/kb_ma_lai_go_batter"
+    },
+    "kb_palmier_dough": {
+      "textures": "textures/items/kb_palmier_dough"
+    },
+    "kb_raw_portuguese_tart": {
+      "textures": "textures/items/kb_raw_portuguese_tart"
+    },
+    "kb_raw_pastry_soup": {
+      "textures": "textures/items/kb_raw_pastry_soup"
+    },
+    "kb_raw_egg_yolk_pastry": {
+      "textures": "textures/items/kb_raw_egg_yolk_pastry"
+    },
+    "kb_raw_pineapple_cake": {
+      "textures": "textures/items/kb_raw_pineapple_cake"
+    },
+    "kb_shaped_cookie_dough": {
+      "textures": "textures/items/kb_shaped_cookie_dough"
+    },
+    "kb_icing_white": {
+      "textures": "textures/items/kb_icing_white"
+    },
+    "kb_icing_pink": {
+      "textures": "textures/items/kb_icing_pink"
+    },
+    "kb_icing_blue": {
+      "textures": "textures/items/kb_icing_blue"
+    },
+    "kb_icing_green": {
+      "textures": "textures/items/kb_icing_green"
+    },
+    "kb_icing_yellow": {
+      "textures": "textures/items/kb_icing_yellow"
+    },
+    "kb_icing_cocoa": {
+      "textures": "textures/items/kb_icing_cocoa"
+    },
+    "kb_salted_egg": {
+      "textures": "textures/items/kb_salted_egg"
+    },
+    "kb_salted_egg_yolk": {
+      "textures": "textures/items/kb_salted_egg_yolk"
+    },
+    "kb_pineapple_jam": {
+      "textures": "textures/items/kb_pineapple_jam"
+    },
+    "kb_pineapple": {
+      "textures": "textures/items/kb_pineapple"
+    },
+    "kb_pineapple_crown": {
+      "textures": "textures/items/kb_pineapple_crown"
+    },
+    "kb_bread_crumbs": {
+      "textures": "textures/items/kb_bread_crumbs"
+    },
+    "kb_coffee_grounds": {
+      "textures": "textures/items/kb_coffee_grounds"
+    },
+    "kb_fruit_pulp": {
+      "textures": "textures/items/kb_fruit_pulp"
+    },
+    "kb_napoleon": {
+      "textures": "textures/items/kb_napoleon"
+    },
+    "kb_palmier": {
+      "textures": "textures/items/kb_palmier"
+    },
+    "kb_portuguese_egg_tart": {
+      "textures": "textures/items/kb_portuguese_egg_tart"
+    },
+    "kb_pastry_soup": {
+      "textures": "textures/items/kb_pastry_soup"
+    },
+    "kb_cream_soup": {
+      "textures": "textures/items/kb_cream_soup"
+    },
+    "kb_madeleine": {
+      "textures": "textures/items/kb_madeleine"
+    },
+    "kb_egg_yolk_pastry": {
+      "textures": "textures/items/kb_egg_yolk_pastry"
+    },
+    "kb_pineapple_cake": {
+      "textures": "textures/items/kb_pineapple_cake"
+    },
+    "kb_ma_lai_go": {
+      "textures": "textures/items/kb_ma_lai_go"
+    },
+    "kb_shaped_cookie": {
+      "textures": "textures/items/kb_shaped_cookie"
+    },
+    "kb_iced_cookie_white": {
+      "textures": "textures/items/kb_iced_cookie_white"
+    },
+    "kb_iced_cookie_pink": {
+      "textures": "textures/items/kb_iced_cookie_pink"
+    },
+    "kb_iced_cookie_blue": {
+      "textures": "textures/items/kb_iced_cookie_blue"
+    },
+    "kb_iced_cookie_green": {
+      "textures": "textures/items/kb_iced_cookie_green"
+    },
+    "kb_iced_cookie_yellow": {
+      "textures": "textures/items/kb_iced_cookie_yellow"
+    },
+    "kb_iced_cookie_cocoa": {
+      "textures": "textures/items/kb_iced_cookie_cocoa"
+    },
+    "kb_fried_fish": {
+      "textures": "textures/items/kb_fried_fish"
+    },
+    "kb_cake_stand": {
+      "textures": "textures/items/kb_cake_stand"
+    },
+    "kb_tea_tray": {
+      "textures": "textures/items/kb_tea_tray"
+    },
+    "kb_bread_display": {
+      "textures": "textures/items/kb_bread_display"
+    },
+    "kb_pastry_case": {
+      "textures": "textures/items/kb_pastry_case"
     }
   }
 }

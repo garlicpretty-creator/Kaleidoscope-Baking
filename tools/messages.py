@@ -98,4 +98,11 @@ MSG = {
     "caffeine.severe": ("§4嚴重心悸！先別再喝咖啡了（咖啡因 %s）", "§4Severe palpitations! Stop drinking coffee (caffeine %s)"),
     "caffeine.calm": ("§a心跳慢慢平穩下來（咖啡因 %s）", "§aYour heart calms down (caffeine %s)"),
     "tea_time": ("§d下午茶加成！", "§dAfternoon tea bonus!"),
+    # 1.1 furniture
+    "furniture.stand_empty": ("§6蛋糕架§r 手持整顆蛋糕或派放上去。", "§6Cake stand§r: place a whole cake or pie on it."),
+    "furniture.tray_empty": ("§6三層點心架§r 放上小點心（最多 3 個）；從架上吃東西，下午茶時間放寬到 60 秒。", "§6Tea tray§r: put up to 3 small treats on it; eating from it widens the tea-time window to 60 s."),
+    "furniture.case_empty": ("§6展示櫃§r 放入麵包或點心（9 格）。", "§6Display case§r: store bread and pastries (9 stacks)."),
+    "furniture.case_status": ("§6展示櫃§r %s 個（%s/%s 格）", "§6Display case§r %s items (%s/%s stacks)"),
+    "furniture.not_food": ("§e%s 不能放在這裡。", "§e%s can't be displayed here."),
+    "furniture.full": ("§e已經放滿了。", "§eIt's full."),
 }

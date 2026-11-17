@@ -19,7 +19,7 @@ BP, RP = os.path.join(ROOT, "BP"), os.path.join(ROOT, "RP")
 NS = "kaleidoscope_baking"
 TAG_ONLY = {f"{NS}:whisk", f"{NS}:mold"}  # tag names (whisk is also an item)
 # Script-event ids and block-state names share the namespace but are not items.
-NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|facing|lit|growth|bites|plant|stripped|"
+NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|facing|lit|growth|bites|plant|stripped|fill|cups|despawn|ingredient_info|caffeine_adjust|query_ingredient|"
                       rf"whisk|frother|mold|cup|caffeine|auto_convert|[a-z_]+_settings|guidebook|open_[a-z_]+|sweet|ice|settings_changed|"
                       rf"(oven|bowl|proof|stand|espresso|pour|shaker|planter|dessert|plant|tree|bark|herb_planter|mixing_bowl|"
                       rf"proofing_basket|decorating_stand|espresso_machine|pour_over_stand|drink_shaker)(\b.*)?)$")
@@ -118,7 +118,9 @@ for lang, keys in lang_keys.items():
 
 # 4. Scripts: message keys, ids, syntax
 scripts = glob.glob(f"{BP}/scripts/**/*.js", recursive=True)
-known_ids = items | blocks | TAG_ONLY
+entities = {(load(p) or {}).get("minecraft:entity", {}).get("description", {}).get("identifier", "")
+            for p in glob.glob(f"{BP}/entities/**/*.json", recursive=True)}
+known_ids = items | blocks | TAG_ONLY | entities
 for p in scripts:
     src = open(p, encoding="utf-8").read()
     m = re.search(r'const MSG = "([^"]+)"', src)
