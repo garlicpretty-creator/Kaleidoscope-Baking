@@ -7,9 +7,9 @@
 // finished with an empty hand; otherwise the last layer completes it automatically.
 import { world } from "@minecraft/server";
 import { addToStand, normalizeStand, popStand, standNextOptions, standRecipe } from "../api/stationLogic.js";
-import { actionBar, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
+import { refuse, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
-import { clearDisplays, setFill, syncDisplay } from "../utils/display.js";
+import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const STAND_ID = "kaleidoscope_baking:decorating_stand";
 const PREFIX = "kb_stand";
@@ -17,28 +17,11 @@ const MSG = "kaleidoscope_baking.msg.stand.";
 const isEmpty = s => !s.base;
 const top = b => ({ x: b.x + 0.5, y: b.y + 0.9, z: b.z + 0.5 });
 
-function specName(spec) { return spec.startsWith("#") ? { text: spec } : itemName(spec); }
-
-function status(s) {
-  if (!s.base) return [t(`${MSG}empty`)];
-  const parts = [t(`${MSG}status`), itemName(s.base)];
-  for (const l of s.layers) parts.push({ text: " §7+§r " }, itemName(l));
-  const next = standNextOptions(s);
-  if (next.length) {
-    parts.push({ text: "\n" }, t(`${MSG}next`));
-    next.forEach((n, i) => parts.push({ text: i ? " / " : "" }, specName(n)));
-  }
-  const done = standRecipe(s);
-  if (done) parts.push({ text: "\n" }, t(`${MSG}finish`, itemName(done.result)));
-  return parts;
-}
-
 function finish(block, player, s, recipe) {
   giveItems(player, recipe.result, recipe.count);
   s.base = ""; s.layers = [];
   sound(block.dimension, "random.levelup", top(block), 0.5, 1.6);
   particle(block.dimension, "minecraft:villager_happy", top(block));
-  actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
 }
 
 function interact(block, player) {
@@ -46,32 +29,25 @@ function interact(block, player) {
   const held = heldItem(player);
   if (held) {
     const r = addToStand(s, held.typeId);
-    if (!r.ok) { actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId))); return; }
+    if (!r.ok) { refuse(block.dimension, top(block)); return; }
     consumeHeld(player, 1);
     sound(block.dimension, "random.pop", top(block), 0.5, 1.3);
     if (r.complete) finish(block, player, s, r.complete);
-    else actionBar(player, ...status(s));
   } else if (player.isSneaking) {
     let id;
     while ((id = popStand(s))) giveItems(player, id, 1);
-    actionBar(player, ...status(s));
   } else {
     const done = standRecipe(s);
     if (done) finish(block, player, s, done);
     else {
       const id = popStand(s);
       if (id) giveItems(player, id, 1);
-      actionBar(player, ...status(s));
     }
   }
   saveStation(PREFIX, block, s, isEmpty);
-  refresh(block, s);
-}
-
-/** Cake on the plate when a base is placed; the top-most layer floats above it. */
-function refresh(block, s) {
-  setFill(block, s.base ? 1 : 0);
-  syncDisplay(block, "top", s.base ? (s.layers.at(-1) ?? s.base) : undefined, { x: 0.5, y: 0.85, z: 0.5 });
+  // the cake grows layer by layer and turns on the turntable
+  showContents(block, KIND.stand, { fill: s.base ? 1 + s.layers.length : 0, tint: tintOf([...s.layers].reverse().concat([s.base])) });
+  if (held && s.base) bump(block, KIND.stand);
 }
 
 function spill(dimension, loc) {
@@ -80,7 +56,7 @@ function spill(dimension, loc) {
   let id;
   while ((id = popStand(s))) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.8, z: loc.z + 0.5 }, id, 1);
   saveStation(PREFIX, fake, s, isEmpty);
-  clearDisplays(dimension, loc);
+  removeVisual(fake);
 }
 
 export const decoratingStandComponent = {

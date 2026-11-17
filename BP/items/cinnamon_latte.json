@@ -9,14 +9,16 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:cinnamon_latte.name"
+      },
       "minecraft:icon": "kb_cinnamon_latte",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {
         "tags": [
           "kaleidoscope:drink",
           "kaleidoscope:hot_drink",
-          "kaleidoscope:coffee",
-          "kaleidoscope_cookery:placeable_food"
+          "kaleidoscope:coffee"
         ]
       },
       "minecraft:block_placer": {

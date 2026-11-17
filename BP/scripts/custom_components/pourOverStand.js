@@ -3,10 +3,10 @@
 //   ground coffee   -> load the filter
 //   water bucket    -> pour: brews immediately into a Coffee Mug from your inventory
 //   sneak + empty   -> take the coffee back out
-import { world } from "@minecraft/server";
-import { setFill } from "../utils/display.js";
+import { system, world } from "@minecraft/server";
+import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
 import { getPourOverRecipe } from "../api/registry.js";
-import { actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
+import { refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
 
 export const POUR_ID = "kaleidoscope_baking:pour_over_stand";
 const PREFIX = "kb_pour";
@@ -19,34 +19,33 @@ function interact(block, player) {
   const coffee = readJson(key)?.coffee ?? "";
   const held = heldItem(player);
   if (!held) {
-    if (coffee && player.isSneaking) { giveItems(player, coffee, 1); writeJson(key, undefined); setFill(block, 0); return; }
-    actionBar(player, coffee ? t(`${MSG}waiting`, itemName(coffee)) : t(`${MSG}empty`));
+    if (coffee && player.isSneaking) { giveItems(player, coffee, 1); writeJson(key, undefined); return; }
     return;
   }
   if (held.typeId === "minecraft:water_bucket" && coffee) {
     const recipe = getPourOverRecipe(coffee);
     if (!recipe) { writeJson(key, undefined); giveItems(player, coffee, 1); return; }
-    if (!takeCarrier(player, recipe.carrier)) { actionBar(player, t(`${MSG}need_cup`, itemName(recipe.carrier))); return; }
+    if (!takeCarrier(player, recipe.carrier)) { refuse(block.dimension, at(block)); return; }
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     giveItems(player, recipe.result, recipe.count);
     if (recipe.byproduct) giveItems(player, recipe.byproduct, 1);
     writeJson(key, undefined);
-    setFill(block, 0);
     sound(block.dimension, "bucket.empty_water", at(block), 0.6, 1.2);
-    particle(block.dimension, "minecraft:basic_smoke_particle", at(block));
-    actionBar(player, t(`${MSG}done`, itemName(recipe.result)));
+    // coffee drips through the filter and the glass server fills, then it is poured off
+    showContents(block, KIND.pour, { fill: 4, tint: 6 });
+    playMotion(block, KIND.pour, 80);
+    steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
+    system.runTimeout(() => { try { if (block.typeId === POUR_ID) showContents(block, KIND.pour, { fill: 0 }); } catch {} }, 160);
     return;
   }
   if (!coffee && getPourOverRecipe(held.typeId)) {
     writeJson(key, { coffee: held.typeId });
-    setFill(block, 1);
     consumeHeld(player, 1);
     sound(block.dimension, "random.click", at(block), 0.6, 1.0);
-    actionBar(player, t(`${MSG}loaded`, itemName(held.typeId)));
     return;
   }
-  actionBar(player, coffee ? t(`${MSG}waiting`, itemName(coffee)) : t(`${MSG}not_coffee`, itemName(held.typeId)));
+  refuse(block.dimension, at(block)); // not coffee, or a filter is already loaded
 }
 
 function spill(dimension, loc) {
@@ -54,6 +53,7 @@ function spill(dimension, loc) {
   const coffee = readJson(key)?.coffee;
   if (coffee) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, coffee, 1);
   writeJson(key, undefined);
+  removeVisual({ dimension, x: loc.x, y: loc.y, z: loc.z });
 }
 
 export const pourOverStandComponent = {

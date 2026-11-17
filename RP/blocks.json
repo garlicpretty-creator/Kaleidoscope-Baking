@@ -24,51 +24,6 @@
   "kaleidoscope_baking:herb_planter": {
     "sound": "stone"
   },
-  "kaleidoscope_baking:cake_stand": {
-    "sound": "stone"
-  },
-  "kaleidoscope_baking:tea_tray": {
-    "sound": "metal"
-  },
-  "kaleidoscope_baking:bread_display": {
-    "sound": "wood"
-  },
-  "kaleidoscope_baking:pastry_case": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:espresso": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:americano": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:latte": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:cappuccino": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:mocha": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:caramel_macchiato": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:cinnamon_latte": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:pour_over_light": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:pour_over_medium": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:pour_over_dark": {
-    "sound": "glass"
-  },
-  "kaleidoscope_baking:drink_cups": {
-    "sound": "glass"
-  },
   "kaleidoscope_baking:rosemary_bush": {
     "sound": "grass"
   },
@@ -155,5 +110,50 @@
   },
   "kaleidoscope_baking:fish_pie": {
     "sound": "cloth"
+  },
+  "kaleidoscope_baking:espresso": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:americano": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cappuccino": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:mocha": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:caramel_macchiato": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cinnamon_latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_light": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_medium": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_dark": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cake_stand": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:tea_tray": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:bread_display": {
+    "sound": "wood"
+  },
+  "kaleidoscope_baking:pastry_case": {
+    "sound": "glass"
+  },
+  "kaleidoscope_baking:drink_cups": {
+    "sound": "glass"
   }
 }

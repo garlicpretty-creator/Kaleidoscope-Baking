@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:lemon_poppy_cake.name"
+      },
       "minecraft:icon": "kb_lemon_poppy_cake",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

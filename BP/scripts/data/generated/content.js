@@ -5,43 +5,50 @@ export const CONTENT = Object.freeze({
    "zh_TW": "烤箱",
    "zh_CN": "烤箱",
    "en_US": "Oven",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:oven"
   },
   "kaleidoscope_baking:mixing_bowl": {
    "zh_TW": "攪拌盆",
-   "zh_CN": "攪拌盆",
+   "zh_CN": "搅拌盆",
    "en_US": "Mixing Bowl",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:mixing_bowl"
   },
   "kaleidoscope_baking:proofing_basket": {
    "zh_TW": "發酵籃",
    "zh_CN": "发酵篮",
    "en_US": "Proofing Basket",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:proofing_basket"
   },
   "kaleidoscope_baking:decorating_stand": {
    "zh_TW": "裱花台",
    "zh_CN": "裱花台",
    "en_US": "Decorating Stand",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:decorating_stand"
   },
   "kaleidoscope_baking:espresso_machine": {
    "zh_TW": "咖啡機",
    "zh_CN": "咖啡机",
    "en_US": "Espresso Machine",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:espresso_machine"
   },
   "kaleidoscope_baking:pour_over_stand": {
    "zh_TW": "手沖架",
    "zh_CN": "手冲架",
    "en_US": "Pour-Over Stand",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:pour_over_stand"
   },
   "kaleidoscope_baking:drink_shaker": {
    "zh_TW": "雪克杯",
    "zh_CN": "雪克杯",
    "en_US": "Drink Shaker",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:drink_shaker"
   },
   "kaleidoscope_baking:whisk": {
    "zh_TW": "打蛋器",
@@ -261,7 +268,7 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:raw_tapioca_pearls": {
    "zh_TW": "生粉圓",
-   "zh_CN": "生粉圓",
+   "zh_CN": "生粉圆",
    "en_US": "Raw Tapioca Pearls",
    "group": "ingredients"
   },
@@ -273,19 +280,19 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:black_tea_base": {
    "zh_TW": "紅茶湯底",
-   "zh_CN": "红茶湯底",
+   "zh_CN": "红茶汤底",
    "en_US": "Black Tea Base",
    "group": "ingredients"
   },
   "kaleidoscope_baking:green_tea_base": {
    "zh_TW": "綠茶湯底",
-   "zh_CN": "绿茶湯底",
+   "zh_CN": "绿茶汤底",
    "en_US": "Green Tea Base",
    "group": "ingredients"
   },
   "kaleidoscope_baking:oolong_tea_base": {
    "zh_TW": "烏龍茶湯底",
-   "zh_CN": "乌龙茶湯底",
+   "zh_CN": "乌龙茶汤底",
    "en_US": "Oolong Tea Base",
    "group": "ingredients"
   },
@@ -299,7 +306,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "咖啡生豆",
    "zh_CN": "咖啡生豆",
    "en_US": "Green Coffee Beans",
-   "group": "ingredients"
+   "group": "ingredients",
+   "place": "kaleidoscope_baking:coffee_bush"
   },
   "kaleidoscope_baking:roasted_coffee_beans_light": {
    "zh_TW": "淺焙咖啡豆",
@@ -569,7 +577,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "迷迭香插枝",
    "zh_CN": "迷迭香插枝",
    "en_US": "Rosemary Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:rosemary_bush"
   },
   "kaleidoscope_baking:thyme": {
    "zh_TW": "百里香",
@@ -581,7 +590,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "百里香插枝",
    "zh_CN": "百里香插枝",
    "en_US": "Thyme Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:thyme_bush"
   },
   "kaleidoscope_baking:lavender": {
    "zh_TW": "薰衣草",
@@ -593,7 +603,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "薰衣草插枝",
    "zh_CN": "薰衣草插枝",
    "en_US": "Lavender Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:lavender_bush"
   },
   "kaleidoscope_baking:mint_leaves": {
    "zh_TW": "薄荷葉",
@@ -605,7 +616,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "薄荷插枝",
    "zh_CN": "薄荷插枝",
    "en_US": "Mint Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:mint_bush"
   },
   "kaleidoscope_baking:dried_rosemary": {
    "zh_TW": "乾燥迷迭香",
@@ -635,13 +647,15 @@ export const CONTENT = Object.freeze({
    "zh_TW": "香草蘭插枝",
    "zh_CN": "香草兰插枝",
    "en_US": "Vanilla Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:vanilla_vine"
   },
   "kaleidoscope_baking:cinnamon_sapling": {
    "zh_TW": "肉桂樹苗",
    "zh_CN": "肉桂树苗",
    "en_US": "Cinnamon Sapling",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:cinnamon_sapling_block"
   },
   "kaleidoscope_baking:cinnamon_bark": {
    "zh_TW": "肉桂樹皮",
@@ -659,7 +673,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "白芝麻",
    "zh_CN": "白芝麻",
    "en_US": "Sesame Seeds",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:sesame_crop"
   },
   "kaleidoscope_baking:black_sesame_seeds": {
    "zh_TW": "黑芝麻",
@@ -671,7 +686,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "甜菊種子",
    "zh_CN": "甜菊种子",
    "en_US": "Stevia Seeds",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:stevia_crop"
   },
   "kaleidoscope_baking:stevia_leaf": {
    "zh_TW": "甜菊葉",
@@ -693,9 +709,10 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:cassava_cutting": {
    "zh_TW": "樹薯莖段",
-   "zh_CN": "树薯莖段",
+   "zh_CN": "树薯茎段",
    "en_US": "Cassava Cutting",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:cassava_crop"
   },
   "kaleidoscope_baking:strawberry": {
    "zh_TW": "草莓",
@@ -705,7 +722,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:strawberry_bush"
   },
   "kaleidoscope_baking:blueberry": {
    "zh_TW": "藍莓",
@@ -715,7 +733,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:blueberry_bush"
   },
   "kaleidoscope_baking:raspberry": {
    "zh_TW": "覆盆子",
@@ -725,7 +744,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:raspberry_bush"
   },
   "kaleidoscope_baking:dried_blueberry": {
    "zh_TW": "藍莓乾",
@@ -741,7 +761,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "檸檬樹苗",
    "zh_CN": "柠檬树苗",
    "en_US": "Lemon Sapling",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:lemon_sapling_block"
   },
   "kaleidoscope_baking:lemon": {
    "zh_TW": "檸檬",
@@ -763,7 +784,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 6,
     "saturation": 0.5
-   }
+   },
+   "place": "kaleidoscope_baking:sponge_cake"
   },
   "kaleidoscope_baking:chocolate_cake": {
    "zh_TW": "巧克力蛋糕",
@@ -773,7 +795,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 6,
     "saturation": 0.6
-   }
+   },
+   "place": "kaleidoscope_baking:chocolate_cake"
   },
   "kaleidoscope_baking:strawberry_cream_cake": {
    "zh_TW": "草莓鮮奶油蛋糕",
@@ -783,7 +806,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.7
-   }
+   },
+   "place": "kaleidoscope_baking:strawberry_cream_cake"
   },
   "kaleidoscope_baking:birthday_cake": {
    "zh_TW": "生日蛋糕",
@@ -793,7 +817,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.8
-   }
+   },
+   "place": "kaleidoscope_baking:birthday_cake"
   },
   "kaleidoscope_baking:mint_chocolate_cake": {
    "zh_TW": "薄荷巧克力蛋糕",
@@ -803,7 +828,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.7
-   }
+   },
+   "place": "kaleidoscope_baking:mint_chocolate_cake"
   },
   "kaleidoscope_baking:cheesecake": {
    "zh_TW": "起司蛋糕",
@@ -813,7 +839,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.7
-   }
+   },
+   "place": "kaleidoscope_baking:cheesecake"
   },
   "kaleidoscope_baking:matcha_chiffon": {
    "zh_TW": "抹茶戚風蛋糕",
@@ -823,7 +850,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 6,
     "saturation": 0.6
-   }
+   },
+   "place": "kaleidoscope_baking:matcha_chiffon"
   },
   "kaleidoscope_baking:apple_pie": {
    "zh_TW": "蘋果派",
@@ -833,7 +861,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 6,
     "saturation": 0.6
-   }
+   },
+   "place": "kaleidoscope_baking:apple_pie"
   },
   "kaleidoscope_baking:blueberry_pie": {
    "zh_TW": "藍莓派",
@@ -843,7 +872,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 6,
     "saturation": 0.6
-   }
+   },
+   "place": "kaleidoscope_baking:blueberry_pie"
   },
   "kaleidoscope_baking:quiche": {
    "zh_TW": "鹹派",
@@ -853,7 +883,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.7
-   }
+   },
+   "place": "kaleidoscope_baking:quiche"
   },
   "kaleidoscope_baking:fish_pie": {
    "zh_TW": "魚肉鹹派",
@@ -863,7 +894,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 8,
     "saturation": 0.7
-   }
+   },
+   "place": "kaleidoscope_baking:fish_pie"
   },
   "kaleidoscope_baking:cake_slice": {
    "zh_TW": "蛋糕切片",
@@ -1037,7 +1069,7 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:tart_shell": {
    "zh_TW": "塔殼",
-   "zh_CN": "塔殼",
+   "zh_CN": "塔壳",
    "en_US": "Tart Shell",
    "group": "foods",
    "food": {
@@ -1163,7 +1195,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 1,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:espresso"
   },
   "kaleidoscope_baking:americano": {
    "zh_TW": "美式咖啡",
@@ -1173,7 +1206,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:americano"
   },
   "kaleidoscope_baking:latte": {
    "zh_TW": "拿鐵",
@@ -1183,17 +1217,19 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:latte"
   },
   "kaleidoscope_baking:cappuccino": {
    "zh_TW": "卡布奇諾",
-   "zh_CN": "卡布奇諾",
+   "zh_CN": "卡布奇诺",
    "en_US": "Cappuccino",
    "group": "drinks",
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:cappuccino"
   },
   "kaleidoscope_baking:mocha": {
    "zh_TW": "摩卡",
@@ -1203,7 +1239,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:mocha"
   },
   "kaleidoscope_baking:caramel_macchiato": {
    "zh_TW": "焦糖瑪奇朵",
@@ -1213,7 +1250,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:caramel_macchiato"
   },
   "kaleidoscope_baking:cinnamon_latte": {
    "zh_TW": "肉桂拿鐵",
@@ -1223,7 +1261,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:cinnamon_latte"
   },
   "kaleidoscope_baking:pour_over_light": {
    "zh_TW": "手沖咖啡（淺焙）",
@@ -1233,7 +1272,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:pour_over_light"
   },
   "kaleidoscope_baking:pour_over_medium": {
    "zh_TW": "手沖咖啡（中焙）",
@@ -1243,7 +1283,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:pour_over_medium"
   },
   "kaleidoscope_baking:pour_over_dark": {
    "zh_TW": "手沖咖啡（深焙）",
@@ -1253,7 +1294,8 @@ export const CONTENT = Object.freeze({
    "food": {
     "nutrition": 2,
     "saturation": 0.3
-   }
+   },
+   "place": "kaleidoscope_baking:pour_over_dark"
   },
   "kaleidoscope_baking:hot_cocoa": {
    "zh_TW": "熱可可",
@@ -1409,7 +1451,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "香草盆栽",
    "zh_CN": "香草盆栽",
    "en_US": "Herb Planter",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:herb_planter"
   },
   "kaleidoscope_baking:piping_bag": {
    "zh_TW": "擠花袋",
@@ -1503,7 +1546,7 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:raw_pastry_soup": {
    "zh_TW": "酥皮濃湯生胚",
-   "zh_CN": "酥皮浓湯生胚",
+   "zh_CN": "酥皮浓汤生胚",
    "en_US": "Raw Pastry-Topped Soup",
    "group": "ingredients"
   },
@@ -1589,7 +1632,8 @@ export const CONTENT = Object.freeze({
    "zh_TW": "鳳梨冠芽",
    "zh_CN": "凤梨冠芽",
    "en_US": "Pineapple Crown",
-   "group": "plants"
+   "group": "plants",
+   "place": "kaleidoscope_baking:pineapple_crop"
   },
   "kaleidoscope_baking:bread_crumbs": {
    "zh_TW": "麵包屑",
@@ -1641,7 +1685,7 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:pastry_soup": {
    "zh_TW": "酥皮濃湯",
-   "zh_CN": "酥皮浓湯",
+   "zh_CN": "酥皮浓汤",
    "en_US": "Pastry-Topped Soup",
    "group": "foods",
    "food": {
@@ -1651,7 +1695,7 @@ export const CONTENT = Object.freeze({
   },
   "kaleidoscope_baking:cream_soup": {
    "zh_TW": "奶油濃湯",
-   "zh_CN": "奶油浓湯",
+   "zh_CN": "奶油浓汤",
    "en_US": "Cream Soup",
    "group": "foods",
    "food": {
@@ -1783,31 +1827,64 @@ export const CONTENT = Object.freeze({
    "zh_TW": "蛋糕架",
    "zh_CN": "蛋糕架",
    "en_US": "Cake Stand",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:cake_stand"
   },
   "kaleidoscope_baking:tea_tray": {
    "zh_TW": "三層點心架",
    "zh_CN": "三层点心架",
    "en_US": "Three-Tier Tea Tray",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:tea_tray"
   },
   "kaleidoscope_baking:bread_display": {
    "zh_TW": "麵包展示櫃",
    "zh_CN": "面包展示櫃",
    "en_US": "Bread Display",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:bread_display"
   },
   "kaleidoscope_baking:pastry_case": {
    "zh_TW": "甜點櫥窗",
    "zh_CN": "甜点櫥窗",
    "en_US": "Pastry Case",
-   "group": "stations"
+   "group": "stations",
+   "place": "kaleidoscope_baking:pastry_case"
   }
  },
+ "mugs": [
+  "kaleidoscope_baking:espresso",
+  "kaleidoscope_baking:americano",
+  "kaleidoscope_baking:latte",
+  "kaleidoscope_baking:cappuccino",
+  "kaleidoscope_baking:mocha",
+  "kaleidoscope_baking:caramel_macchiato",
+  "kaleidoscope_baking:cinnamon_latte",
+  "kaleidoscope_baking:pour_over_light",
+  "kaleidoscope_baking:pour_over_medium",
+  "kaleidoscope_baking:pour_over_dark"
+ ],
+ "shakenDrinks": [
+  "kaleidoscope_baking:bubble_milk_tea",
+  "kaleidoscope_baking:brown_sugar_pearl_milk",
+  "kaleidoscope_baking:pearl_black_tea_latte",
+  "kaleidoscope_baking:oolong_milk_foam",
+  "kaleidoscope_baking:lavender_milk_tea",
+  "kaleidoscope_baking:yuanyang",
+  "kaleidoscope_baking:lemon_green_tea",
+  "kaleidoscope_baking:lemon_black_tea",
+  "kaleidoscope_baking:matcha_latte",
+  "kaleidoscope_baking:mint_mocha",
+  "kaleidoscope_baking:iced_coffee",
+  "kaleidoscope_baking:vanilla_milkshake",
+  "kaleidoscope_baking:lemonade",
+  "kaleidoscope_baking:strawberry_milk",
+  "kaleidoscope_baking:hot_cocoa"
+ ],
  "groups": {
   "stations": {
    "zh_TW": "烘焙廚具",
-   "zh_CN": "烘焙廚具",
+   "zh_CN": "烘焙厨具",
    "en_US": "Baking Stations"
   },
   "tools": {
@@ -2093,34 +2170,10 @@ export const CONTENT = Object.freeze({
    "nutrition": 4,
    "saturation": 0.7
   }
- },
- "shakenDrinks": [
-  "kaleidoscope_baking:bubble_milk_tea",
-  "kaleidoscope_baking:brown_sugar_pearl_milk",
-  "kaleidoscope_baking:pearl_black_tea_latte",
-  "kaleidoscope_baking:oolong_milk_foam",
-  "kaleidoscope_baking:lavender_milk_tea",
-  "kaleidoscope_baking:yuanyang",
-  "kaleidoscope_baking:lemon_green_tea",
-  "kaleidoscope_baking:lemon_black_tea",
-  "kaleidoscope_baking:matcha_latte",
-  "kaleidoscope_baking:mint_mocha",
-  "kaleidoscope_baking:iced_coffee",
-  "kaleidoscope_baking:vanilla_milkshake",
-  "kaleidoscope_baking:lemonade",
-  "kaleidoscope_baking:strawberry_milk",
-  "kaleidoscope_baking:hot_cocoa"
- ],
- "hotCupDrinks": [
-  "kaleidoscope_baking:espresso",
-  "kaleidoscope_baking:americano",
-  "kaleidoscope_baking:latte",
-  "kaleidoscope_baking:cappuccino",
-  "kaleidoscope_baking:mocha",
-  "kaleidoscope_baking:caramel_macchiato",
-  "kaleidoscope_baking:cinnamon_latte",
-  "kaleidoscope_baking:pour_over_light",
-  "kaleidoscope_baking:pour_over_medium",
-  "kaleidoscope_baking:pour_over_dark"
- ]
+ }
 });
+// zh_TW -> zh_CN, character by character (the table this pack's own strings need), for text written in scripts.
+const T2S = "並并乾干來来個个側侧備备傳传價价儲储內内兩两別别剝剥動动叢丛員员啟启啡啡單单嗎吗噴喷嚴严囪囱國国圓圆圖图團团執执塊块壓压壺壶夠够定定實实寫写寬宽對对導导層层帶带廚厨張张強强後后從从慢慢慶庆憶忆應应戲戏戶户捲卷掛挂採采換换搖摇擁拥擇择擊击據据擠挤擴扩擺摆攪搅敗败斷断時时書书會会東东條条樣样樹树樺桦機机檔档檢检檸柠歡欢歲岁歷历歸归殼壳汙污沒没沖冲淨净淺浅減减湯汤準准溫温滷卤滿满漿浆潔洁潛潜澤泽澱淀濃浓濾滤灑洒灘滩灣湾炸炸為为烏乌烤烤無无煙烟熱热燒烧燭烛爐炉牆墙現现瑪玛產产畫画異异當当疊叠發发盞盏盤盘碗碗種种稱称穀谷穩稳節节籃篮籽籽糧粮糰团紅红純纯紙纸終终組组結结給给統统絲丝經经綠绿綿绵緊紧線线編编緩缓練练縣县縮缩總总織织繞绕繪绘繼继續续纖纤罌罂罐罐罰罚羅罗聖圣聞闻聯联聲声職职聽听腦脑腳脚膠胶臉脸臺台與与興兴舉举舊旧艙舱艱艰莖茎莢荚葉叶著着蓋盖蔥葱薑姜藍蓝藥药蘋苹蘭兰蘿萝處处號号蝦虾蟲虫蟻蚁蠔蚝蠟蜡術术衛卫衝冲補补裝装裡里製制複复襪袜覆覆見见規规視视親亲覺觉覽览觀观角角訂订計计訊讯記记訪访設设許许診诊註注詞词試试詩诗話话該该認认誕诞語语誠诚誤误說说誰谁課课調调談谈請请論论諸诸諾诺謝谢證证識识譜谱護护讀读變变讓让豐丰貓猫貝贝貨货買买費费貼贴資资賣卖質质購购賽赛趕赶趨趋跡迹踐践蹤踪車车軟软較较載载輔辅輕轻輪轮輯辑輸输轉转辦办這这連连週周進进運运過过達达違违遞递遠远適适遲迟遷迁選选遺遗還还邊边郵邮鄉乡醃腌醫医醬酱釀酿釋释針针鈕钮銀银銷销鋼钢錄录錢钱錯错錶表鍋锅鍵键鎖锁鏡镜鐘钟鐵铁長长門门閃闪閉闭開开閒闲間间閱阅闊阔關关陰阴陳陈陽阳隊队階阶際际隨随險险隱隐隻只雖虽雙双雜杂雞鸡離离難难雪雪雲云電电靜静韓韩響响頁页頂顶項项順顺須须頌颂預预頓顿領领頭头頻频題题額额顏颜願愿類类顯显風风飛飞飯饭飲饮飼饲飽饱飾饰餅饼養养餘余餡馅館馆馬马騎骑驅驱驗验驚惊體体髮发鬆松鬥斗魚鱼魯鲁鮭鲑鮮鲜鯛鲷鯨鲸鳥鸟鳳凤鴛鸳鴦鸯鴨鸭鵝鹅鷹鹰鹹咸麗丽麥麦麵面麼么黃黄點点黨党黴霉齊齐齒齿龍龙龜龟";
+const T2S_MAP = new Map();
+for (let i = 0; i < T2S.length; i += 2) T2S_MAP.set(T2S[i], T2S[i + 1]);
+export const toSimplified = text => Array.from(String(text), ch => T2S_MAP.get(ch) ?? ch).join("");

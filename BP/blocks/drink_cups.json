@@ -20,19 +20,19 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_takeaway_cup",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         },
         "cup": {
           "texture": "kb_fill_shaken",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         },
         "lid": {
           "texture": "kb_cup_lid",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         },
         "straw": {
           "texture": "kb_straw",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:collision_box": false,

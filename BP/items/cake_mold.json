@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:cake_mold.name"
+      },
       "minecraft:icon": "kb_cake_mold",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

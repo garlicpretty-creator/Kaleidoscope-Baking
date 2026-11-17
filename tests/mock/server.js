@@ -38,6 +38,7 @@ for (const f of readdirSync(BP + "blocks")) {
 }
 
 export const EquipmentSlot = { Mainhand: "Mainhand" };
+export class MolangVariableMap { constructor() { this.vars = {}; } setColorRGB(k, c) { this.vars[k] = c; } setFloat(k, v) { this.vars[k] = v; } }
 export const GameMode = { Creative: "Creative", Survival: "Survival" };
 
 export class ItemStack {
@@ -80,32 +81,38 @@ class Block {
   setType(id) { if (id === "minecraft:air") this.dimension._blocks.delete(this._k()); else this.setPermutation(BlockPermutation.resolve(id)); }
 }
 
-class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; this.entities = new Set(); }
-  getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
-  spawnEntity(typeId, location) {
-    const dim = this;
-    const e = {
-      id: `e${++entityIds}`, typeId, location: { ...location }, tags: new Set(), held: undefined, isValid: true,
-      addTag(t) { e.tags.add(t); }, removeTag(t) { e.tags.delete(t); }, getTags() { return [...e.tags]; }, hasTag(t) { return e.tags.has(t); },
-      teleport(l) { e.location = { ...l }; },
-      runCommand(cmd) { const m = cmd.match(/slot\.weapon\.mainhand 0 (\S+)/); if (m) e.held = m[1]; },
-      triggerEvent(ev) { if (ev.endsWith("despawn")) e.remove(); },
-      remove() { e.isValid = false; dim.entities.delete(e); }
-    };
-    this.entities.add(e);
-    return e;
+class MockEntity {
+  constructor(dim, typeId, location) {
+    this.dimension = dim; this.typeId = typeId; this.location = { ...location }; this.isValid = true;
+    this._tags = []; this._props = {}; this.rotation = { x: 0, y: 0 };
   }
-  getEntities({ type, location, maxDistance } = {}) {
-    return [...this.entities].filter(e => (!type || e.typeId === type) && (!location ||
-      Math.hypot(e.location.x - location.x, e.location.y - location.y, e.location.z - location.z) <= (maxDistance ?? Infinity)));
-  }
-  spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
-  playSound(id) { this.sounds.push(id); }
-  spawnParticle() {}
+  addTag(t) { if (!this._tags.includes(t)) this._tags.push(t); return true; }
+  removeTag(t) { this._tags = this._tags.filter(x => x !== t); return true; }
+  hasTag(t) { return this._tags.includes(t); }
+  teleport(l) { this.location = { ...l }; }
+  /** The item display holds its item via `replaceitem ... slot.weapon.mainhand`. */
+  runCommand(cmd) { const m = cmd.match(/slot\.weapon\.mainhand 0 (\S+)/); if (m) this.held = m[1]; }
+  getTags() { return [...this._tags]; }
+  getProperty(k) { return this._props[k]; }
+  setProperty(k, v) { this._props[k] = v; }
+  setRotation(r) { this.rotation = { ...r }; }
+  triggerEvent(ev) { if (ev.endsWith(":despawn")) this.remove(); }
+  remove() { this.isValid = false; const i = this.dimension.entities.indexOf(this); if (i >= 0) this.dimension.entities.splice(i, 1); }
 }
 
-let entityIds = 0;
+class Dimension {
+  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; this.entities = []; this.particles = []; }
+  spawnEntity(typeId, location) { const e = new MockEntity(this, typeId, location); this.entities.push(e); return e; }
+  getEntities(o = {}) {
+    return this.entities.filter(e => (!o.type || e.typeId === o.type) && (!o.location ||
+      Math.hypot(e.location.x - o.location.x, e.location.y - o.location.y, e.location.z - o.location.z) <= (o.maxDistance ?? Infinity)));
+  }
+  getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
+  spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
+  playSound(id) { this.sounds.push(id); }
+  spawnParticle(id, loc, vars) { this.particles.push({ id, loc, vars }); }
+}
+
 const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };
 const dynamic = new Map();
 const overworld = new Dimension("minecraft:overworld");
@@ -162,12 +169,13 @@ export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) 
   const saturation = { currentValue: 0, effectiveMax: 20, setCurrentValue(v) { this.currentValue = v; } };
   const p = {
     id: `p${++playerIds}`, typeId: "minecraft:player", effects: new Map(), hunger, saturation,
-    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], inv,
+    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], sounds: [], inv,
     addEffect(id, duration, opts) { p.effects.set(id, { duration, amplifier: opts?.amplifier ?? 0 }); },
     removeEffect(id) { p.effects.delete(id); },
     getDynamicProperty: k => props.get(k), setDynamicProperty: (k, v) => (v === undefined ? props.delete(k) : props.set(k, v)),
     getGameMode: () => (creative ? GameMode.Creative : GameMode.Survival),
     onScreenDisplay: { setActionBar: m => p.messages.push(m) },
+    playSound(id) { p.sounds.push(id); },
     getComponent(name) {
       if (name === "minecraft:inventory") return { container: inv };
       if (name === "minecraft:player.hunger") return hunger;

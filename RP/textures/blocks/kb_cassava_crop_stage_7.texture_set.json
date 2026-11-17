@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cassava_crop_stage_7",
+    "normal": "kb_cassava_crop_stage_7_normal",
+    "metalness_emissive_roughness": "kb_cassava_crop_stage_7_mer"
+  }
+}

@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:pastry_soup.name"
+      },
       "minecraft:icon": "kb_pastry_soup",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

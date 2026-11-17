@@ -16,9 +16,9 @@ import {
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import { all } from "../api/registry.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
+  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
 } from "../utils/runtime.js";
-import { setFill } from "../utils/display.js";
+import { KIND, removeVisual, setMotion, showContents, steam } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const ESPRESSO_ID = "kaleidoscope_baking:espresso_machine";
@@ -43,20 +43,6 @@ function carrierFor(resultId) {
   return all("espresso").find(r => r.result === resultId)?.carrier ?? "";
 }
 
-function status(block, s) {
-  const parts = [t(`${MSG}status`, s.water)];
-  if (s.ready) return [...parts, t(`${MSG}ready`, itemName(s.ready))];
-  const recipe = espressoRecipe(s);
-  if (!recipe) {
-    parts.push(t(`${MSG}idle`));
-    if (s.additive) parts.push({ text: " §7+§r " }, itemName(s.additive));
-    return parts;
-  }
-  if (redstonePower(block) <= 0) return [...parts, t(`${MSG}no_power`)];
-  if (s.water <= 0) return [...parts, t(`${MSG}no_water`)];
-  return [...parts, t(`${MSG}brewing`, itemName(recipe.result), Math.min(99, Math.floor((s.progress / recipe.time) * 100)))];
-}
-
 function interact(block, player) {
   const s = loadStation(PREFIX, block, normalizeEspresso);
   const held = heldItem(player);
@@ -65,12 +51,12 @@ function interact(block, player) {
   if (!held) {
     if (s.ready) {
       const cup = carrierFor(s.ready);
-      if (!takeCarrier(player, cup)) { actionBar(player, t(`${MSG}need_cup`, itemName(cup))); return; }
+      if (!takeCarrier(player, cup)) { refuse(block.dimension, spout(block)); return; }
       giveItems(player, s.ready, 1);
       const by = all("espresso").find(r => r.result === s.ready)?.byproduct;
       if (by) giveItems(player, by, 1);
       s.ready = "";
-      setFill(block, 0);
+      showContents(block, KIND.espresso, { fill: 0 });
       sound(block.dimension, "random.pop", spout(block), 0.6, 1.1);
       save();
       return;
@@ -80,7 +66,6 @@ function interact(block, player) {
       s.coffee = ""; s.additive = ""; s.progress = 0;
       save(); untrackStation(PREFIX, block);
     }
-    actionBar(player, ...status(block, s));
     return;
   }
 
@@ -90,7 +75,6 @@ function interact(block, player) {
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     sound(block.dimension, "bucket.empty_water", spout(block));
-    actionBar(player, t(`${MSG}water_filled`));
     save();
     return;
   }
@@ -98,22 +82,23 @@ function interact(block, player) {
   if (r.reason === "not_coffee") r = loadEspressoAdditive(s, id);
   if (!r.ok) {
     const key = r.reason === "not_additive" ? "not_coffee" : r.reason;
-    actionBar(player, t(`${MSG}${key}`, itemName(id)));
+    refuse(block.dimension, spout(block));
     return;
   }
   consumeHeld(player, 1);
   const back = CONTAINER_RETURNS[id];
   if (back && !isCreative(player)) giveItems(player, back, 1);
   sound(block.dimension, "random.click", spout(block), 0.7, 1.3);
-  actionBar(player, t(`${MSG}loaded`, itemName(id)), { text: "\n" }, ...status(block, s));
   save();
 }
 
 registerTicker(PREFIX, ESPRESSO_ID, TICK, normalizeEspresso, isEmpty, (block, s) => {
   const res = tickEspresso(s, TICK, redstonePower(block));
-  if (res.state === "brewing") particle(block.dimension, "minecraft:basic_smoke_particle", { x: block.x + 0.5, y: block.y + 0.95, z: block.z + 0.5 });
+  // a coffee stream runs from the group head while it brews; crema appears in the cup when done
+  setMotion(block, KIND.espresso, res.state === "brewing");
+  if (res.state === "brewing") steam(block.dimension, { x: block.x + 0.5, y: block.y + 0.8, z: block.z + 0.5 });
   if (res.state === "done") {
-    setFill(block, 1);
+    showContents(block, KIND.espresso, { fill: 1, tint: 6, progress: 1 });
     sound(block.dimension, "random.orb", spout(block), 0.6, 1.4);
     particle(block.dimension, "minecraft:villager_happy", spout(block));
   }
@@ -130,6 +115,7 @@ function spill(dimension, loc) {
   if (s.ready) spawnItems(dimension, at, s.ready, 1);
   saveStation(PREFIX, fake, {}, () => true);
   untrackStation(PREFIX, fake);
+  removeVisual(fake);
 }
 
 export const espressoMachineComponent = {

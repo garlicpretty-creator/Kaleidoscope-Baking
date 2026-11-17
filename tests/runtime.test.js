@@ -22,7 +22,8 @@ function placeOven(player, c) {
   return true;
 }
 const ovenBlocks = () => [...dim._blocks.values()].filter(p => p.type.id === OVEN).length;
-const lastMsg = p => JSON.stringify(p.messages.at(-1));
+// Baking never writes text to the screen; a refusal is a low note (and a puff of smoke) instead.
+const refused = () => dim.sounds.at(-1) === "note.bass";
 
 test("components are registered and Baking answers api_ping", () => {
   assert.ok(oven && bowl);
@@ -50,17 +51,18 @@ test("oven: placing grows a 3x3x3 structure facing the player", () => {
   assert.equal(ovenBlocks(), 27);
   const door = dim.getBlock({ x: 0, y: 65, z: 1 }).permutation;
   assert.equal(door.getState("kaleidoscope_baking:facing"), "south");
-  assert.equal(door.getState("kaleidoscope_baking:oven_part"), 16);
+  assert.equal(door.getState("kaleidoscope_baking:oven_layer") * 9 + door.getState("kaleidoscope_baking:oven_cell"), 16);
 });
 
 test("oven: placement is refused without a clear 3x3x3 space or when standing inside", () => {
   dim.getBlock({ x: 21, y: 65, z: 0 }).setType("minecraft:dirt");
   const p = makePlayer({ x: 20.5, z: 8.5 });
   assert.equal(placeOven(p, { x: 20, y: 64, z: 0 }), false);
-  assert.match(lastMsg(p), /no_room/);
+  assert.ok(refused(), "no room: placement refused with the low note");
+  assert.equal(p.messages.length, 0, "no text");
   const q = makePlayer({ x: 40.5, z: 0.5 });
   assert.equal(placeOven(q, { x: 40, y: 64, z: 0 }), false);
-  assert.match(lastMsg(q), /too_close/);
+  assert.ok(refused(), "standing inside: refused");
   assert.equal(ovenBlocks(), 27);
 });
 
@@ -70,18 +72,16 @@ test("oven: mold from inventory, fuel, bake to perfect, take out from any part",
   p.inv.slots[5] = new ItemStack("kaleidoscope_baking:cake_mold", 1);
   p.hold("kaleidoscope_baking:cake_batter", 2);
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /loaded_no_fuel/);
   assert.equal(p.inv.count("kaleidoscope_baking:cake_mold"), 0, "mold moved into the oven");
   assert.equal(p.inv.count("kaleidoscope_baking:cake_batter"), 1);
 
   // second batter: no mold left -> refused, batter kept
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /need_mold/);
+  assert.ok(refused(), "no mold: refused");
   assert.equal(p.inv.count("kaleidoscope_baking:cake_batter"), 1);
 
   p.hold("minecraft:coal", 3);
   oven.onPlayerInteract({ block: corner, player: p });
-  assert.match(lastMsg(p), /fuel_added/);
   const firebox = () => dim.getBlock({ x: 0, y: 64, z: 1 }).permutation.getState("kaleidoscope_baking:lit");
   assert.equal(firebox(), true, "firebox lights while baking");
 
@@ -152,7 +152,7 @@ test("mixing bowl: liquids return their container, whisking makes butter", () =>
   const p = makePlayer();
   p.hold("minecraft:dirt");
   bowl.onPlayerInteract({ block: b, player: p });
-  assert.match(lastMsg(p), /not_ingredient/);
+  assert.ok(refused(), "dirt is not an ingredient");
 
   p.hold("minecraft:milk_bucket");
   bowl.onPlayerInteract({ block: b, player: p });
@@ -161,7 +161,7 @@ test("mixing bowl: liquids return their container, whisking makes butter", () =>
   p.hold("kaleidoscope_baking:whisk");
   for (let i = 0; i < 8; i++) bowl.onPlayerInteract({ block: b, player: p });
   assert.equal(p.inv.count("kaleidoscope_baking:butter"), 2);
-  assert.match(lastMsg(p), /bowl\.done/);
+  assert.equal(p.messages.length, 0, "no text");
 });
 
 test("mixing bowl: cake batter from tagged ingredients; breaking spills solids only", () => {
@@ -171,7 +171,6 @@ test("mixing bowl: cake batter from tagged ingredients; breaking spills solids o
   for (const id of ["kaleidoscope_cookery:flour", "minecraft:egg", "minecraft:sugar", "minecraft:milk_bucket"]) {
     p.hold(id); bowl.onPlayerInteract({ block: b, player: p });
   }
-  assert.match(lastMsg(p), /bowl\.ready/);
   dim.spawned.length = 0;
   bowl.onPlayerBreak({ block: b });
   assert.deepEqual(dim.spawned.map(s => s.id).sort(), ["kaleidoscope_cookery:flour", "minecraft:egg", "minecraft:sugar"]);
@@ -185,4 +184,49 @@ test("oven: a late duplicate teardown never refunds a second oven", () => {
   oven.onPlayerBreak({ block: b, brokenBlockPermutation: perm, player: p });
   oven.onPlayerBreak({ block: b, brokenBlockPermutation: perm, player: p });
   assert.equal(dim.spawned.filter(s => s.id === OVEN).length, 1);
+});
+
+test("oven door visual: opens when loading, shows the bake, opens and closes by hand, removed with the oven", () => {
+  const VIS = "kaleidoscope_baking:station_visual";
+  const p = makePlayer({ x: 30.5, z: 5.5 });
+  assert.ok(placeOven(p, { x: 30, y: 64, z: 0 }));
+  const near = () => dim.getEntities({ type: VIS, location: { x: 30.5, y: 65, z: 1.5 }, maxDistance: 0.6 });
+  assert.equal(near().length, 1, "the door appears with the oven");
+  const v = near()[0];
+  assert.equal(v.getProperty("kaleidoscope_baking:kind"), 7);
+  assert.equal(v.rotation.y, 0, "south-facing oven: door faces south");
+  p.hold("minecraft:potato", 1);
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 30, y: 64, z: 0 }), player: p });
+  assert.equal(v.getProperty("kaleidoscope_baking:active"), true, "loading opens the door");
+  p.hold("minecraft:coal", 1);
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 30, y: 64, z: 0 }), player: p });
+  __mock.tick(1);
+  const prop = k => v.getProperty(`kaleidoscope_baking:${k}`);
+  assert.equal(prop("lit"), true, "embers glow while baking");
+  assert.equal(prop("fill"), 1, "the bake shows inside the mouth");
+  assert.ok(prop("progress") > 0 && prop("progress") < 1, "it rises as it cooks");
+  __mock.tick(3);
+  assert.equal(prop("active"), false, "the door swings shut again after loading");
+  // An empty hand on the door with nothing ready to take opens it, and it stays open; again closes it.
+  const doorBlock = dim.getBlock({ x: 30, y: 65, z: 1 });
+  p.hold(undefined);
+  oven.onPlayerInteract({ block: doorBlock, player: p });
+  assert.equal(prop("active"), true, "the door opens by hand");
+  __mock.tick(5);
+  assert.equal(prop("active"), true, "and stays open");
+  assert.equal(p.inv.count("minecraft:potato"), 0, "the unfinished bake stays in");
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 31, y: 64, z: 0 }), player: p });
+  assert.equal(prop("active"), true, "other parts of the oven do not move the door");
+  oven.onPlayerInteract({ block: doorBlock, player: p });
+  assert.equal(prop("active"), false, "the door closes by hand");
+  // Done: golden. Left in: dark.
+  __mock.tick(8);
+  assert.equal(prop("tint"), 7, "a finished bake turns golden");
+  assert.equal(prop("progress"), 1);
+  __mock.tick(30);
+  assert.equal(prop("tint"), 6, "a burnt one turns dark");
+  assert.equal(prop("lit"), false, "nothing left to bake: the embers die down");
+  const ctrl = dim.getBlock({ x: 30, y: 64, z: 0 });
+  oven.onPlayerBreak({ block: ctrl, brokenBlockPermutation: ctrl.permutation, player: p });
+  assert.equal(near().length, 0, "breaking the oven removes the door");
 });

@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_mixing_bowl",
+    "normal": "kb_mixing_bowl_normal",
+    "metalness_emissive_roughness": "kb_mixing_bowl_mer"
+  }
+}

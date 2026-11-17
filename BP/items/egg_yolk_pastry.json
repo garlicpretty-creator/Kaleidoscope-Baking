@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:egg_yolk_pastry.name"
+      },
       "minecraft:icon": "kb_egg_yolk_pastry",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:birthday_candle.name"
+      },
       "minecraft:icon": "kb_birthday_candle",
       "minecraft:max_stack_size": 64
     }

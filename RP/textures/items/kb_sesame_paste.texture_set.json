@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_sesame_paste",
+    "normal": "kb_sesame_paste_normal",
+    "metalness_emissive_roughness": "kb_sesame_paste_mer"
+  }
+}

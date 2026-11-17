@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:milk_frother.name"
+      },
       "minecraft:icon": "kb_milk_frother",
       "minecraft:max_stack_size": 1,
       "minecraft:tags": {

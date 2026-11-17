@@ -12,7 +12,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_cinnamon_leaves_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:destructible_by_mining": {
@@ -25,9 +25,7 @@
       },
       "minecraft:map_color": "#326E32",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/cinnamon_leaves.json",
-      "minecraft:tags": [
-        "leaves"
-      ]
+      "tag:leaves": {}
     }
   }
 }

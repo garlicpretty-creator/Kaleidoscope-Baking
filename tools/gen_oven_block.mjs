@@ -3,12 +3,12 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
-  ALL_PARTS, CHIMNEY_PART, FACINGS, FACING_STATE, LIT_STATE, OVEN_ID, PART_STATE, doorPart, fireboxPart, partOffset
+  ALL_PARTS, CELL_STATE, CHIMNEY_PART, FACINGS, FACING_STATE, LAYER_STATE, LIT_STATE, OVEN_ID, doorPart, fireboxPart, partOffset
 } from "../BP/scripts/utils/ovenGeometry.js";
 
 const out = fileURLToPath(new URL("../BP/blocks/oven.json", import.meta.url));
 const tex = name => ({ texture: name, render_method: "opaque" });
-const part = i => `q.block_state('${PART_STATE}') == ${i}`;
+const part = i => `(q.block_state('${LAYER_STATE}') == ${Math.floor(i / 9)} && q.block_state('${CELL_STATE}') == ${i % 9})`;
 const facing = f => `q.block_state('${FACING_STATE}') == '${f}'`;
 const lit = v => `q.block_state('${LIT_STATE}') == ${v}`;
 const BRICK = "kb_oven_brick";
@@ -28,10 +28,18 @@ permutations.push({
 
 // Door and firebox face outward on the oven's front. Parts never overlap, so exactly one
 // permutation (besides the base) applies to any block.
+// The door block is hollow (RP/models/blocks/oven_mouth.geo.json, open toward +z) so the bake inside shows through
+// the door's window; +y rotation turns that south-facing mouth toward the oven's front. It lets light in.
+const MOUTH_ROTATION = { south: 0, east: 90, north: 180, west: 270 };
 for (const f of FACINGS) {
   permutations.push({
     condition: `${part(doorPart(f))} && ${facing(f)}`,
-    components: { "minecraft:material_instances": { "*": tex(BRICK), [f]: tex("kb_oven_door") } }
+    components: {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+      "minecraft:material_instances": { "*": tex(BRICK), inside: tex("kb_oven_door") },
+      "minecraft:transformation": { rotation: [0, MOUTH_ROTATION[f], 0] },
+      "minecraft:light_dampening": 0
+    }
   });
   for (const on of [false, true]) {
     const components = {
@@ -49,7 +57,9 @@ const block = {
       identifier: OVEN_ID,
       states: {
         // First value = default permutation = the controller the player places.
-        [PART_STATE]: [...ALL_PARTS],
+        // part index = layer * 9 + cell (a state may have at most 16 values); default = the controller (layer 0, cell 4)
+        [LAYER_STATE]: [0, 1, 2],
+        [CELL_STATE]: [4, 0, 1, 2, 3, 5, 6, 7, 8],
         [FACING_STATE]: ["south", "north", "east", "west"],
         [LIT_STATE]: [false, true]
       }

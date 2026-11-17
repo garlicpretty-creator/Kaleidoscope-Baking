@@ -16,7 +16,7 @@ import { BlockPermutation } from "@minecraft/server";
 import { CONTENT } from "../data/generated/content.js";
 import { maybeConvertPlant } from "../compat/index.js";
 import {
-  actionBar, consumeHeld, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, stackHasTag, t
+  refuse, consumeHeld, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, stackHasTag, t
 } from "../utils/runtime.js";
 
 const GROWTH = "kaleidoscope_baking:growth";
@@ -182,7 +182,7 @@ export const herbPlanterComponent = {
     const p = plantOf(block);
     if (p === "none") {
       const plant = held && BY_SEED[held.typeId];
-      if (!plant) { actionBar(player, held ? t(`${MSG}not_plant`, itemName(held.typeId)) : t(`${MSG}empty`)); return; }
+      if (!plant) { if (held) refuse(block.dimension, centre(block)); return; }
       try { block.setPermutation(block.permutation.withState(PLANT, plant).withState(GROWTH, 0)); } catch { return; }
       consumeHeld(player, 1);
       sound(block.dimension, "dig.grass", centre(block));
@@ -198,8 +198,6 @@ export const herbPlanterComponent = {
     } else if (!held && player.isSneaking) {
       spawnItems(block.dimension, centre(block), PLANTER[p].seed, 1);
       try { block.setPermutation(block.permutation.withState(PLANT, "none").withState(GROWTH, 0)); } catch {}
-    } else {
-      actionBar(player, t("kaleidoscope_baking.msg.planter.growing", itemName(PLANTER[p].harvest), s));
     }
   },
   onPlayerBreak({ block, brokenBlockPermutation }) {

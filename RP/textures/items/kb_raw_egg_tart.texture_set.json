@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_raw_egg_tart",
+    "normal": "kb_raw_egg_tart_normal",
+    "metalness_emissive_roughness": "kb_raw_egg_tart_mer"
+  }
+}

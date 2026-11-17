@@ -158,7 +158,7 @@ for iid, zh, en, col in [("raw_apple_pie", "蘋果派生胚", "Raw Apple Pie", C
 #   kind "annual":    harvest by breaking when mature (loot), seeds back
 #   kind "perennial": interact when mature -> harvest, reset to stage `reset`
 # ---------------------------------------------------------------------------
-SOIL = ["minecraft:grass_block", "minecraft:dirt", "minecraft:podzol", "minecraft:coarse_dirt", "minecraft:farmland", "minecraft:moss_block", "minecraft:rooted_dirt"]
+SOIL = ["minecraft:grass_block", "minecraft:dirt", "minecraft:podzol", "minecraft:coarse_dirt", "minecraft:farmland", "minecraft:moss_block", "minecraft:dirt_with_roots"]
 FARMLAND = ["minecraft:farmland"]
 JUNGLE = ["minecraft:jungle_log", "minecraft:grass_block", "minecraft:podzol", "minecraft:dirt"]
 PLACE_ON = {"soil": SOIL, "farmland": FARMLAND, "jungle": JUNGLE}
@@ -291,10 +291,17 @@ bake("burnt_food", "焦黑的烘焙物", "Burnt Bake", ("burnt", C["black"], Non
 # ---------------------------------------------------------------------------
 # Drinks
 # ---------------------------------------------------------------------------
+DRINK_BLOCKS = []  # mug drinks that can be set down, up to 4 mugs on one block (like Cookery's teacups)
+
+
 def coffee_drink(iid, zh, en, col, n=1, sat=0.3, cup="coffee_mug", stack=16, extra_tags=()):
+    # Mug drinks with no per-item data (stack > 1) can be placed; shaken drinks keep sweetness / ice on the item.
+    placeable = cup == "coffee_mug" and stack > 1
+    if placeable:
+        DRINK_BLOCKS.append(iid)
     item(iid, zh, en, G_DRINK, ("mug" if cup == "coffee_mug" else "takeaway", C["white"], col), stack,
          ["kaleidoscope:drink", "kaleidoscope:hot_drink" if cup == "coffee_mug" else "kaleidoscope:cold_drink", *extra_tags],
-         food=drink(n, sat, cup))
+         food=drink(n, sat, cup), place=iid if placeable else None)
 
 
 coffee_drink("espresso", "濃縮咖啡", "Espresso", C["coffee"], extra_tags=["kaleidoscope:coffee"])
@@ -328,24 +335,95 @@ CRAFTING = [
     ("espresso_machine", ["III", "IRI", "IBI"], {"I": "minecraft:iron_ingot", "R": "minecraft:redstone", "B": "minecraft:bucket"}, 1),
     ("pour_over_stand", [" P ", " S ", "SSS"], {"P": "minecraft:paper", "S": "minecraft:stick"}, 1),
     ("drink_shaker", [" N ", "I I", " I "], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
-    ("herb_planter", ["T T", "TDT"], {"T": "minecraft:terracotta", "D": "minecraft:dirt"}, 1),
+    ("herb_planter", ["T T", "TDT"], {"T": "minecraft:hardened_clay", "D": "minecraft:dirt"}, 1),
     ("whisk", [" N ", "NNN", " S "], {"N": "minecraft:iron_nugget", "S": "minecraft:stick"}, 1),
     ("milk_frother", [" N ", " N ", " S "], {"N": "minecraft:iron_nugget", "S": "minecraft:stick"}, 1),
     ("rolling_pin", ["SPS"], {"S": "minecraft:stick", "P": "minecraft:oak_planks"}, 1),
     ("bread_knife", ["  I", " I ", "S  "], {"I": "minecraft:iron_ingot", "S": "minecraft:stick"}, 1),
-    ("cake_mold", ["I I", "III"], {"I": "minecraft:iron_ingot"}, 1),
+    ("cake_mold", ["IPI", "III"], {"I": "minecraft:iron_ingot", "P": "minecraft:paper"}, 1),  # not the minecart shape
     ("loaf_pan", ["N N", "N N", "NNN"], {"N": "minecraft:iron_nugget"}, 1),
     ("baking_tray", ["III"], {"I": "minecraft:iron_ingot"}, 1),
-    ("pie_tin", ["N N", " N "], {"N": "minecraft:iron_ingot"}, 1),
+    ("pie_tin", ["N N", " N "], {"N": "minecraft:iron_nugget"}, 1),  # nuggets: the ingot shape is the bucket
     ("muffin_tin", ["NNN", "III"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
-    ("taiyaki_mold", ["I I", "I I"], {"I": "minecraft:iron_ingot"}, 1),
+    ("taiyaki_mold", ["INI", "INI"], {"I": "minecraft:iron_ingot", "N": "minecraft:iron_nugget"}, 1),  # not iron boots
     ("coffee_mug", ["C C", "CCC"], {"C": "minecraft:clay_ball"}, 4),
     ("takeaway_cup", ["P P", " P "], {"P": "minecraft:paper"}, 4),
-    ("birthday_candle", ["S", "H"], {"S": "minecraft:string", "H": "minecraft:honeycomb"}, 4),
+    ("birthday_candle", ["S", "H", "D"], {"S": "minecraft:string", "H": "minecraft:honeycomb", "D": "minecraft:pink_dye"}, 4),  # not the candle
 ]
 STATIONS.append(dict(id="herb_planter", cubes=None, tex=(180, 100, 70), sound="stone"))
 item("herb_planter", "香草盆栽", "Herb Planter", G_STATIONS, ("planter", (180, 100, 70), C["green"]), 64, place="herb_planter")
 PLANTER_PLANTS = ["rosemary", "thyme", "lavender", "mint", "strawberry"]
+
+# --- Biomes O' Plenty (Bedrock port) handshake ------------------------------------
+# BOP biome id -> the vanilla tags/biome names it stands in for (its `bop_like_*` tags).
+# Derived from BOP_BR docs/handshake.json v1.2.0; refresh by re-copying that file's `like` lists.
+# Lets `wild` biome tags also match BOP biomes (feature rules + grass drops); inert when BOP is absent.
+BOP_LIKE = {
+    "bop:auroral_garden": ["grove", "mountains", "snowy_slopes"],
+    "bop:bayou": ["swamp", "swamp_water_huge_mushroom", "swampland"],
+    "bop:bog": ["mangrove_swamp"],
+    "bop:cold_desert": ["ice", "ice_plains", "ice_plains_spikes"],
+    "bop:coniferous_forest": ["forest", "taiga"],
+    "bop:crag": ["extreme_hills", "jagged_peaks", "mountains"],
+    "bop:crystalline_chasm": ["warped_forest"],
+    "bop:dead_forest": ["cold_taiga_mutated", "forest", "taiga"],
+    "bop:dryland": ["savanna"],
+    "bop:dune_beach": ["beach"],
+    "bop:erupting_inferno": ["basalt_deltas"],
+    "bop:field": ["plains"],
+    "bop:fir_clearing": ["forest", "taiga", "taiga_mutated"],
+    "bop:floodplain": ["swamp", "swamp_water_huge_mushroom", "swampland_mutated"],
+    "bop:forested_field": ["plains", "sunflower_plains"],
+    "bop:fungal_jungle": ["lush_caves"],
+    "bop:glowing_grotto": ["lush_caves"],
+    "bop:gravel_beach": ["beach", "cold_beach", "stone", "stone_beach"],
+    "bop:highland": ["extreme_hills", "extreme_hills_mutated"],
+    "bop:hot_springs": ["meadow", "mountains"],
+    "bop:jade_cliffs": ["mountains", "stony_peaks"],
+    "bop:lavender_field": ["plains", "sunflower_plains"],
+    "bop:lush_desert": ["desert"],
+    "bop:lush_savanna": ["plateau", "savanna", "savanna_plateau"],
+    "bop:maple_woods": ["forest", "taiga"],
+    "bop:marsh": ["swamp", "swamp_water_huge_mushroom", "swampland"],
+    "bop:mediterranean_forest": ["plateau", "savanna", "savanna_plateau", "savanna_plateau_mutated"],
+    "bop:moor": ["meadow", "mountains"],
+    "bop:muskeg": ["swamp", "swamp_water_huge_mushroom", "swampland_mutated"],
+    "bop:mystic_grove": ["flower_forest"],
+    "bop:old_growth_dead_forest": ["forest", "mega", "mega_taiga", "taiga"],
+    "bop:old_growth_woodland": ["forest", "roofed", "roofed_forest", "roofed_forest_mutated"],
+    "bop:ominous_woods": ["forest", "pale_garden", "roofed", "roofed_forest"],
+    "bop:orchard": ["forest", "oak_forest"],
+    "bop:origin_valley": ["forest", "oak_forest"],
+    "bop:overgrown_greens": ["jungle", "jungle_mutated"],
+    "bop:pasture": ["plains"],
+    "bop:prairie": ["plains"],
+    "bop:pumpkin_patch": ["forest", "oak_forest"],
+    "bop:rainforest": ["jungle"],
+    "bop:redwood_forest": ["forest", "mega", "mega_taiga", "redwood_taiga_mutated", "taiga"],
+    "bop:rocky_rainforest": ["bamboo", "bamboo_jungle", "jungle"],
+    "bop:rocky_shrubland": ["extreme_hills", "extreme_hills_edge", "extreme_hills_plus_trees", "forest", "mountain"],
+    "bop:scrubland": ["savanna"],
+    "bop:seasonal_forest": ["birch", "birch_forest", "birch_forest_mutated", "forest"],
+    "bop:shrubland": ["plains"],
+    "bop:snowblossom_grove": ["cherry_grove", "mountains"],
+    "bop:snowy_coniferous_forest": ["cold_taiga", "forest", "taiga"],
+    "bop:snowy_fir_clearing": ["cold_taiga", "forest", "taiga"],
+    "bop:snowy_maple_woods": ["cold_taiga", "forest", "taiga"],
+    "bop:spider_nest": ["dripstone_caves"],
+    "bop:subtropics": ["jungle", "jungle_edge", "jungle_edge_mutated"],
+    "bop:tropics": ["beach"],
+    "bop:tundra": ["ice", "ice_plains"],
+    "bop:undergrowth": ["crimson_forest"],
+    "bop:visceral_heap": ["hell"],
+    "bop:volcanic_plains": ["mesa", "mesa_bryce", "savanna", "savanna_mutated", "surface_mineshaft"],
+    "bop:volcano": ["frozen_peaks", "mountains", "stony_peaks"],
+    "bop:wasteland": ["desert", "desert_mutated"],
+    "bop:wasteland_steppe": ["desert"],
+    "bop:wetland": ["mangrove_swamp"],
+    "bop:wintry_origin_valley": ["ice", "ice_plains"],
+    "bop:withered_abyss": ["soulsand_valley"],
+    "bop:woodland": ["forest", "oak_forest"],
+}
 
 # ===========================================================================
 # 1.1 additions (docs/PROPOSAL-1.1.zh-TW.md)
@@ -415,23 +493,21 @@ for col, zh, en, rgb, _ in ICING_COLORS:
     bake(f"iced_cookie_{col}", f"{zh}色糖霜餅乾", f"{en} Iced Cookie", ("cookie", C["tan"], rgb), 3, 0.4, COOKIE)
 bake("fried_fish", "炸魚排", "Breaded Fried Fish", ("fish", C["caramel"], C["tan"]), 7, 0.8, ["kaleidoscope:cooked_fish", "kaleidoscope:fish"])
 
-# Placement / display blocks
-STATIONS.append(dict(id="cake_stand", cubes=[([-1, 0, -1], [2, 6, 2]), ([-4, 0, -4], [8, 1, 8]), ([-7, 6, -7], [14, 1, 14])],
+# Placement / display furniture (1.1). Simple placeholder geometry until tools/art draws them.
+FURNITURE = []
+FURNITURE.append(dict(id="cake_stand", cubes=[([-1, 0, -1], [2, 6, 2]), ([-4, 0, -4], [8, 1, 8]), ([-7, 6, -7], [14, 1, 14])],
                      tex=C["white"], sound="stone"))
 item("cake_stand", "蛋糕架", "Cake Stand", G_STATIONS, ("stand", C["white"], C["white"]), 64, place="cake_stand")
-STATIONS.append(dict(id="tea_tray", cubes=[([-1, 0, -1], [2, 15, 2]), ([-6, 2, -6], [12, 1, 12]), ([-5, 7, -5], [10, 1, 10]),
+FURNITURE.append(dict(id="tea_tray", cubes=[([-1, 0, -1], [2, 15, 2]), ([-6, 2, -6], [12, 1, 12]), ([-5, 7, -5], [10, 1, 10]),
                                            ([-4, 12, -4], [8, 1, 8])], tex=(220, 190, 120), sound="metal"))
 item("tea_tray", "三層點心架", "Three-Tier Tea Tray", G_STATIONS, ("stand", (220, 190, 120), C["pink"]), 64, place="tea_tray")
-STATIONS.append(dict(id="bread_display", cubes=[([-8, 0, -8], [16, 2, 16]), ([-8, 2, 6], [16, 12, 2]), ([-8, 7, -8], [16, 1, 16]),
+FURNITURE.append(dict(id="bread_display", cubes=[([-8, 0, -8], [16, 2, 16]), ([-8, 2, 6], [16, 12, 2]), ([-8, 7, -8], [16, 1, 16]),
                                                 ([-8, 14, -8], [16, 2, 16])], tex=C["tan"], sound="wood"))
 item("bread_display", "麵包展示櫃", "Bread Display", G_STATIONS, ("machine", C["tan"], C["crust"]), 64, place="bread_display")
-STATIONS.append(dict(id="pastry_case", cubes=[([-8, 0, -8], [16, 3, 16]), ([-8, 3, 6], [16, 11, 2]), ([-8, 14, -8], [16, 2, 16])],
+FURNITURE.append(dict(id="pastry_case", cubes=[([-8, 0, -8], [16, 3, 16]), ([-8, 3, 6], [16, 11, 2]), ([-8, 14, -8], [16, 2, 16])],
                      tex=(200, 225, 235), sound="glass"))
 item("pastry_case", "甜點櫥窗", "Pastry Case", G_STATIONS, ("machine", (200, 225, 235), C["pink"]), 64, place="pastry_case")
 
-# Hot drinks placeable as stacked Baking mugs (own `mug_stack` component and mug model)
-HOT_CUP_DRINKS = ["espresso", "americano", "latte", "cappuccino", "mocha", "caramel_macchiato", "cinnamon_latte",
-                  "pour_over_light", "pour_over_medium", "pour_over_dark"]
 # Hand-shaken drinks (stack 1, sweetness/ice) are placed by sneaking into a `drink_cups` block.
 SHAKEN_DRINKS = ["bubble_milk_tea", "brown_sugar_pearl_milk", "pearl_black_tea_latte", "oolong_milk_foam", "lavender_milk_tea",
                  "yuanyang", "lemon_green_tea", "lemon_black_tea", "matcha_latte", "mint_mocha", "iced_coffee",
@@ -451,14 +527,3 @@ CRAFTING += [
 CRAFTING_SHAPELESS = [
     ("butter_jar", [f"{NS}:empty_jar", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter"], 1),
 ]
-
-# Block-state visuals for stations: state `kaleidoscope_baking:fill` 0..levels; each level adds
-# cubes (block pixels) drawn with the station's "fill" texture.
-STATION_FILL = {
-    "mixing_bowl": dict(levels=3, color=C["cream"], cubes=lambda lv: [([-4, 1, -4], [8, lv + 1, 8])]),
-    "proofing_basket": dict(levels=3, color=C["dough"], cubes=lambda lv: [([-4, 1, -4], [8, lv + 1, 8])]),
-    "decorating_stand": dict(levels=1, color=C["cream"], cubes=lambda lv: [([-5, 7, -5], [10, 5, 10])]),
-    "espresso_machine": dict(levels=1, color=C["white"], cubes=lambda lv: [([-2, 2, -4], [4, 4, 4])]),
-    "pour_over_stand": dict(levels=1, color=C["dkbrown"], cubes=lambda lv: [([-3, 11, -3], [6, 1, 6])]),
-    "drink_shaker": dict(levels=1, color=C["latte"], cubes=lambda lv: [([-4, 13, -4], [8, 1, 8])]),
-}

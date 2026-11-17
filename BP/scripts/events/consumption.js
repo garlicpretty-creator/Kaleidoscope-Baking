@@ -11,7 +11,7 @@
 import { system, world } from "@minecraft/server";
 import { getFoodEffect } from "../api/effects.js";
 import { CAFFEINE_DECAY_TICKS, SWEETNESS_SATURATION, drinkCaffeine } from "../api/stationLogic.js";
-import { actionBar, onWorldReady, t } from "../utils/runtime.js";
+import { refuse, onWorldReady, t } from "../utils/runtime.js";
 
 export const CAFFEINE_PROP = "kaleidoscope_baking:caffeine";
 export const SWEET_PROP = "kaleidoscope_baking:sweet";
@@ -72,12 +72,12 @@ export function applyConsumption(player, itemId, stack, opts = {}) {
 
   if (c.stage === 2) {
     effect(player, "nausea", 20); effect(player, "weakness", 15); effect(player, "slowness", 15);
-    actionBar(player, t(`${MSG}caffeine.severe`, c.level));
+    cue(player, "mob.warden.heartbeat", 1.0, 1.5);  // racing heart
   } else if (c.stage === 1) {
     effect(player, "nausea", 10);
-    actionBar(player, t(`${MSG}caffeine.palpitations`, c.level));
+    cue(player, "mob.warden.heartbeat", 0.7, 1.1);
   } else if (fx.reduces && before >= 3 && c.level < 3) {
-    actionBar(player, t(`${MSG}caffeine.calm`, c.level));
+    cue(player, "random.orb", 0.3, 0.6);  // settling down
   }
 
   // Hand-shaken drink customisation
@@ -100,13 +100,19 @@ export function applyConsumption(player, itemId, stack, opts = {}) {
     if (other !== undefined && now - other <= (opts.teaWindow ?? TEA_TIME_WINDOW)) {
       feed(player, 2, 0.6);
       effect(player, "absorption", 30);
-      actionBar(player, t(`${MSG}tea_time`));
+      cue(player, "random.levelup", 0.4, 1.8);
+      try { player.dimension.spawnParticle("minecraft:heart_particle", { x: player.location.x, y: player.location.y + 2, z: player.location.z }); } catch {}
       lastEaten.delete(player.id);
     } else {
       rec[fx.category] = now;
       lastEaten.set(player.id, rec);
     }
   }
+}
+
+/** A sound only this player hears. */
+function cue(player, id, volume, pitch) {
+  try { player.playSound(id, { volume, pitch }); } catch {}
 }
 
 world.afterEvents.itemCompleteUse.subscribe(ev => {

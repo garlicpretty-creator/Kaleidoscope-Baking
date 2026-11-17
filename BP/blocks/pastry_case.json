@@ -12,7 +12,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_pastry_case",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:collision_box": {

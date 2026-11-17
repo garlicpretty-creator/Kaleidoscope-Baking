@@ -164,8 +164,10 @@ export function t(key, ...args) {
   return { translate: key, with: { rawtext: withParts } };
 }
 
-export function actionBar(player, ...parts) {
-  try { player.onScreenDisplay.setActionBar({ rawtext: parts }); } catch {}
+/** "Not like that": a low note and a small puff, instead of a text prompt. The held item is never taken. */
+export function refuse(dimension, loc) {
+  try { dimension.playSound("note.bass", loc, { volume: 0.6, pitch: 0.6 }); } catch {}
+  try { dimension.spawnParticle("minecraft:basic_smoke_particle", loc); } catch {}
 }
 
 export function sound(dimension, id, loc, volume = 1, pitch = 1) {

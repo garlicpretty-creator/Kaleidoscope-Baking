@@ -12,37 +12,20 @@
 import { world } from "@minecraft/server";
 import { addToBowl, currentRecipe, normalizeBowl, takeFromBowl, whiskBowl } from "../api/mixingLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
-import { setFill } from "../utils/display.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
+  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
   spawnItems, stackHasTag, t, writeJson
 } from "../utils/runtime.js";
+import { bump, KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
 const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother", "kaleidoscope_baking:piping_bag"];
-// How to name a tool spec in hints.
-const TOOL_NAMES = {
-  "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk",
-  "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother",
-  "#kaleidoscope_baking:piping_bag": "kaleidoscope_baking:piping_bag"
-};
 const PREFIX = "kb_bowl";
 const MSG = "kaleidoscope_baking.msg.bowl.";
 
 const keyOf = block => locKey(PREFIX, block.dimension.id, block);
 const top = block => ({ x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });
 const isTool = stack => TOOL_TAGS.some(tag => stackHasTag(stack, tag));
-const toolName = spec => (TOOL_NAMES[spec] ? itemName(TOOL_NAMES[spec]) : { text: spec });
-
-function contentsMessage(s) {
-  if (!s.items.length) return [t(`${MSG}empty`)];
-  const parts = [t(`${MSG}contents`, s.items.length)];
-  s.items.forEach((it, i) => { parts.push({ text: i ? "§7, §r" : " " }, itemName(it.id)); });
-  const recipe = currentRecipe(s);
-  parts.push({ text: "\n" });
-  parts.push(recipe ? t(`${MSG}ready`, itemName(recipe.result), toolName(recipe.tool), recipe.whisks) : t(`${MSG}no_recipe`));
-  return parts;
-}
 
 function interact(block, player) {
   const key = keyOf(block);
@@ -55,19 +38,18 @@ function interact(block, player) {
     const r = whiskBowl(s, held.typeId);
     if (r.result === "none") {
       const any = currentRecipe(s);
-      if (any) actionBar(player, t(`${MSG}wrong_tool`, toolName(any.tool)));
-      else actionBar(player, ...contentsMessage(s));
+      refuse(block.dimension, at); // wrong tool, or nothing that tool can mix
     } else if (r.result === "progress") {
       changed = true;
+      playMotion(block, KIND.bowl, 14);
       sound(block.dimension, "block.composter.fill", at, 0.7, 1.4);
       particle(block.dimension, "minecraft:water_splash_particle", at);
-      actionBar(player, t(`${MSG}whisking`, itemName(r.recipe.result), r.done, r.need));
     } else {
       changed = true;
+      playMotion(block, KIND.bowl, 14);
       giveItems(player, r.recipe.result, r.recipe.count);
       sound(block.dimension, "random.orb", at, 0.7, 1.1);
       particle(block.dimension, "minecraft:villager_happy", at);
-      actionBar(player, t(`${MSG}done`, itemName(r.recipe.result), r.recipe.count));
     }
   } else if (held) {
     const container = CONTAINER_RETURNS[held.typeId];
@@ -77,22 +59,20 @@ function interact(block, player) {
       consumeHeld(player, 1);
       if (container && !isCreative(player)) giveItems(player, container, 1);
       sound(block.dimension, "random.pop", at, 0.4, 1.5);
-      actionBar(player, ...contentsMessage(s));
+      bump(block, KIND.bowl);
     } else {
-      actionBar(player, t(r.reason === "full" ? `${MSG}full` : `${MSG}not_ingredient`, itemName(held.typeId)));
+      refuse(block.dimension, at);
     }
   } else {
     const before = s.items.length;
     const back = takeFromBowl(s, player.isSneaking);
     changed = s.items.length !== before;
     for (const id of back) giveItems(player, id, 1);
-    actionBar(player, ...contentsMessage(s));
   }
 
-  if (changed) {
-    writeJson(key, s.items.length || s.whisks ? s : undefined);
-    setFill(block, Math.ceil(s.items.length / 3));
-  }
+  if (changed) writeJson(key, s.items.length || s.whisks ? s : undefined);
+  // the batter shows how much is in the bowl and takes the colour of what went in
+  showContents(block, KIND.bowl, { fill: s.items.length, tint: tintOf(s.items.map(i => i.id)) });
 }
 
 /** Spill solids on removal; liquids (container already returned) are lost by design. */
@@ -102,6 +82,7 @@ function spill(dimension, loc) {
   const at = { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 };
   for (const it of s.items) if (!it.spilled) spawnItems(dimension, at, it.id, 1);
   writeJson(key, undefined);
+  removeVisual({ dimension, x: loc.x, y: loc.y, z: loc.z });
 }
 
 export const mixingBowlComponent = {

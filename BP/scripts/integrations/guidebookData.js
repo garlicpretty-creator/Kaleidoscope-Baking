@@ -2,14 +2,17 @@
 // Builds the payload for Cookery's Guidebook Extension API (Cookery
 // documentation/KC_GUIDEBOOK_EXTENSION_API.md): one "Baking" tab with every Baking item,
 // its recipes (Baking stations AND the Cookery stations Baking registers into), and how-to
-// text for each station, in zh_TW / zh_CN / en_US.
+// text, in zh_TW / zh_CN / en_US.
+// Chapters run in the order a player meets them (stations, tools, plants, ingredients, baked goods, drinks),
+// each with an icon. Every plant, dessert and mug drink explains itself from the generated content data, so
+// nothing has to be hinted on screen. zh_CN is made from zh_TW (toSimplified), never left in Traditional.
 import { listRecipes } from "../api/registry.js";
-import { CONTENT } from "../data/generated/content.js";
+import { CONTENT, toSimplified } from "../data/generated/content.js";
 import { COOKERY_REGISTRATIONS } from "./cookeryData.js";
 
 export const GUIDEBOOK_ID = "kaleidoscope_baking:guidebook";
 const LOCALES = ["zh_TW", "zh_CN", "en_US"];
-const ICON = "textures/items/kb_sponge_cake";
+const ICON = "textures/ui/kb_guidebook"; // the series star (tools/gen_content.py copies it from docs/branding)
 
 // A representative item for each #tag so the guidebook can show an icon / name.
 const TAG_EXAMPLES = {
@@ -28,18 +31,71 @@ const TAG_EXAMPLES = {
 const example = spec => (spec.startsWith("#") ? TAG_EXAMPLES[spec] : spec);
 const first = slot => (Array.isArray(slot) ? slot : [slot]).map(example).find(Boolean);
 
+// Cookery translates its own station names in the recipe box and shows any other method string as it is
+// (as for Harvest, Ranching and Herbal), so its stations go by their plain English names; Baking's own
+// stations carry both languages because one string serves every locale.
 const METHODS = {
   mixing_bowl: "攪拌盆 Mixing Bowl", oven: "烤箱 Oven", proofing: "發酵籃 Proofing", decorating: "裱花台 Decorating",
   espresso: "咖啡機 Espresso", pour_over: "手沖架 Pour-Over", shaker: "雪克杯 Shaker",
-  millstone: "石磨 Millstone", chopping_board: "砧板 Chopping Board", chopping_board_tool: "砧板 Chopping Board",
-  steamer: "蒸籠 Steamer", bamboo_tray: "竹篩 Bamboo Tray", stockpot_exact: "湯鍋 Stockpot", wok: "炒鍋 Wok"
+  millstone: "Millstone", chopping_board: "Chopping Board", chopping_board_tool: "Chopping Board",
+  steamer: "Steamer", bamboo_tray: "Bamboo Tray", stockpot_exact: "Stockpot", wok: "Wok"
 };
+
+// Chapters, in reading order, each with the icon of an item that stands for it.
+const CHAPTERS = [["stations", "oven"], ["tools", "whisk"], ["plants", "rosemary"], ["ingredients", "butter"],
+  ["foods", "sponge_cake"], ["drinks", "latte"]];
+
+const BIOMES = {
+  plains: ["平原", "plains"], forest: ["森林", "forests"], birch: ["樺木林", "birch forests"], flower_forest: ["繁花森林", "flower forests"],
+  taiga: ["針葉林", "taigas"], extreme_hills: ["山地", "hills"], jungle: ["叢林", "jungles"], bamboo: ["竹林", "bamboo jungles"],
+  savanna: ["莽原", "savannas"], desert: ["沙漠", "deserts"], swamp: ["沼澤", "swamps"], river: ["河邊", "riversides"], beach: ["沙灘", "beaches"]
+};
+const wildLine = wild => (wild?.length ? [`野外長在${wild.map(b => BIOMES[b]?.[0] ?? b).join("、")}。`,
+  `Grows wild in ${wild.map(b => BIOMES[b]?.[1] ?? b).join(", ")}.`] : null);
+const nameOf = id => [CONTENT.items[id]?.zh_TW ?? id, CONTENT.items[id]?.en_US ?? id];
+
+/** [zh_TW, en_US] lines every plant, dessert and mug drink gets from the content data. */
+function autoLines(id) {
+  const lines = [];
+  const planter = Object.values(CONTENT.planter).some(p => p.seed === id);
+  for (const crop of CONTENT.crops) {
+    const [zh, en] = nameOf(crop.harvest);
+    if (crop.seed === id) {
+      lines.push([`種下後分 ${crop.max + 1} 個階段長大，成熟時收成${zh}。`, `Plant it: it grows through ${crop.max + 1} stages and yields ${en} when ripe.`]);
+      lines.push(crop.kind === "perennial"
+        ? ["多年生：成熟後點擊採收，植株留著再長。", "Perennial: click the ripe plant to pick it; the plant stays and grows back."]
+        : ["一年生：成熟後打掉收成，要再種一次。", "Annual: break the ripe plant to harvest, then plant again."]);
+      if (planter) lines.push(["也可以種在香草盆裡，放在室內。", "Also grows in a Herb Planter, indoors."]);
+      const wild = wildLine(crop.wild);
+      if (wild) lines.push(wild);
+    } else if (crop.harvest === id) {
+      const [szh, sen] = nameOf(crop.seed);
+      lines.push([`來自${szh}種出的植株。`, `Picked from the plant grown from ${sen}.`]);
+    }
+  }
+  for (const tree of CONTENT.trees) {
+    const sapling = tree.sapling.replace(/_block$/, "");
+    if (sapling !== id) continue;
+    lines.push(["種在土上會長成一棵樹。", "Plant it on dirt and it grows into a tree."]);
+    lines.push(tree.fruit ? ["樹葉會結果，成熟時點擊採收。", "Its leaves bear fruit; click them when ripe."]
+      : ["樹皮可以從原木上剝下來，之後會再長回來。", "Bark is stripped from its logs and grows back."]);
+    const wild = wildLine(tree.wild);
+    if (wild) lines.push(wild);
+  }
+  if (CONTENT.desserts[id]) {
+    lines.push(["可以放在桌上：整個擺出來，一次吃一片，共 4 片。", "Can be set down whole and eaten a slice at a time, 4 slices in all."]);
+  }
+  if (CONTENT.mugs.includes(id)) {
+    lines.push(["可以放在地上或桌上，一格最多擺 4 杯；空手點擊拿起一杯。", "Can be set down, up to 4 mugs to a block; click with an empty hand to pick one up."]);
+  }
+  return lines;
+}
 
 /** How-to text shown on station entries. */
 const HELP = {
   "kaleidoscope_baking:oven": {
-    zh_TW: ["3×3×3 大型烤箱，需要完整空地。", "手持燃料點擊加柴；手持材料放入（共 4 格，模具會自動從背包拿）。", "時間到發出音效時取出才是成品，放太久會烤焦。", "空手取出完成品；潛行空手取出全部。"],
-    en_US: ["A 3×3×3 oven: needs a clear space.", "Click with fuel to stoke it; click with dough/batter to load (4 slots, molds come from your inventory).", "Take it out when it chimes; leave it too long and it burns.", "Empty hand: take finished items. Sneak: take everything."]
+    zh_TW: ["3×3×3 大型烤箱，需要完整空地。", "手持燃料點擊加柴；手持材料放入（共 4 格，模具會自動從背包拿）。", "爐門有玻璃窗：裡面的東西烤的時候會慢慢膨起來，烤好變金黃，烤焦變黑；烤箱燒著時爐膛深處有火光。", "空手點爐門可以把門打開或關上，門會保持原樣。", "時間到發出音效時取出才是成品，放太久會烤焦。", "空手取出完成品；潛行空手取出全部。"],
+    en_US: ["A 3×3×3 oven: needs a clear space.", "Click with fuel to stoke it; click with dough/batter to load (4 slots, molds come from your inventory).", "The door has a glass window: the bake rises as it cooks, turns golden when done and dark when burnt, and embers glow at the back while the oven burns.", "An empty hand on the door opens or closes it, and it stays as you leave it.", "Take it out when it chimes; leave it too long and it burns.", "Empty hand: take finished items. Sneak: take everything."]
   },
   "kaleidoscope_baking:mixing_bowl": {
     zh_TW: ["放入最多 9 種材料，用打蛋器攪拌。", "奶泡類配方改用奶泡器。", "空手取回最後一樣；潛行空手全部取回。"],
@@ -99,10 +155,10 @@ const HELP = {
 };
 
 const TEXT = {
-  zh_TW: { title: "烘焙", intro: "森羅物語：烘焙的全部物品與配方。", all: "全部", select: "選擇一個項目。", language_note: "語言跟隨食譜書設定。", back: "返回",
+  zh_TW: { title: "森羅物語：烘焙", intro: ["烘焙為廚房加入烤箱、攪拌盆、發酵籃、裱花台、咖啡機、手沖架與雪克杯，以及香草、莓果、咖啡與兩種樹。", "麵團與麵糊在攪拌盆裡調好，需要的先發酵，再進烤箱；烤好的蛋糕與塔可以在裱花台上加料。", "畫面上不會出現提示文字：每樣東西怎麼種、怎麼做、怎麼用，都寫在這一章。"].join("\n\n"), all: "全部", select: "選擇一個項目。", language_note: "語言跟隨食譜書設定。", back: "返回",
     item: "物品", block: "方塊", item_block: "物品＋方塊", settings: "烘焙設定", settings_title: "烘焙設定", save: "儲存",
     auto_convert: "兩個模組都安裝時，自動把烘焙的植物換成主導模組的版本", auto_convert_note: "關閉後只保留配方互通，不會改動世界中的方塊。" },
-  en_US: { title: "Baking", intro: "Everything in Kaleidoscope Baking.", all: "All Entries", select: "Select an entry.", language_note: "Uses the guidebook language setting.", back: "Back",
+  en_US: { title: "Kaleidoscope Baking", intro: ["Baking adds an oven, mixing bowl, proofing basket, decorating stand, espresso machine, pour-over stand and drink shaker to Cookery, with herbs, berries, coffee and two trees.", "Dough and batter are mixed in the bowl, proofed where needed, then baked; cakes and tarts can be finished on the decorating stand.", "No hint text appears on screen: how to grow, make and use each thing is written in this chapter."].join("\n\n"), all: "All Entries", select: "Select an entry.", language_note: "Uses the guidebook language setting.", back: "Back",
     item: "Item", block: "Block", item_block: "Item + Block", settings: "Baking Settings", settings_title: "Baking Settings", save: "Save",
     auto_convert: "Convert Baking plants to the lead pack's version when both are installed", auto_convert_note: "When off, recipes still accept both versions, but world blocks are left alone." }
 };
@@ -134,27 +190,28 @@ function recipesFor(id, all) {
 
 export function buildGuidebook(version = "1") {
   const all = listRecipes();
-  const categories = Object.entries(CONTENT.groups).map(([gid, n]) => ({ id: gid, labelKey: `cat_${gid}`, fallback: n.en_US, icon: "" }));
+  const categories = CHAPTERS.filter(([gid]) => CONTENT.groups[gid])
+    .map(([gid, icon]) => ({ id: gid, labelKey: `cat_${gid}`, fallback: CONTENT.groups[gid].en_US, icon: `textures/items/kb_${icon}` }));
   const entries = [];
   const names = { zh_TW: {}, zh_CN: {}, en_US: {} };
   for (const [id, it] of Object.entries(CONTENT.items)) {
     const short = id.split(":")[1];
     const help = HELP[id];
-    const mechanicsByLocale = {};
-    if (help) for (const l of LOCALES) mechanicsByLocale[l] = help[l] ?? help.zh_TW;
+    const auto = autoLines(id);
+    const zh = [...(help?.zh_TW ?? []), ...auto.map(line => line[0])];
+    const en = [...(help?.en_US ?? []), ...auto.map(line => line[1])];
     entries.push({
-      id, category: it.group, kinds: ["item"], icon: `textures/items/kb_${short}`,
+      id, category: it.group, kinds: it.place ? ["item", "block"] : ["item"], icon: `textures/items/kb_${short}`,
       ...(it.food ? { food: it.food } : {}),
       recipes: recipesFor(id, all),
-      mechanics: help?.en_US ?? [],
-      mechanicsByLocale
+      mechanics: en,
+      mechanicsByLocale: { zh_TW: zh, zh_CN: zh.map(toSimplified), en_US: en }
     });
     for (const l of LOCALES) names[l][id] = it[l];
   }
   const text = {};
   for (const l of LOCALES) {
-    const base = TEXT[l] ?? (l === "zh_CN" ? TEXT.zh_TW : TEXT.en_US);
-    text[l] = { ...base };
+    text[l] = l === "zh_CN" ? Object.fromEntries(Object.entries(TEXT.zh_TW).map(([k, v]) => [k, toSimplified(v)])) : { ...TEXT[l] };
     for (const [gid, n] of Object.entries(CONTENT.groups)) text[l][`cat_${gid}`] = n[l];
   }
   return {

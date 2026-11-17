@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_thyme_bush_stage_0",
+    "normal": "kb_thyme_bush_stage_0_normal",
+    "metalness_emissive_roughness": "kb_thyme_bush_stage_0_mer"
+  }
+}

@@ -22,7 +22,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_rosemary_bush_stage_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:placement_filter": {
@@ -38,7 +38,7 @@
               "minecraft:coarse_dirt",
               "minecraft:farmland",
               "minecraft:moss_block",
-              "minecraft:rooted_dirt"
+              "minecraft:dirt_with_roots"
             ]
           }
         ]
@@ -59,9 +59,6 @@
       },
       "minecraft:map_color": "#326E32",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/rosemary_bush_immature.json",
-      "minecraft:tags": [
-        "kaleidoscope:crop"
-      ],
       "kaleidoscope_baking:plant": {
         "max": 3,
         "chance": 12,
@@ -72,7 +69,8 @@
         "harvest_max": 3,
         "reset": 1,
         "spread": false
-      }
+      },
+      "tag:kaleidoscope:crop": {}
     },
     "permutations": [
       {
@@ -81,7 +79,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_rosemary_bush_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -105,7 +103,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_rosemary_bush_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -129,7 +127,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_rosemary_bush_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -153,7 +151,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_rosemary_bush_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {

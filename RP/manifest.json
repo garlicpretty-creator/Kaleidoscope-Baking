@@ -15,6 +15,9 @@
       1
     ]
   },
+  "capabilities": [
+    "pbr"
+  ],
   "metadata": {
     "product_type": "addon",
     "authors": [

@@ -1,0 +1,143 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.kaleidoscope_baking.visual.bowl": {
+      "loop": true,
+      "bones": {
+        "bowl_whisk": {
+          "position": [
+            "math.sin(q.life_time * 540) * 2",
+            0,
+            "math.cos(q.life_time * 540) * 2"
+          ],
+          "rotation": [
+            0,
+            "q.life_time * 540",
+            0
+          ],
+          "scale": "q.property('kaleidoscope_baking:active') ? 1 : 0"
+        },
+        "bowl_batter": {
+          "position": [
+            0,
+            "v.kb_level * 0.25",
+            0
+          ],
+          "rotation": [
+            0,
+            "q.property('kaleidoscope_baking:active') ? q.life_time * 180 : 0",
+            0
+          ],
+          "scale": [
+            1,
+            "1 + v.kb_pop * 0.6",
+            1
+          ]
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.proof": {
+      "loop": true,
+      "bones": {
+        "dough": {
+          "scale": "(0.75 + v.kb_prog * 0.45 + math.sin(q.life_time * 90) * 0.03 * (1 - v.kb_prog)) * (1 + v.kb_pop * 0.12)"
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.stand": {
+      "loop": true,
+      "bones": {
+        "cake": {
+          "scale": [
+            "1 + v.kb_pop * 0.08",
+            "(0.5 + v.kb_level * 0.5) * (1 - v.kb_pop * 0.1)",
+            "1 + v.kb_pop * 0.08"
+          ],
+          "rotation": [
+            0,
+            "q.life_time * 24",
+            0
+          ]
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.espresso": {
+      "loop": true,
+      "bones": {
+        "stream": {
+          "scale": [
+            "q.property('kaleidoscope_baking:active') ? 1 + math.sin(q.life_time * 900) * 0.3 : 0",
+            "q.property('kaleidoscope_baking:active') ? 1 : 0",
+            "q.property('kaleidoscope_baking:active') ? 1 : 0"
+          ]
+        },
+        "crema": {
+          "scale": [
+            1,
+            "q.property('kaleidoscope_baking:progress') >= 1 ? 1 : 0",
+            1
+          ]
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.pour": {
+      "loop": true,
+      "bones": {
+        "drops": {
+          "position": [
+            0,
+            "-math.mod(q.life_time * 10, 3)",
+            0
+          ],
+          "scale": "q.property('kaleidoscope_baking:active') ? 1 : 0"
+        },
+        "carafe": {
+          "scale": [
+            1,
+            "math.max(0.02, v.kb_level / 4)",
+            1
+          ]
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.oven": {
+      "loop": true,
+      "bones": {
+        "door": {
+          "rotation": [
+            0,
+            "-v.kb_door * 105",
+            0
+          ]
+        },
+        "door_glow": {
+          "scale": "q.property('kaleidoscope_baking:lit') ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"
+        },
+        "tray": {
+          "scale": [
+            1,
+            "0.55 + v.kb_prog * 0.45",
+            1
+          ]
+        }
+      }
+    },
+    "animation.kaleidoscope_baking.visual.shaker": {
+      "loop": true,
+      "bones": {
+        "shaker": {
+          "rotation": [
+            "q.property('kaleidoscope_baking:active') ? math.sin(q.life_time * 1500) * 14 : 0",
+            0,
+            "q.property('kaleidoscope_baking:active') ? math.cos(q.life_time * 1500) * 14 : 0"
+          ],
+          "position": [
+            0,
+            "q.property('kaleidoscope_baking:active') ? math.abs(math.sin(q.life_time * 1500)) * 1.5 : 0",
+            0
+          ]
+        }
+      }
+    }
+  }
+}

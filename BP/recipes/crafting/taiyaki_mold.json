@@ -8,12 +8,15 @@
       "crafting_table"
     ],
     "pattern": [
-      "I I",
-      "I I"
+      "INI",
+      "INI"
     ],
     "key": {
       "I": {
         "item": "minecraft:iron_ingot"
+      },
+      "N": {
+        "item": "minecraft:iron_nugget"
       }
     },
     "result": {
@@ -23,6 +26,9 @@
     "unlock": [
       {
         "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "minecraft:iron_nugget"
       }
     ]
   }

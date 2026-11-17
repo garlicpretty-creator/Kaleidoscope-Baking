@@ -4,10 +4,11 @@
 // tea_tray        three small foods; eating from it widens the afternoon-tea window to 60 s
 // bread_display   9 stacks of food, first three shown behind the glass
 // pastry_case     same as bread_display, glass-fronted
-// mug_stack       up to 4 mugs of the SAME hot drink (Baking mug model); every hot-drink block uses it
 // drink_cups      up to 4 hand-shaken drinks placed by SNEAKING with the drink on a block top;
 //                 each cup keeps its sweetness / ice (stored in world data per block)
 // Contents never vanish: breaking any of these drops everything (drinks with their choices).
+// No on-screen text (Baking's immersive rule): what is on the block shows itself; a refusal is a
+// low note and a puff of smoke.
 // ============================================================================
 import { ItemStack, system, world } from "@minecraft/server";
 import { CONTENT } from "../data/generated/content.js";
@@ -16,11 +17,10 @@ import { applyConsumption, feed, ICE_PROP, isHungry, SWEET_PROP } from "../event
 import { dessertMeta, interactDessert, isPlaceableDessert } from "./dessert.js";
 import { clearDisplays, syncDisplay } from "../utils/display.js";
 import {
-  actionBar, consumeHeld, giveItems, giveStack, heldItem, isCreative, itemName, locKey, mainhand, readJson, safeBlock, sound,
-  spawnItems, t, writeJson
+  consumeHeld, giveItems, giveStack, heldItem, isCreative, locKey, mainhand, readJson, refuse, safeBlock, sound,
+  spawnItems, writeJson
 } from "../utils/runtime.js";
 
-const MSG = "kaleidoscope_baking.msg.furniture.";
 const centre = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
 const keyOf = (prefix, b) => locKey(prefix, b.dimension.id, b);
 
@@ -53,7 +53,7 @@ export const cakeStandComponent = {
         consumeHeld(player, 1);
         syncDisplay(block, "cake", held.typeId, { x: 0.5, y: 0.5, z: 0.5 });
         sound(block.dimension, "random.pop", centre(block), 0.5, 1.2);
-      } else actionBar(player, t(`${MSG}stand_empty`));
+      } else refuse(block.dimension, centre(block));
       return;
     }
     if (!held && player.isSneaking && !s.bites) {
@@ -93,21 +93,20 @@ export const teaTrayComponent = {
     const items = readJson(key) ?? [];
     const held = heldItem(player);
     if (held) {
-      if (isPlaceableDessert(held.typeId) || !displayable(held.typeId)) { actionBar(player, t(`${MSG}not_food`, itemName(held.typeId))); return; }
-      if (items.length >= TRAY_MAX) { actionBar(player, t(`${MSG}full`)); return; }
+      if (isPlaceableDessert(held.typeId) || !displayable(held.typeId) || items.length >= TRAY_MAX) { refuse(block.dimension, centre(block)); return; }
       items.push(held.typeId);
       consumeHeld(player, 1);
     } else if (player.isSneaking) {
       for (const id of items.splice(0)) giveItems(player, id, 1);
     } else if (items.length) {
-      if (!isHungry(player) && !isCreative(player)) { actionBar(player, t("kaleidoscope_baking.msg.dessert.full")); return; }
+      if (!isHungry(player) && !isCreative(player)) { refuse(block.dimension, centre(block)); return; }
       const id = items.pop();
       const f = foodValues(id);
       feed(player, f.nutrition, f.saturation);
       applyConsumption(player, id, undefined, { teaWindow: 1200 });
       sound(block.dimension, "random.burp", centre(block), 0.5, 1.1);
     } else {
-      actionBar(player, t(`${MSG}tray_empty`));
+      refuse(block.dimension, centre(block));
       return;
     }
     writeJson(key, items.length ? items : undefined);
@@ -135,7 +134,7 @@ function caseComponent(prefix) {
       const slots = readJson(key) ?? [];
       const held = heldItem(player);
       if (held) {
-        if (!displayable(held.typeId)) { actionBar(player, t(`${MSG}not_food`, itemName(held.typeId))); return; }
+        if (!displayable(held.typeId)) { refuse(block.dimension, centre(block)); return; }
         let left = held.amount;
         for (const s of slots) {
           if (s.id !== held.typeId) continue;
@@ -147,7 +146,7 @@ function caseComponent(prefix) {
           slots.push({ id: held.typeId, count: n }); left -= n;
         }
         const placed = held.amount - left;
-        if (!placed) { actionBar(player, t(`${MSG}full`)); return; }
+        if (!placed) { refuse(block.dimension, centre(block)); return; }
         if (!isCreative(player)) {
           const slot = mainhand(player);
           try { if (left > 0) { held.amount = left; slot.setItem(held); } else slot.setItem(undefined); } catch {}
@@ -156,13 +155,12 @@ function caseComponent(prefix) {
         const take = player.isSneaking ? slots.splice(0) : slots.splice(-1, 1);
         for (const s of take) giveItems(player, s.id, s.count);
       } else {
-        actionBar(player, t(`${MSG}case_empty`));
+        refuse(block.dimension, centre(block));
         return;
       }
       sound(block.dimension, "random.pop", centre(block), 0.4, 1.3);
       writeJson(key, slots.length ? slots : undefined);
       refresh(block, slots);
-      actionBar(player, t(`${MSG}case_status`, slots.reduce((n, s) => n + s.count, 0), slots.length, CASE_SLOTS));
     },
     onPlayerBreak({ block }) {
       const key = keyOf(prefix, block);
@@ -263,44 +261,11 @@ export const drinkCupsComponent = {
   }
 };
 
-// ---------------------------------------------------------------------------
-// Placed hot drinks (Baking's own mugs; replaces Cookery's cup_stack since 1.1)
-// Block states: kaleidoscope_baking:cups 1..4. The item places the block with 1 mug
-// (block_placer); using the same drink on it adds a mug; an empty hand takes one back.
-// ---------------------------------------------------------------------------
-const MUGS_STATE = "kaleidoscope_baking:cups";
-const mugCount = perm => { try { return Number(perm.getState(MUGS_STATE)) || 1; } catch { return 1; } };
-export const mugStackComponent = {
-  onPlayerInteract({ block, player }) {
-    if (!player) return;
-    const id = block.typeId;
-    const n = mugCount(block.permutation);
-    const held = heldItem(player);
-    if (held?.typeId === id) {
-      if (n >= 4) return;
-      try { block.setPermutation(block.permutation.withState(MUGS_STATE, n + 1)); } catch { return; }
-      consumeHeld(player, 1);
-      sound(block.dimension, "random.glass", centre(block), 0.4, 1.6);
-      return;
-    }
-    if (held) return;
-    giveItems(player, id, 1);
-    sound(block.dimension, "random.glass", centre(block), 0.4, 1.3);
-    if (n <= 1) { try { block.setType("minecraft:air"); } catch {} }
-    else try { block.setPermutation(block.permutation.withState(MUGS_STATE, n - 1)); } catch {}
-  },
-  onPlayerBreak({ block, brokenBlockPermutation }) {
-    const perm = brokenBlockPermutation ?? block.permutation;
-    spawnItems(block.dimension, centre(block), perm?.type?.id ?? block.typeId, mugCount(perm));
-  }
-};
-
 // Explosions: same teardown for every furniture block.
 const FURNITURE = {
   "kaleidoscope_baking:cake_stand": cakeStandComponent, "kaleidoscope_baking:tea_tray": teaTrayComponent,
   "kaleidoscope_baking:bread_display": breadDisplayComponent, "kaleidoscope_baking:pastry_case": pastryCaseComponent,
-  [CUPS_ID]: drinkCupsComponent,
-  ...Object.fromEntries((CONTENT.hotCupDrinks ?? []).map(id => [id, mugStackComponent]))
+  [CUPS_ID]: drinkCupsComponent
 };
 world.afterEvents.blockExplode.subscribe(ev => {
   const c = FURNITURE[ev.explodedBlockPermutation?.type?.id];

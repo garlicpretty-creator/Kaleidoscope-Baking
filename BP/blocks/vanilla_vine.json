@@ -22,7 +22,7 @@
       "minecraft:material_instances": {
         "*": {
           "texture": "kb_vanilla_vine_stage_0",
-          "render_method": "alpha_test"
+          "render_method": "alpha_test_single_sided"
         }
       },
       "minecraft:placement_filter": {
@@ -56,9 +56,6 @@
       },
       "minecraft:map_color": "#5AA046",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/vanilla_vine_immature.json",
-      "minecraft:tags": [
-        "kaleidoscope:crop"
-      ],
       "kaleidoscope_baking:plant": {
         "max": 3,
         "chance": 8,
@@ -69,7 +66,8 @@
         "harvest_max": 2,
         "reset": 1,
         "spread": false
-      }
+      },
+      "tag:kaleidoscope:crop": {}
     },
     "permutations": [
       {
@@ -78,7 +76,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_0",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -102,7 +100,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_1",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -126,7 +124,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_2",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {
@@ -150,7 +148,7 @@
           "minecraft:material_instances": {
             "*": {
               "texture": "kb_vanilla_vine_stage_3",
-              "render_method": "alpha_test"
+              "render_method": "alpha_test_single_sided"
             }
           },
           "minecraft:selection_box": {

@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:sesame_mooncake.name"
+      },
       "minecraft:icon": "kb_sesame_mooncake",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

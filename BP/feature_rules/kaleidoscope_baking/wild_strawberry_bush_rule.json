@@ -17,7 +17,17 @@
           {
             "test": "has_biome_tag",
             "operator": "==",
+            "value": "bop_like_plains"
+          },
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
             "value": "flower_forest"
+          },
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
+            "value": "bop_like_flower_forest"
           }
         ]
       }

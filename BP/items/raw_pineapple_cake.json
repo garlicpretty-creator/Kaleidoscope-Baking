@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:raw_pineapple_cake.name"
+      },
       "minecraft:icon": "kb_raw_pineapple_cake",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

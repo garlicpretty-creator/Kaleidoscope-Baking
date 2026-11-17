@@ -76,12 +76,3 @@ world.afterEvents?.entityLoad?.subscribe?.(({ entity }) => {
     } catch {}
   });
 });
-
-/** Set a station's `kaleidoscope_baking:fill` visual state (no-op if the block has none). */
-export function setFill(block, level) {
-  try {
-    const cur = block.permutation.getState("kaleidoscope_baking:fill");
-    if (cur === undefined || cur === level) return;
-    block.setPermutation(block.permutation.withState("kaleidoscope_baking:fill", level));
-  } catch {}
-}

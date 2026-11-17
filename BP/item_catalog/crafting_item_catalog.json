@@ -303,7 +303,10 @@
               "kaleidoscope_baking:lemon",
               "kaleidoscope_baking:lemon_slice",
               "kaleidoscope_baking:pineapple",
-              "kaleidoscope_baking:pineapple_crown"
+              "kaleidoscope_baking:pineapple_crown",
+              "kaleidoscope_baking:cinnamon_log",
+              "kaleidoscope_baking:cinnamon_leaves",
+              "kaleidoscope_baking:lemon_leaves"
             ]
           }
         ]

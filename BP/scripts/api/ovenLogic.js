@@ -16,13 +16,14 @@ export const OVEN_SLOTS = 4;
 export const MAX_FUEL_TICKS = 64000;
 
 export function emptyOvenState(facing = "south") {
-  return { facing, fuel: 0, slots: new Array(OVEN_SLOTS).fill(null) };
+  return { facing, fuel: 0, open: false, slots: new Array(OVEN_SLOTS).fill(null) }; // open: the door is left open
 }
 
 /** Defensive load: tolerate missing/old fields so a bad record never crashes the oven. */
 export function normalizeOvenState(raw, facing = "south") {
   const s = emptyOvenState(typeof raw?.facing === "string" ? raw.facing : facing);
   s.fuel = Math.max(0, Math.min(MAX_FUEL_TICKS, Math.floor(Number(raw?.fuel) || 0)));
+  s.open = raw?.open === true;
   const slots = Array.isArray(raw?.slots) ? raw.slots : [];
   for (let i = 0; i < OVEN_SLOTS; i++) {
     const v = slots[i];

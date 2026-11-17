@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cream_soup",
+    "normal": "kb_cream_soup_normal",
+    "metalness_emissive_roughness": "kb_cream_soup_mer"
+  }
+}

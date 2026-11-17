@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:baguette_dough.name"
+      },
       "minecraft:icon": "kb_baguette_dough",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

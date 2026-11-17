@@ -7,8 +7,8 @@
 import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
-import { setFill } from "../utils/display.js";
+import { refuse, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
+import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const BASKET_ID = "kaleidoscope_baking:proofing_basket";
@@ -45,15 +45,11 @@ export function warmth(block) {
   return hot ? 2 : cold ? 0.5 : 1;
 }
 
-function status(block, s) {
-  if (!s.count) return [t(`${MSG}empty`)];
+/** Dough in the basket swells as it proofs. */
+function show(block, s) {
   const r = recipeOf(s);
-  if (r && s.progress >= r.time) return [t(`${MSG}done`, itemName(r.result), s.count * r.count)];
-  const pct = r ? Math.min(99, Math.floor((s.progress / r.time) * 100)) : 0;
-  const w = warmth(block);
-  const parts = [t(`${MSG}status`, itemName(s.input), s.count, pct)];
-  if (w !== 1) parts.push({ text: " " }, t(w > 1 ? `${MSG}warm` : `${MSG}cold`));
-  return parts;
+  showContents(block, KIND.proof, { fill: s.count ? Math.min(16, s.count) : 0, tint: tintOf([s.input]),
+    progress: r && s.count ? s.progress / r.time : 0 });
 }
 
 function interact(block, player) {
@@ -62,7 +58,7 @@ function interact(block, player) {
   if (held) {
     const r = addProofing(s, held.typeId, held.amount);
     if (!r.added) {
-      actionBar(player, t(`${MSG}${r.reason}`, itemName(held.typeId)));
+      refuse(block.dimension, centre(block));
       return;
     }
     if (!isCreative(player)) {
@@ -73,9 +69,9 @@ function interact(block, player) {
     }
     saveStation(PREFIX, block, s, isEmpty);
     trackStation(PREFIX, block);
-    setFill(block, 1);
+    show(block, s);
+    bump(block, KIND.proof);
     sound(block.dimension, "random.pop", centre(block), 0.4, 0.8);
-    actionBar(player, t(`${MSG}added`, itemName(held.typeId), r.added), { text: "\n" }, ...status(block, s));
     return;
   }
   const r = recipeOf(s);
@@ -84,19 +80,18 @@ function interact(block, player) {
     for (const y of proofingYield(s, r)) giveItems(player, y.id, y.count);
     saveStation(PREFIX, block, { count: 0 }, () => true);
     untrackStation(PREFIX, block);
-    setFill(block, 0);
+    show(block, { count: 0 });
     sound(block.dimension, "random.pop", centre(block), 0.6, 1.0);
     return;
   }
-  actionBar(player, ...status(block, s));
 }
 
 registerTicker(PREFIX, BASKET_ID, 40, normalizeProofing, isEmpty, (block, s) => {
   const r = recipeOf(s);
   if (!r) return { state: s, keep: false };
-  const done = tickProofing(s, 40, warmth(block), r);
-  setFill(block, done ? 3 : s.progress * 2 >= r.time ? 2 : 1);
-  if (done) {
+  const finished = tickProofing(s, 40, warmth(block), r);
+  show(block, s);
+  if (finished) {
     particle(block.dimension, "minecraft:villager_happy", { x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });
     return { state: s, keep: false };
   }
@@ -109,6 +104,7 @@ function spill(dimension, loc) {
   for (const y of proofingYield(s, recipeOf(s))) spawnItems(dimension, { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, y.id, y.count);
   saveStation(PREFIX, fake, { count: 0 }, () => true);
   untrackStation(PREFIX, fake);
+  removeVisual(fake);
 }
 
 export const proofingBasketComponent = {

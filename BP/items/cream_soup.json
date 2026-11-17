@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:cream_soup.name"
+      },
       "minecraft:icon": "kb_cream_soup",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

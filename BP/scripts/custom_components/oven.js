@@ -10,6 +10,10 @@
 //   oven input      -> load into a free slot    (mold is taken from the inventory if needed)
 //   empty hand      -> take out finished / burnt items (+ molds)
 //   sneak + empty   -> also pull out unfinished items (raw input + mold come back)
+//   empty hand on the door, nothing to take -> open / close the door (it stays as it is left)
+//
+// The door block is hollow and the door has a window: the bake sits inside, rising as it cooks and turning
+// golden when done or dark when burnt, with embers glowing behind it while the oven is lit.
 //   anything else   -> show status
 //
 // ## State lives in a world dynamic property per oven (Baking-owned; not shared across
@@ -18,20 +22,19 @@
 // ============================================================================
 import { BlockPermutation, system, world } from "@minecraft/server";
 import {
-  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, PART_STATE,
-  controllerFrom, doorOutside, facingToward, fireboxPart, footprint, partOffset
+  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, partFromPermutation, partStates,
+  controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
   MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, percent, phaseOf, slotYield, tickOven
 } from "../api/ovenLogic.js";
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
-import { clearDisplays, syncDisplay } from "../utils/display.js";
-import { FRONT } from "../utils/ovenGeometry.js";
 import {
-  actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
+  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
   particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
+import { KIND, holdMotion, playMotion, removeVisual, showContents, steam, tintOf } from "../utils/visuals.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
@@ -75,7 +78,7 @@ onWorldReady(() => {
 // Structure helpers
 // ---------------------------------------------------------------------------
 function partOf(permutation) {
-  try { const v = permutation.getState(PART_STATE); return typeof v === "number" ? v : CONTROLLER_PART; } catch { return CONTROLLER_PART; }
+  return partFromPermutation(permutation) ?? CONTROLLER_PART;
 }
 function facingOf(permutation) {
   try { const v = permutation.getState(FACING_STATE); return FACINGS.includes(v) ? v : "south"; } catch { return "south"; }
@@ -90,7 +93,7 @@ function controllerBlock(dimension, c) {
   return b?.typeId === OVEN_ID && partOf(b.permutation) === CONTROLLER_PART ? b : undefined;
 }
 function partPermutation(index, facing, lit = false) {
-  return BlockPermutation.resolve(OVEN_ID, { [PART_STATE]: index, [FACING_STATE]: facing, [LIT_STATE]: lit });
+  return BlockPermutation.resolve(OVEN_ID, { ...partStates(index), [FACING_STATE]: facing, [LIT_STATE]: lit });
 }
 function centre(c) { return { x: c.x + 0.5, y: c.y + 1.0, z: c.z + 0.5 }; }
 
@@ -131,24 +134,40 @@ function destroyOven(dimension, c, dropOvenItem) {
   const at = centre(c);
   if (s) for (const slot of s.slots) for (const y of slotYield(slot, getOvenRecipeById(slot?.recipe))) spawnItems(dimension, at, y.id, y.count);
   if (dropOvenItem) spawnItems(dimension, at, OVEN_ID, 1);
+  for (const f of FACINGS) {
+    const o = partOffset(doorPart(f));
+    removeVisual({ dimension, x: c.x + o.dx, y: c.y + o.dy, z: c.z + o.dz });
+  }
   removeStructure(dimension, c);
-  clearDisplays(dimension, c);
   untrack(key);
 }
 
-/** The first loaded slot is shown in front of the door: the raw input while baking, the result when done. */
-function refreshDisplay(dimension, c, facing, s) {
-  const ctrl = safeBlock(dimension, c);
-  if (!ctrl) return;
-  const slot = s?.slots.find(x => x);
-  let show;
-  if (slot) {
-    const r = getOvenRecipeById(slot.recipe);
-    const p = phaseOf(slot, r);
-    show = p === "perfect" ? r.result : p === "burnt" ? r.burntResult : slot.input;
+// ---------------------------------------------------------------------------
+// Door visual (station_visual kind 7): swings open when something goes in or out and stays open if the player
+// left it open; the bake shows inside, and embers glow while the oven is lit
+// ---------------------------------------------------------------------------
+function doorBlock(dimension, c, facing) {
+  const o = partOffset(doorPart(facing));
+  return safeBlock(dimension, { x: c.x + o.dx, y: c.y + o.dy, z: c.z + o.dz });
+}
+function openDoor(dimension, c, facing) {
+  const d = doorBlock(dimension, c, facing);
+  if (d?.typeId === OVEN_ID) playMotion(d, KIND.oven, 30);
+}
+const TINT_BURNT = 6, TINT_BAKED = 7; // visuals TINTS: coffee-dark, caramel-gold
+function showDoor(dimension, c, facing, lit, s) {
+  const d = doorBlock(dimension, c, facing);
+  if (d?.typeId !== OVEN_ID) return;
+  const slots = (s?.slots ?? []).filter(Boolean);
+  let tint = 0, progress = 0;
+  if (slots.length) {
+    const recipes = slots.map(slot => getOvenRecipeById(slot.recipe));
+    const phases = slots.map((slot, i) => phaseOf(slot, recipes[i]));
+    tint = phases.includes("burnt") ? TINT_BURNT : phases.every(p => p === "perfect") ? TINT_BAKED : tintOf(slots.map(slot => slot.input));
+    progress = Math.max(...slots.map((slot, i) => percent(slot, recipes[i]))) / 100;
   }
-  const f = FRONT[facing] ?? FRONT.south;
-  syncDisplay(ctrl, "door", show, { x: 0.5 + f.x * 1.7, y: 1.25, z: 0.5 + f.z * 1.7 });
+  showContents(d, KIND.oven, { fill: slots.length, tint, progress, lit });
+  holdMotion(d, KIND.oven, !!s?.open);
 }
 
 function setLit(dimension, c, facing, lit) {
@@ -159,52 +178,31 @@ function setLit(dimension, c, facing, lit) {
 }
 
 // ---------------------------------------------------------------------------
-// Feedback
-// ---------------------------------------------------------------------------
-function statusMessage(s) {
-  const parts = [t(`${MSG}status_fuel`, Math.ceil(s.fuel / 20))];
-  s.slots.forEach((slot, i) => {
-    parts.push({ text: " §7|§r " });
-    if (!slot) { parts.push(t(`${MSG}slot_empty`, i + 1)); return; }
-    const recipe = getOvenRecipeById(slot.recipe);
-    const phase = phaseOf(slot, recipe);
-    const name = itemName(phase === "unknown" ? slot.input : recipe.result);
-    if (phase === "baking") parts.push(t(`${MSG}slot_baking`, i + 1, name, percent(slot, recipe)));
-    else if (phase === "perfect") parts.push(t(`${MSG}slot_perfect`, i + 1, name));
-    else if (phase === "burnt") parts.push(t(`${MSG}slot_burnt`, i + 1, name));
-    else parts.push(t(`${MSG}slot_unknown`, i + 1, name));
-  });
-  return parts;
-}
-
-// ---------------------------------------------------------------------------
 // Interaction
 // ---------------------------------------------------------------------------
 function addFuel(player, dimension, c, s, held, fuel) {
-  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { actionBar(player, t(`${MSG}fuel_full`)); return; }
+  if (s.fuel + fuel.ticks > MAX_FUEL_TICKS) { refuse(dimension, centre(c)); return; }
   s.fuel += fuel.ticks;
   consumeHeld(player, 1);
   if (fuel.returns && !isCreative(player)) giveItems(player, fuel.returns, 1);
   sound(dimension, "fire.ignite", centre(c));
-  actionBar(player, t(`${MSG}fuel_added`, itemName(held.typeId), Math.ceil(s.fuel / 20)));
 }
 
 function loadInput(player, dimension, c, s, held, recipe) {
   const i = freeSlot(s);
-  if (i < 0) { actionBar(player, t(`${MSG}full`)); return false; }
+  if (i < 0) { refuse(dimension, centre(c)); return false; }
   let mold = "";
   if (recipe.mold && !isCreative(player)) {
     mold = takeOneFromInventory(player, st => matchesSpec(st.typeId, recipe.mold)) ?? "";
     if (!mold) {
       const moldName = recipe.mold.startsWith("#") ? { text: recipe.mold } : itemName(recipe.mold);
-      actionBar(player, t(`${MSG}need_mold`, moldName));
+      refuse(dimension, centre(c));
       return false;
     }
   }
   s.slots[i] = { recipe: recipe.id, input: held.typeId, mold, progress: 0 };
   consumeHeld(player, 1);
   sound(dimension, "random.click", centre(c), 0.8, 0.8);
-  actionBar(player, t(s.fuel > 0 ? `${MSG}loaded` : `${MSG}loaded_no_fuel`, itemName(held.typeId), i + 1));
   return true;
 }
 
@@ -237,23 +235,27 @@ function interact(block, player) {
   const s = loadState(key, facing) ?? emptyOvenState(facing);
 
   const held = heldItem(player);
-  let changed = false;
+  let changed = false, toggled = false;
   if (held) {
     const fuel = getFuel(held.typeId);
     const recipe = fuel ? undefined : getOvenRecipe(held.typeId);
     if (fuel) { addFuel(player, dimension, c, s, held, fuel); changed = true; }
     else if (recipe) changed = loadInput(player, dimension, c, s, held, recipe);
-    else actionBar(player, ...statusMessage(s));
+    else refuse(dimension, centre(c)); // neither fuel nor something that bakes
   } else if (takeOut(player, dimension, c, s)) {
     changed = true;
-    actionBar(player, ...statusMessage(s));
-  } else {
-    actionBar(player, ...statusMessage(s), { text: "\n" }, t(`${MSG}hint`));
+  } else if (partOf(block.permutation) === doorPart(facing)) {
+    // Nothing to take: the door itself opens or closes, and stays that way.
+    s.open = !s.open;
+    changed = toggled = true;
+    sound(dimension, s.open ? "open.iron_door" : "close.iron_door", doorOutside(c, facing), 0.8, 1.0);
   }
   if (changed) {
     saveState(key, s);
-    setLit(dimension, c, facing, isLit(s, getOvenRecipeById));
-    refreshDisplay(dimension, c, facing, s);
+    const lit = isLit(s, getOvenRecipeById);
+    setLit(dimension, c, facing, lit);
+    if (!toggled && !getFuel(held?.typeId ?? "")) openDoor(dimension, c, facing); // loading / taking out opens the door
+    showDoor(dimension, c, facing, lit, s);
   }
 }
 
@@ -279,14 +281,15 @@ function tickAll() {
     const res = tickOven(s, TICK_INTERVAL, getOvenRecipeById);
     if (res.changed) saveState(key, s);
     setLit(dimension, o.loc, facing, res.lit);
+    showDoor(dimension, o.loc, facing, res.lit, s);
     if (res.lit) {
       const top = partOffset(CHIMNEY_PART);
       particle(dimension, "minecraft:campfire_smoke_particle", { x: o.loc.x + 0.5, y: o.loc.y + top.dy + 1.1, z: o.loc.z + 0.5 });
     }
     const door = doorOutside(o.loc, facing);
-    if (res.events.length) refreshDisplay(dimension, o.loc, facing, s);
     for (const ev of res.events) {
       if (ev.phase === "perfect") {
+        steam(dimension, door);
         sound(dimension, "random.orb", door, 0.8, 1.2);
         particle(dimension, "minecraft:villager_happy", door);
       } else if (ev.phase === "burnt") {
@@ -305,10 +308,10 @@ export const ovenComponent = {
     const { block, player } = e;
     if (!player) return;
     const c = { x: block.x, y: block.y, z: block.z };
-    if (playerInside(player, c)) { e.cancel = true; actionBar(player, t(`${MSG}too_close`)); return; }
+    if (playerInside(player, c)) { e.cancel = true; refuse(block.dimension, { x: c.x + 0.5, y: c.y + 0.5, z: c.z + 0.5 }); return; }
     for (const p of footprint(c)) {
       if (p.index === CONTROLLER_PART) continue;
-      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; actionBar(player, t(`${MSG}no_room`)); return; }
+      if (!isReplaceable(safeBlock(block.dimension, p))) { e.cancel = true; refuse(block.dimension, { x: p.x + 0.5, y: p.y + 0.5, z: p.z + 0.5 }); return; }
     }
     const facing = facingToward(player.location.x - (c.x + 0.5), player.location.z - (c.z + 0.5));
     pendingFacing.set(locKey(PREFIX, block.dimension.id, c), facing);
@@ -332,7 +335,9 @@ export const ovenComponent = {
       if (!buildParts(dimension, c, facing)) {
         // Something moved into the footprint between the check and the build: undo + refund.
         destroyOven(dimension, c, true);
+        return;
       }
+      showDoor(dimension, c, facing, false);
     });
   },
 

@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cookie_cutter",
+    "normal": "kb_cookie_cutter_normal",
+    "metalness_emissive_roughness": "kb_cookie_cutter_mer"
+  }
+}

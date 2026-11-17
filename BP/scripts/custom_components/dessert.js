@@ -4,6 +4,7 @@
 //   kitchen knife         -> cut a slice off as a Cake Slice item (any Cookery-tagged knife)
 //   sneak + empty, whole  -> pick the untouched dessert back up
 // Breaking an untouched dessert drops it (loot table); a started one is just crumbs.
+// No text: crumbs, sounds and the shrinking model are the feedback.
 //
 // PUBLIC (1.1): other packs may put `"kaleidoscope_baking:dessert": {...}` on their own
 // block with a `kaleidoscope_baking:bites` 0..(slices-1) state. Params (all optional):
@@ -11,13 +12,13 @@
 // The shared slice logic is also used by the cake stand.
 import { applyConsumption, feed, isHungry } from "../events/consumption.js";
 import { CONTENT } from "../data/generated/content.js";
-import { actionBar, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
+import { refuse, giveItems, heldItem, isCreative, particle, sound, stackHasTag } from "../utils/runtime.js";
+import { crumbs } from "../utils/visuals.js";
 
 const BITES = "kaleidoscope_baking:bites";
 const DEFAULT_SLICES = 4;
 export const SLICE_ITEM = "kaleidoscope_baking:cake_slice";
 export const KNIFE_TAG = "kaleidoscope_cookery:kitchen_knife";
-const MSG = "kaleidoscope_baking.msg.dessert.";
 
 export function dessertMeta(id, params = {}) {
   const meta = CONTENT.desserts[id] ?? {};
@@ -39,16 +40,16 @@ export function interactDessert(player, id, bites, meta, at, dimension) {
   const held = heldItem(player);
   if (held && stackHasTag(held, KNIFE_TAG)) {
     giveItems(player, meta.sliceItem, 1);
+    crumbs(dimension, at, id);
     sound(dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
-    actionBar(player, t(`${MSG}cut`, itemName(id), meta.slices - bites - 1));
     return { bites: bites + 1 };
   }
-  if (!isHungry(player) && !isCreative(player)) { actionBar(player, t(`${MSG}full`)); return undefined; }
+  if (!isHungry(player) && !isCreative(player)) { refuse(dimension, at); return undefined; }
   feed(player, meta.nutrition, meta.saturation);
   applyConsumption(player, id);
+  crumbs(dimension, at, id);
   sound(dimension, "random.burp", at, 0.5, 1.0);
   particle(dimension, "minecraft:crop_growth_emitter", at);
-  actionBar(player, t(`${MSG}ate`, itemName(id), meta.slices - bites - 1));
   return { bites: bites + 1 };
 }
 

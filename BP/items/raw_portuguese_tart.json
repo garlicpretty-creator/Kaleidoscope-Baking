@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:raw_portuguese_tart.name"
+      },
       "minecraft:icon": "kb_raw_portuguese_tart",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

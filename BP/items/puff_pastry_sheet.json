@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:puff_pastry_sheet.name"
+      },
       "minecraft:icon": "kb_puff_pastry_sheet",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {

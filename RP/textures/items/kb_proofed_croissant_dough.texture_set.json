@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_proofed_croissant_dough",
+    "normal": "kb_proofed_croissant_dough_normal",
+    "metalness_emissive_roughness": "kb_proofed_croissant_dough_mer"
+  }
+}

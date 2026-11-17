@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:palmier_dough.name"
+      },
       "minecraft:icon": "kb_palmier_dough",
       "minecraft:max_stack_size": 16,
       "minecraft:tags": {
