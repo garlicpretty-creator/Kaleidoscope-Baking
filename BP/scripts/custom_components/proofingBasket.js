@@ -8,7 +8,7 @@ import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
 import { actionBar, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
-import { KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
+import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const BASKET_ID = "kaleidoscope_baking:proofing_basket";
@@ -81,6 +81,7 @@ function interact(block, player) {
     saveStation(PREFIX, block, s, isEmpty);
     trackStation(PREFIX, block);
     show(block, s);
+    bump(block, KIND.proof);
     sound(block.dimension, "random.pop", centre(block), 0.4, 0.8);
     actionBar(player, t(`${MSG}added`, itemName(held.typeId), r.added), { text: "\n" }, ...status(block, s));
     return;

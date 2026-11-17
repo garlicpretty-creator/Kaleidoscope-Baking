@@ -11,7 +11,8 @@
             "Geometry.bowl",
             "Geometry.espresso",
             "Geometry.pour",
-            "Geometry.shaker"
+            "Geometry.shaker",
+            "Geometry.oven"
           ]
         },
         "textures": {
@@ -22,7 +23,8 @@
             "Texture.bowl",
             "Texture.espresso",
             "Texture.pour",
-            "Texture.shaker"
+            "Texture.shaker",
+            "Texture.oven"
           ]
         }
       },
@@ -46,7 +48,8 @@
             "Geometry.stand_c",
             "Geometry.espresso_c",
             "Geometry.pour_c",
-            "Geometry.shaker_c"
+            "Geometry.shaker_c",
+            "Geometry.oven_c"
           ]
         },
         "textures": {

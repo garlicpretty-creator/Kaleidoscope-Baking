@@ -7,6 +7,7 @@
 import { applyConsumption, feed, isHungry } from "../events/consumption.js";
 import { CONTENT } from "../data/generated/content.js";
 import { actionBar, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
+import { crumbs } from "../utils/visuals.js";
 
 const BITES = "kaleidoscope_baking:bites";
 const SLICES = 4;
@@ -33,6 +34,7 @@ export const dessertComponent = {
 
     if (held && stackHasTag(held, KNIFE_TAG)) {
       giveItems(player, SLICE_ITEM, 1);
+      crumbs(block.dimension, at, id);
       const left = takeBite(block, bites);
       sound(block.dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
       actionBar(player, t(`${MSG}cut`, itemName(id), left));
@@ -47,6 +49,7 @@ export const dessertComponent = {
     const meta = CONTENT.desserts[id] ?? { nutrition: 2, saturation: 0.4 };
     feed(player, meta.nutrition, meta.saturation);
     applyConsumption(player, id);
+    crumbs(block.dimension, at, id);
     const left = takeBite(block, bites);
     sound(block.dimension, "random.burp", at, 0.5, 1.0);
     particle(block.dimension, "minecraft:crop_growth_emitter", at);

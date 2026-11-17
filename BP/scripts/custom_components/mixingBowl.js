@@ -16,7 +16,7 @@ import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
   spawnItems, stackHasTag, t, writeJson
 } from "../utils/runtime.js";
-import { KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
+import { bump, KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
 const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
@@ -78,6 +78,7 @@ function interact(block, player) {
       consumeHeld(player, 1);
       if (container && !isCreative(player)) giveItems(player, container, 1);
       sound(block.dimension, "random.pop", at, 0.4, 1.5);
+      bump(block, KIND.bowl);
       actionBar(player, ...contentsMessage(s));
     } else {
       actionBar(player, t(r.reason === "full" ? `${MSG}full` : `${MSG}not_ingredient`, itemName(held.typeId)));
