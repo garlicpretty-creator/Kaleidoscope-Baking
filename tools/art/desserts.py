@@ -1,4 +1,4 @@
-"""Placeable whole desserts, Cookery style: one box per slice, everything else painted.
+"""Placeable whole desserts, Cookery style: one box per slice (two for the round pies), everything else painted.
 
 Each dessert has geometry.kaleidoscope_baking.<id>_q<1..4> (q = slices left) sharing one texture
 textures/blocks/kb_<id>.png. Slice k (0: +x-z, 1: -x-z, 2: -x+z, 3: +x+z) is a 7 x h x 7 box; the faces on the
@@ -158,6 +158,29 @@ def slices(q, h):
     return [Box(SLICE[k][0], 0, SLICE[k][1], SLICE[k][2], h, SLICE[k][3], MATS, tag=k) for k in range(q)]
 
 
+# Pies are round: each slice is two boxes that leave the outer corner out (a ROUND_CUT x ROUND_CUT notch), so the
+# whole pie is a stepped disc of eight boxes, as a round thing is in Minecraft. The item icons show a round pie.
+ROUND_CUT = 2
+
+
+def round_slices(q, h):
+    out, near = [], 7 - ROUND_CUT
+    for k in range(q):
+        sx, sz = QUARTER[k]
+        out.append(Box(0, 0, 0, sx * 7, h, sz * near, MATS, tag=k))          # the slice out to the rim along x
+        out.append(Box(0, 0, sz * near, sx * near, h, sz * 7, MATS, tag=k))  # ... and the rest of it along z
+    return out
+
+
+def round_edge(t):
+    """Distance from a pie's rim (the stepped disc of round_slices), in pixels."""
+    ax, az, near = abs(t.x), abs(t.z), 7 - ROUND_CUT
+    d = min(7 - ax, 7 - az)
+    if ax < near or az < near:
+        d = min(d, math.hypot(max(0.0, near - ax), max(0.0, near - az)) if ax < near and az < near else max(near - ax, near - az))
+    return d
+
+
 def topper(k, a, b, y, size, h, mat):
     """A standing topping centred (a, b) pixels into slice k from the cake centre."""
     sx, sz = QUARTER[k]
@@ -169,9 +192,9 @@ def topper(k, a, b, y, size, h, mat):
 DESSERTS = {}
 
 
-def dessert(did, h, painters, deco=None):
+def dessert(did, h, painters, deco=None, round=False):
     def build(q):
-        boxes = slices(q, h)
+        boxes = (round_slices if round else slices)(q, h)
         if deco:
             for k in range(q):
                 boxes += deco(k, h)
@@ -243,7 +266,7 @@ def crimped_top(inner):
     """Pie top: crimped crust edge (alternating light / shadow pinches) around `inner`."""
     @painter
     def p(t):
-        if edge(t) < 1.5:
+        if round_edge(t) < 1.5:
             return CRUST[4] if (int(math.floor(t.x + 64)) + int(math.floor(t.z + 64))) % 2 == 0 else CRUST[1]
         return inner(t)
     return p
@@ -284,7 +307,8 @@ def fluted(t):
 
 def pie(did, inner, filling):
     dessert(did, 4, {"side": fluted, "top": crimped_top(inner),
-                     "cut": layers([(0, 1, CRUST_D), (1, 3.5, filling), (3.5, 4, CRUST)]), "base": base_under(CRUST_D)})
+                     "cut": layers([(0, 1, CRUST_D), (1, 3.5, filling), (3.5, 4, CRUST)]), "base": base_under(CRUST_D)},
+            round=True)
 
 
 pie("apple_pie", lattice(APPLE), APPLE)
