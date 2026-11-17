@@ -13,15 +13,13 @@ import { world } from "@minecraft/server";
 import { addToBowl, currentRecipe, normalizeBowl, takeFromBowl, whiskBowl } from "../api/mixingLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import {
-  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
-  spawnItems, stackHasTag, t, writeJson
+  refuse, consumeHeld, giveItems, heldItem, isCreative, locKey, particle, readJson, sound, spawnItems, stackHasTag, writeJson
 } from "../utils/runtime.js";
 import { bump, KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
 const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother", "kaleidoscope_baking:piping_bag"];
 const PREFIX = "kb_bowl";
-const MSG = "kaleidoscope_baking.msg.bowl.";
 
 const keyOf = block => locKey(PREFIX, block.dimension.id, block);
 const top = block => ({ x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });

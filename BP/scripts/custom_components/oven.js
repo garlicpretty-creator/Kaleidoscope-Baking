@@ -22,8 +22,7 @@
 // ============================================================================
 import { BlockPermutation, system, world } from "@minecraft/server";
 import {
-  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, partFromPermutation, partStates,
-  controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
+  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, partFromPermutation, partStates, controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
   MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, percent, phaseOf, slotYield, tickOven
@@ -31,15 +30,13 @@ import {
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
 import {
-  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
-  particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
+  refuse, consumeHeld, giveItems, heldItem, isCreative, locKey, onWorldReady, parseLocKey, particle, readJson, safeBlock, sound, spawnItems, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
 import { KIND, holdMotion, playMotion, removeVisual, showContents, steam, tintOf } from "../utils/visuals.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
 const TICK_INTERVAL = 20;
-const MSG = "kaleidoscope_baking.msg.oven.";
 const REPLACEABLE = new Set([
   "minecraft:air", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:fern", "minecraft:large_fern",
   "minecraft:deadbush", "minecraft:leaf_litter", "minecraft:snow_layer", "minecraft:vine"
@@ -195,7 +192,6 @@ function loadInput(player, dimension, c, s, held, recipe) {
   if (recipe.mold && !isCreative(player)) {
     mold = takeOneFromInventory(player, st => matchesSpec(st.typeId, recipe.mold)) ?? "";
     if (!mold) {
-      const moldName = recipe.mold.startsWith("#") ? { text: recipe.mold } : itemName(recipe.mold);
       refuse(dimension, centre(c));
       return false;
     }

@@ -144,26 +144,8 @@ export function takeOneFromInventory(player, pred) {
 }
 
 // ---------------------------------------------------------------------------
-// Localized feedback
+// Feedback (no on-screen text: sound and particles only)
 // ---------------------------------------------------------------------------
-const nameKeyCache = new Map();
-/** Translation key for an item's display name (falls back to the raw id). */
-export function itemName(id) {
-  if (!nameKeyCache.has(id)) {
-    let key;
-    try { key = new ItemStack(id, 1).localizationKey; } catch {}
-    nameKeyCache.set(id, key || "");
-  }
-  const key = nameKeyCache.get(id);
-  return key ? { translate: key } : { text: id };
-}
-
-/** t("kaleidoscope_baking.msg.x", "plain", itemName(id), ...) -> RawMessage */
-export function t(key, ...args) {
-  const withParts = args.map(a => (typeof a === "object" && a ? a : { text: String(a) }));
-  return { translate: key, with: { rawtext: withParts } };
-}
-
 /** "Not like that": a low note and a small puff, instead of a text prompt. The held item is never taken. */
 export function refuse(dimension, loc) {
   try { dimension.playSound("note.bass", loc, { volume: 0.6, pitch: 0.6 }); } catch {}

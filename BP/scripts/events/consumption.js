@@ -11,12 +11,11 @@
 import { system, world } from "@minecraft/server";
 import { getFoodEffect } from "../api/effects.js";
 import { CAFFEINE_DECAY_TICKS, SWEETNESS_SATURATION, drinkCaffeine } from "../api/stationLogic.js";
-import { refuse, onWorldReady, t } from "../utils/runtime.js";
+import { onWorldReady } from "../utils/runtime.js";
 
 export const CAFFEINE_PROP = "kaleidoscope_baking:caffeine";
 export const SWEET_PROP = "kaleidoscope_baking:sweet";
 export const ICE_PROP = "kaleidoscope_baking:ice";
-const MSG = "kaleidoscope_baking.msg.";
 export const TEA_TIME_WINDOW = 600;
 const COFFEE_EFFECTS = new Set(["haste", "speed"]);
 const lastEaten = new Map(); // playerId -> {drink:tick, dessert:tick}

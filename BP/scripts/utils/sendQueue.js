@@ -20,4 +20,3 @@ export function enqueueEvent(id, message) {
   }, 1);
 }
 
-export function pendingEvents() { return queue.length; }

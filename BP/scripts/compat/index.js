@@ -27,7 +27,6 @@ export function autoConvertEnabled() {
 export function setAutoConvert(on) {
   try { world.setDynamicProperty(AUTO_CONVERT_PROP, !!on); } catch {}
 }
-export function activeLeaders() { return [...active.leaders]; }
 
 function exists(id, kind) {
   try { return kind === "block" ? !!BlockTypes.get(id) : !!ItemTypes.get(id); } catch { return false; }

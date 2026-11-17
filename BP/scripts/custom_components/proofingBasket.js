@@ -7,13 +7,12 @@
 import { world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
 import { getRecipeById } from "../api/registry.js";
-import { refuse, giveItems, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, t } from "../utils/runtime.js";
+import { refuse, giveItems, heldItem, isCreative, mainhand, particle, safeBlock, sound, spawnItems } from "../utils/runtime.js";
 import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const BASKET_ID = "kaleidoscope_baking:proofing_basket";
 const PREFIX = "kb_proof";
-const MSG = "kaleidoscope_baking.msg.proof.";
 const isEmpty = s => !s.count;
 const centre = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
 const recipeOf = s => getRecipeById("proofing", s.recipe);

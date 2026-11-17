@@ -6,11 +6,12 @@
 import { system, world } from "@minecraft/server";
 import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
 import { getPourOverRecipe } from "../api/registry.js";
-import { refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, readJson, sound, spawnItems, t, takeCarrier, writeJson, locKey } from "../utils/runtime.js";
+import {
+  refuse, consumeHeld, giveItems, heldItem, isCreative, readJson, sound, spawnItems, takeCarrier, writeJson, locKey
+} from "../utils/runtime.js";
 
 export const POUR_ID = "kaleidoscope_baking:pour_over_stand";
 const PREFIX = "kb_pour";
-const MSG = "kaleidoscope_baking.msg.pour.";
 const keyOf = b => locKey(PREFIX, b.dimension.id, b);
 const at = b => ({ x: b.x + 0.5, y: b.y + 0.6, z: b.z + 0.5 });
 
