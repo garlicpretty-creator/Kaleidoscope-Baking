@@ -3,7 +3,8 @@
 // cake_stand      one whole dessert on a raised plate, eaten slice by slice like a placed dessert
 // tea_tray        three small foods; eating from it widens the afternoon-tea window to 60 s
 // bread_display   9 stacks of food, first three shown behind the glass
-// pastry_case     same as bread_display (reserved for a future freshness system)
+// pastry_case     same as bread_display, glass-fronted
+// mug_stack       up to 4 mugs of the SAME hot drink (Baking mug model); every hot-drink block uses it
 // drink_cups      up to 4 hand-shaken drinks placed by SNEAKING with the drink on a block top;
 //                 each cup keeps its sweetness / ice (stored in world data per block)
 // Contents never vanish: breaking any of these drops everything (drinks with their choices).
@@ -259,11 +260,44 @@ export const drinkCupsComponent = {
   }
 };
 
+// ---------------------------------------------------------------------------
+// Placed hot drinks (Baking's own mugs; replaces Cookery's cup_stack since 1.1)
+// Block states: kaleidoscope_baking:cups 1..4. The item places the block with 1 mug
+// (block_placer); using the same drink on it adds a mug; an empty hand takes one back.
+// ---------------------------------------------------------------------------
+const MUGS_STATE = "kaleidoscope_baking:cups";
+const mugCount = perm => { try { return Number(perm.getState(MUGS_STATE)) || 1; } catch { return 1; } };
+export const mugStackComponent = {
+  onPlayerInteract({ block, player }) {
+    if (!player) return;
+    const id = block.typeId;
+    const n = mugCount(block.permutation);
+    const held = heldItem(player);
+    if (held?.typeId === id) {
+      if (n >= 4) return;
+      try { block.setPermutation(block.permutation.withState(MUGS_STATE, n + 1)); } catch { return; }
+      consumeHeld(player, 1);
+      sound(block.dimension, "random.glass", centre(block), 0.4, 1.6);
+      return;
+    }
+    if (held) return;
+    giveItems(player, id, 1);
+    sound(block.dimension, "random.glass", centre(block), 0.4, 1.3);
+    if (n <= 1) { try { block.setType("minecraft:air"); } catch {} }
+    else try { block.setPermutation(block.permutation.withState(MUGS_STATE, n - 1)); } catch {}
+  },
+  onPlayerBreak({ block, brokenBlockPermutation }) {
+    const perm = brokenBlockPermutation ?? block.permutation;
+    spawnItems(block.dimension, centre(block), perm?.type?.id ?? block.typeId, mugCount(perm));
+  }
+};
+
 // Explosions: same teardown for every furniture block.
 const FURNITURE = {
   "kaleidoscope_baking:cake_stand": cakeStandComponent, "kaleidoscope_baking:tea_tray": teaTrayComponent,
   "kaleidoscope_baking:bread_display": breadDisplayComponent, "kaleidoscope_baking:pastry_case": pastryCaseComponent,
-  [CUPS_ID]: drinkCupsComponent
+  [CUPS_ID]: drinkCupsComponent,
+  ...Object.fromEntries((CONTENT.hotCupDrinks ?? []).map(id => [id, mugStackComponent]))
 };
 world.afterEvents.blockExplode.subscribe(ev => {
   const c = FURNITURE[ev.explodedBlockPermutation?.type?.id];

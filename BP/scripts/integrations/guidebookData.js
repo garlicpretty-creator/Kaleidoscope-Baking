@@ -20,6 +20,9 @@ const TAG_EXAMPLES = {
   "#kaleidoscope:cooked_fish": "minecraft:cooked_salmon", "#kaleidoscope:vegetable": "minecraft:carrot",
   "#kaleidoscope:herb": "kaleidoscope_baking:thyme", "#kaleidoscope:dairy": "kaleidoscope_baking:butter",
   "#kaleidoscope:ground_coffee": "kaleidoscope_baking:ground_coffee_medium",
+  "#kaleidoscope:pineapple": "kaleidoscope_harvest:pineapple",
+  "#kaleidoscope:soup": "kaleidoscope_cookery:pork_bone_soup",
+  "#kaleidoscope_baking:piping_bag": "kaleidoscope_baking:piping_bag",
   "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk", "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother"
 };
 const example = spec => (spec.startsWith("#") ? TAG_EXAMPLES[spec] : spec);
@@ -63,6 +66,9 @@ const HELP = {
   },
   "kaleidoscope_baking:herb_planter": {
     zh_TW: ["種下香草插枝或草莓，長在室內也可以。"], en_US: ["Plant herb cuttings or strawberries indoors."]
+  },
+  "kaleidoscope_baking:pineapple_cake": {
+    zh_TW: ["需要安裝森羅物語：豐收：鳳梨由豐收提供。"], en_US: ["Requires Kaleidoscope Harvest, which provides the pineapple."]
   },
   "kaleidoscope_baking:cake_stand": {
     zh_TW: ["手持整顆蛋糕或派放上去展示，一樣能一片一片吃。", "潛行空手可拿回完整的甜點。"],

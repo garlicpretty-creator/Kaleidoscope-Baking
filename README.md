@@ -19,9 +19,9 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 | 站點 / 家具 | 12 | 烤箱（3×3×3）、攪拌盆、發酵籃、裱花台、咖啡機（紅石供電）、手沖架、雪克杯、香草盆栽、蛋糕架、三層點心架、麵包展示櫃、甜點櫥窗 |
 | 工具 | 19 | 打蛋器、奶泡器、擠花袋、擀麵棍、麵包刀、9 種模具、馬克杯、外帶杯、奶油罐… |
 | 材料 | 98 | 麵團 / 麵糊、千層酥皮、6 色糖霜、果醬、醬料、咖啡豆（三焙度）、珍珠、茶湯底、鹹蛋黃、副產品… |
-| 植物 | 32 | 香草蘭、迷迭香、百里香、薰衣草、薄荷、肉桂樹、芝麻、甜菊、樹薯、咖啡樹、草莓、藍莓、覆盆子、檸檬樹、鳳梨 |
+| 植物 | 30 | 香草蘭、迷迭香、百里香、薰衣草、薄荷、肉桂樹、芝麻、甜菊、樹薯、咖啡樹、草莓、藍莓、覆盆子、檸檬樹（鳳梨由豐收提供） |
 | 烘焙美食 | 57 | 麵包、11 種可擺放蛋糕 / 派、千層酥皮點心、瑪德蓮、糖霜餅乾、蛋黃酥、鳳梨酥、馬拉糕… |
-| 飲品 | 25 | 咖啡（可疊杯擺放）、手搖飲（可擺放、保留甜度冰塊）、熱可可… |
+| 飲品 | 25 | 咖啡（烘焙馬克杯，可疊杯擺放）、手搖飲（可擺放、保留甜度冰塊）、熱可可… |
 
 - 配方：烘焙站點 132 道，另向廚房站點註冊 61 道（含牛奶基底湯鍋、奶油罐入炒鍋）
 - 站點內容直接顯示在方塊上（填充狀態＋展示實體）
@@ -37,7 +37,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 需要 Node.js 22+ 與 Python 3（含 Pillow）。
 
 ```sh
-npm test                           # 62 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
+npm test                           # 63 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
 python3 tools/validate.py          # 檢查 JSON、貼圖、語系、物品 ID、元件註冊、腳本語法
 python3 tools/build.py             # 打包成 dist/Kaleidoscope-Baking-v<版本>.mcaddon
 python3 tools/gen_content.py       # 由 tools/content.py 產生物品 / 方塊 / 語系 / 暫代圖（不覆蓋既有圖）

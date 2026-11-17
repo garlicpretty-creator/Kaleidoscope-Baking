@@ -12,6 +12,7 @@
 // ============================================================================
 import { BlockPermutation, BlockTypes, ItemTypes, system, world } from "@minecraft/server";
 import { REVERSE_REGISTRATIONS } from "./reverse.data.js";
+import { SERIES_TAGS } from "./series.data.js";
 import { resolveEquivalents, mapGrowth } from "../api/compat.js";
 import { setIngredientAliases, registerIngredient } from "../api/ingredients.js";
 import { onWorldReady, setOutputMapper } from "../utils/runtime.js";
@@ -33,6 +34,7 @@ function exists(id, kind) {
 }
 
 onWorldReady(() => {
+  for (const t of SERIES_TAGS) registerIngredient({ api: 1, source: "kaleidoscope_baking_compat", id: t.id, tags: t.tags });
   active = resolveEquivalents(exists);
   if (!active.items.size) return;
   setIngredientAliases(active.aliases);

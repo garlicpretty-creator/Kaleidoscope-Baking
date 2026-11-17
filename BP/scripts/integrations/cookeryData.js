@@ -95,7 +95,6 @@ export const COOKERY_REGISTRATIONS = Object.freeze({
     // Salted egg: wet-cured on the bamboo tray (rain / dripping water)
     recipe("bamboo_tray", "bamboo_tray", { id: k("tray/salted_egg"), input: "minecraft:egg", result: k("salted_egg"), process: "wet", duration: 2400 }),
     recipe("steamer", "steamer", { id: k("steamer/ma_lai_go"), input: k("ma_lai_go_batter"), result: k("ma_lai_go"), count: 4, time: 400 }),
-    pot("pineapple_jam", [[k("pineapple")], [k("pineapple")], SUGARS], k("pineapple_jam"), 2, BOTTLE),
     // Milk-based stockpot (Cookery fills its stockpot with milk from a milk bucket natively)
     milkPot("custard_milk", [EGGS, SUGARS], k("custard"), 3),
     milkPot("cream_soup", [["minecraft:carrot", "minecraft:potato", kc("tomato")], [k("butter")]], k("cream_soup"), 2, "minecraft:bowl"),
@@ -117,7 +116,7 @@ export const COOKERY_REGISTRATIONS = Object.freeze({
     "butter_cookie", "chocolate_cookie", "lavender_cookie", "toast_slice", "cake_slice", "croissant", "scone",
     "blueberry_muffin", "taiyaki", "savory_taiyaki", "egg_tart", "strawberry_tart", "lemon_tart", "donut",
     "pineapple_bun", "poppy_seed_bagel", "cinnamon_roll", "sesame_mooncake", "sesame_ball", "fa_gao", "lemon", "strawberry",
-    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "egg_yolk_pastry", "pineapple_cake", "ma_lai_go", "pineapple",
+    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "egg_yolk_pastry", "pineapple_cake", "ma_lai_go",
     "shaped_cookie", "iced_cookie_white", "iced_cookie_pink", "iced_cookie_blue", "iced_cookie_green", "iced_cookie_yellow", "iced_cookie_cocoa"
   ].map(n => ({ id: k(n), mode: "item" })),
 

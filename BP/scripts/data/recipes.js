@@ -49,6 +49,9 @@ export const BUILTIN_RECIPES = Object.freeze({
     mix("raw_pastry_soup", ["#kaleidoscope:soup", k("puff_pastry")], 2),
     mix("raw_egg_yolk_pastry", [k("puff_pastry"), k("salted_egg_yolk"), k("sesame_paste")], 3),
     mix("raw_pineapple_cake", [FLOUR, BUTTER, EGG, k("pineapple_jam")], 4),
+    // Pineapple comes from 豐收 (Harvest leads fruit; Baking ships none). The bottle is part of the
+    // recipe because the jam hands its bottle back when used.
+    mix("pineapple_jam", ["#kaleidoscope:pineapple", "#kaleidoscope:pineapple", SWEET, "minecraft:glass_bottle"], 6, 2),
     mix("madeleine_batter", [FLOUR, EGG, BUTTER, SWEET, LEMONY], 5),
     mix("ma_lai_go_batter", [FLOUR, k("brown_sugar"), EGG, BUTTER], 4),
     // Dairy & basics (tool decides butter vs frothed milk from the same milk)

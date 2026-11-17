@@ -386,11 +386,8 @@ for col, zh, en, rgb, _ in ICING_COLORS:
 ing("salted_egg", "鹹蛋", "Salted Egg", ("ball", (210, 220, 210), None), ["kaleidoscope:egg_product"])
 ing("salted_egg_yolk", "鹹蛋黃", "Salted Egg Yolk", ("ball", C["orange"], None), ["kaleidoscope:egg_product"])
 ing("pineapple_jam", "鳳梨醬", "Pineapple Jam", ("jar", C["lemon"], None), ["kaleidoscope:jam"], 16)
-plant_item("pineapple", "鳳梨", "Pineapple", ("lemon", C["yellow"], C["green"]), ["kaleidoscope:fruit"])
-plant_item("pineapple_crown", "鳳梨冠芽", "Pineapple Crown", ("cutting", C["green"], C["yellow"]), ["kaleidoscope:seed"],
-           place="pineapple_crop", place_on="farmland")
-crop("pineapple_crop", "鳳梨", "Pineapple", "annual", "pineapple_crown", ("pineapple", 1, 1), 8, "farmland", C["green"], C["yellow"],
-     chance=9, wild=["savanna", "beach"])
+# Pineapple is led by 豐收 (decided): Baking ships NO pineapple plant. Pineapple jam / pineapple
+# cakes use `#kaleidoscope:pineapple`, which 豐收's pineapple satisfies (see compat/series.data.js).
 # By-products (also sent to series packs through reverse registration)
 ing("bread_crumbs", "麵包屑", "Bread Crumbs", ("powder", C["tan"], C["crust"]), ["kaleidoscope:bread_crumbs"], compostable=50)
 ing("coffee_grounds", "咖啡渣", "Coffee Grounds", ("powder", C["dkbrown"], None), ["kaleidoscope:fertilizer"], compostable=65)
@@ -427,7 +424,7 @@ STATIONS.append(dict(id="pastry_case", cubes=[([-8, 0, -8], [16, 3, 16]), ([-8, 
                      tex=(200, 225, 235), sound="glass"))
 item("pastry_case", "甜點櫥窗", "Pastry Case", G_STATIONS, ("machine", (200, 225, 235), C["pink"]), 64, place="pastry_case")
 
-# Hot drinks placeable as stacked cups through Cookery's public cup_stack component
+# Hot drinks placeable as stacked Baking mugs (own `mug_stack` component and mug model)
 HOT_CUP_DRINKS = ["espresso", "americano", "latte", "cappuccino", "mocha", "caramel_macchiato", "cinnamon_latte",
                   "pour_over_light", "pour_over_medium", "pour_over_dark"]
 # Hand-shaken drinks (stack 1, sweetness/ice) are placed by sneaking into a `drink_cups` block.

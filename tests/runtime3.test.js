@@ -140,12 +140,34 @@ test("hand-shaken drinks: sneak-place on a block top keeps sweetness / ice when 
   assert.equal(cups.typeId, "minecraft:air");
 });
 
-test("hot drinks are placeable cups through Cookery's public cup_stack component", () => {
+test("hot drinks: Baking's own mug stack — add the same drink, take one back, break drops all", () => {
   const block = JSON.parse(readFileSync(new URL("../BP/blocks/latte.json", import.meta.url)))["minecraft:block"];
-  assert.deepEqual(block.components["kaleidoscope_cookery:cup_stack"],
-    { filled: true, item: kb("latte"), empty_item: kb("coffee_mug"), max_count: 4 });
+  assert.ok(block.components["kaleidoscope_baking:mug_stack"], "own component");
+  assert.equal(block.components["kaleidoscope_cookery:cup_stack"], undefined, "no longer uses Cookery's");
+  assert.match(block.components["minecraft:geometry"], /mug_1$/);
   const item = JSON.parse(readFileSync(new URL("../BP/items/latte.json", import.meta.url)))["minecraft:item"];
   assert.equal(item.components["minecraft:block_placer"].block, kb("latte"));
+
+  const mugs = place({ x: 34, y: 64, z: 0 }, kb("latte"));
+  const p = makePlayer();
+  p.hold(kb("latte")); use("mug_stack", mugs, p);
+  p.hold(kb("mocha")); use("mug_stack", mugs, p);
+  assert.equal(mugs.permutation.getState("kaleidoscope_baking:cups"), 2, "a different drink is not stacked");
+  p.hold(undefined); use("mug_stack", mugs, p);
+  assert.equal(p.inv.count(kb("latte")), 1);
+  p.hold(kb("latte")); use("mug_stack", mugs, p);
+  dim.spawned.length = 0;
+  const perm = mugs.permutation; mugs.setType("minecraft:air");
+  C("mug_stack").onPlayerBreak({ block: mugs, brokenBlockPermutation: perm });
+  assert.deepEqual(dim.spawned.map(x => [x.id, x.amount]), [[kb("latte"), 2]]);
+});
+
+test("pineapple comes from Harvest: its pineapple makes jam, Baking ships no pineapple", async () => {
+  const { CONTENT } = await import("../BP/scripts/data/generated/content.js");
+  assert.equal(CONTENT.items[kb("pineapple")], undefined);
+  const { getMixingRecipe } = await import("../BP/scripts/api/registry.js");
+  const r = getMixingRecipe(["kaleidoscope_harvest:pineapple", "kaleidoscope_harvest:pineapple", "minecraft:sugar", "minecraft:glass_bottle"], kb("whisk"));
+  assert.equal(r?.result, kb("pineapple_jam"));
 });
 
 test("Cookery deepening: butter jar oil container and milk-base stockpot recipes are registered", () => {

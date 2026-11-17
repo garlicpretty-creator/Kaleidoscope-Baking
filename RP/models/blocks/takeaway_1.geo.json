@@ -3,7 +3,7 @@
   "minecraft:geometry": [
     {
       "description": {
-        "identifier": "geometry.kaleidoscope_baking.cups_2_0",
+        "identifier": "geometry.kaleidoscope_baking.takeaway_1",
         "texture_width": 16,
         "texture_height": 16,
         "visible_bounds_width": 2,
@@ -16,7 +16,7 @@
       },
       "bones": [
         {
-          "name": "cups",
+          "name": "takeaway",
           "pivot": [
             0,
             0,
@@ -30,9 +30,9 @@
                 -6
               ],
               "size": [
-                5,
-                6,
-                5
+                4,
+                7,
+                4
               ],
               "uv": {
                 "north": {
@@ -44,7 +44,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "cup"
                 },
                 "south": {
                   "uv": [
@@ -55,7 +55,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "cup"
                 },
                 "east": {
                   "uv": [
@@ -66,7 +66,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "cup"
                 },
                 "west": {
                   "uv": [
@@ -77,7 +77,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "cup"
                 },
                 "up": {
                   "uv": [
@@ -88,7 +88,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "lid"
                 },
                 "down": {
                   "uv": [
@@ -99,20 +99,20 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "cup"
                 }
               }
             },
             {
               "origin": [
-                1,
-                0,
-                -6
+                -4.5,
+                7,
+                -4.5
               ],
               "size": [
-                5,
-                6,
-                5
+                1,
+                3,
+                1
               ],
               "uv": {
                 "north": {
@@ -124,7 +124,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 },
                 "south": {
                   "uv": [
@@ -135,7 +135,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 },
                 "east": {
                   "uv": [
@@ -146,7 +146,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 },
                 "west": {
                   "uv": [
@@ -157,7 +157,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 },
                 "up": {
                   "uv": [
@@ -168,7 +168,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 },
                 "down": {
                   "uv": [
@@ -179,7 +179,7 @@
                     16,
                     16
                   ],
-                  "material_instance": "mug"
+                  "material_instance": "straw"
                 }
               }
             }

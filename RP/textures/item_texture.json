@@ -653,12 +653,6 @@
     "kb_pineapple_jam": {
       "textures": "textures/items/kb_pineapple_jam"
     },
-    "kb_pineapple": {
-      "textures": "textures/items/kb_pineapple"
-    },
-    "kb_pineapple_crown": {
-      "textures": "textures/items/kb_pineapple_crown"
-    },
     "kb_bread_crumbs": {
       "textures": "textures/items/kb_bread_crumbs"
     },

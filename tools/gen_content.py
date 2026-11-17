@@ -615,62 +615,71 @@ for st in C.STATIONS:
     }, states=states, permutations=perms)
 
 # --- Placeable cups (1.1) -----------------------------------------------------
-CUP_SPOTS = [(-6, -6), (1, -6), (-6, 1), (1, 1)]
+# Baking's own models: a mug with a handle for hot drinks, a tall takeaway cup with a straw
+# for hand-shaken drinks. 1..4 per block.
+CUP_SPOTS = [(-6, -6), (2, -6), (-6, 2), (2, 2)]
 
 
-def cups_geo(c, f):
-    cubes = []
-    for i, (x, z) in enumerate(CUP_SPOTS[:c]):
-        cubes.append(cube([x, 0, z], [5, 6, 5], top="fill" if i < f else "mug", material="mug"))
-    gid = f"geometry.{NS}.cups_{c}_{f}"
-    w(f"RP/models/blocks/cups_{c}_{f}.geo.json", geo(gid, [{"name": "cups", "pivot": [0, 0, 0], "cubes": cubes}]))
+def mug_cubes(x, z):
+    return [cube([x, 0, z], [4, 5, 4], top="fill", material="mug"),       # body, drink on top
+            cube([x + 4, 1, z + 1.5], [1, 3, 1], material="mug")]         # handle
+
+
+def takeaway_cubes(x, z):
+    return [cube([x, 0, z], [4, 7, 4], top="lid", material="cup"),        # cup with lid
+            cube([x + 1.5, 7, z + 1.5], [1, 3, 1], material="straw")]     # straw
+
+
+def cups_geo(kind, n):
+    make = mug_cubes if kind == "mug" else takeaway_cubes
+    cubes = [c for (x, z) in CUP_SPOTS[:n] for c in make(x, z)]
+    gid = f"geometry.{NS}.{kind}_{n}"
+    w(f"RP/models/blocks/{kind}_{n}.geo.json", geo(gid, [{"name": kind, "pivot": [0, 0, 0], "cubes": cubes}]))
     return gid
 
 
-CUP_GEOS = {(c, f): cups_geo(c, f) for c in range(1, 5) for f in range(0, c + 1)}
-tex("kb_mug", "kb_mug")
-save_png(paint_block("stripes", (245, 245, 240)), "textures/blocks/kb_mug.png")
-CUP_COUNT, TEA_COUNT = "kaleidoscope_cookery:cup_count", "kaleidoscope_cookery:tea_count"
-cup_box = {"origin": [-6, 0, -6], "size": [12, 6, 12]}
+MUG_GEOS = {n: cups_geo("mug", n) for n in range(1, 5)}
+CUP_GEOS = {n: cups_geo("takeaway", n) for n in range(1, 5)}
+for t, color in [("kb_mug", (245, 245, 240)), ("kb_takeaway_cup", (235, 240, 245)), ("kb_cup_lid", (210, 215, 220)),
+                 ("kb_straw", (240, 120, 140))]:
+    tex(t, t)
+    save_png(paint_block("stripes", color), f"textures/blocks/{t}.png")
+CUPS = f"{NS}:cups"
+cup_box = {"origin": [-6, 0, -6], "size": [12, 7, 12]}
 for did in getattr(C, "HOT_CUP_DRINKS", []):
     it = next(i for i in C.ITEMS if i["id"] == did)
     tex(f"kb_fill_{did}", f"kb_fill_{did}")
     save_png(paint_block("stripes", it["art"][2] or it["art"][1]), f"textures/blocks/kb_fill_{did}.png")
-    perms = []
-    for c in range(1, 5):
-        for f in range(1, 5):
-            perms.append({"condition": f"{cond(CUP_COUNT, c)} && {cond(TEA_COUNT, f)}",
-                          "components": {"minecraft:geometry": CUP_GEOS[(c, min(f, c))]}})
     block(did, {
-        "minecraft:geometry": CUP_GEOS[(1, 1)],
+        "minecraft:geometry": MUG_GEOS[1],
         "minecraft:material_instances": {"*": {"texture": "kb_mug", "render_method": "alpha_test"},
                                          "mug": {"texture": "kb_mug", "render_method": "alpha_test"},
                                          "fill": {"texture": f"kb_fill_{did}", "render_method": "alpha_test"}},
         "minecraft:collision_box": False, "minecraft:selection_box": cup_box,
         "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
-        "minecraft:movable": {"movement_type": "popped"},
         "minecraft:light_dampening": 0,
         "minecraft:loot": f"loot_tables/{NS}/empty.json",
-        "kaleidoscope_cookery:cup_stack": {"filled": True, "item": kb(did), "empty_item": kb("coffee_mug"), "max_count": 4}
-    }, states={CUP_COUNT: {"values": {"min": 1, "max": 4}}, TEA_COUNT: {"values": {"min": 1, "max": 4}}}, permutations=perms)
+        f"{NS}:mug_stack": {}
+    }, states={CUPS: {"values": {"min": 1, "max": 4}}},
+        permutations=[{"condition": cond(CUPS, n), "components": {"minecraft:geometry": MUG_GEOS[n]}} for n in range(2, 5)])
     name(f"tile.{kb(did)}.name", it["zh"], it["en"])
     sounds[kb(did)] = "glass"
 # Hand-shaken drinks: one generic block, the drinks themselves are kept in world data
-CUPS = f"{NS}:cups"
 tex("kb_fill_shaken", "kb_fill_shaken")
 save_png(paint_block("stripes", (190, 150, 110)), "textures/blocks/kb_fill_shaken.png")
 block("drink_cups", {
-    "minecraft:geometry": CUP_GEOS[(1, 1)],
-    "minecraft:material_instances": {"*": {"texture": "kb_mug", "render_method": "alpha_test"},
-                                     "mug": {"texture": "kb_mug", "render_method": "alpha_test"},
-                                     "fill": {"texture": "kb_fill_shaken", "render_method": "alpha_test"}},
-    "minecraft:collision_box": False, "minecraft:selection_box": cup_box,
+    "minecraft:geometry": CUP_GEOS[1],
+    "minecraft:material_instances": {"*": {"texture": "kb_takeaway_cup", "render_method": "alpha_test"},
+                                     "cup": {"texture": "kb_fill_shaken", "render_method": "alpha_test"},
+                                     "lid": {"texture": "kb_cup_lid", "render_method": "alpha_test"},
+                                     "straw": {"texture": "kb_straw", "render_method": "alpha_test"}},
+    "minecraft:collision_box": False, "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, 10, 12]},
     "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
     "minecraft:light_dampening": 0,
     "minecraft:loot": f"loot_tables/{NS}/empty.json",
     f"{NS}:drink_cups": {}
 }, states={CUPS: {"values": {"min": 1, "max": 4}}},
-    permutations=[{"condition": cond(CUPS, c), "components": {"minecraft:geometry": CUP_GEOS[(c, c)]}} for c in range(2, 5)])
+    permutations=[{"condition": cond(CUPS, n), "components": {"minecraft:geometry": CUP_GEOS[n]}} for n in range(2, 5)])
 name(f"tile.{kb('drink_cups')}.name", "手搖杯", "Hand-Shaken Drinks")
 sounds[kb("drink_cups")] = "glass"
 
@@ -1042,7 +1051,10 @@ lines = ["# 美術資源清單（給美術）", "",
 for st in C.STATIONS:
     it = next(i for i in C.ITEMS if i["id"] == st["id"])
     lines.append(f"| `textures/blocks/kb_{st['id']}.png` | {it['zh']} | `RP/models/blocks/{st['id']}.geo.json` |")
-lines += ["| `textures/blocks/kb_planter_soil.png` | 香草盆栽的土面 | |", "",
+lines += ["| `textures/blocks/kb_planter_soil.png` | 香草盆栽的土面 | |",
+          "| `textures/blocks/kb_mug.png` | 放在桌上的馬克杯（熱咖啡，模型 `mug_1..4`，含把手） | |",
+          "| `textures/blocks/kb_fill_<飲品>.png` | 馬克杯裡的飲料表面（每種熱咖啡一張） | |",
+          "| `textures/blocks/kb_takeaway_cup.png`、`kb_cup_lid.png`、`kb_straw.png`、`kb_fill_shaken.png` | 放在桌上的手搖杯（杯身、杯蓋、吸管，模型 `takeaway_1..4`） | |", "",
           "## 作物 / 灌木（每個生長階段一張，交叉十字模型）", "", "| 植物 | 檔名 |", "|------|------|"]
 for cp in C.CROPS:
     lines.append(f"| {cp['zh']} | `textures/blocks/kb_{cp['id']}_stage_0..{cp['stages'] - 1}.png` |")
