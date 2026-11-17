@@ -212,3 +212,18 @@ test("reverse registrations go out only when a series pack announces itself", ()
 });
 
 void __ui;
+
+test("hand-shaken drinks: a held-down use button places only one cup", () => {
+  const p = makePlayer();
+  dim.getBlock({ x: 40, y: 64, z: 0 }).setType("minecraft:stone");
+  const mk = () => new ItemStack(kb("lemonade"), 1);
+  p.isSneaking = true;
+  p.inv.slots[0] = mk();
+  const base = dim.getBlock({ x: 40, y: 64, z: 0 });
+  __mock.interactBefore({ player: p, itemStack: p.inv.slots[0], block: base, blockFace: "Up", cancel: false, isFirstEvent: true });
+  p.inv.slots[0] = mk();
+  const repeat = __mock.interactBefore({ player: p, itemStack: p.inv.slots[0], block: dim.getBlock({ x: 40, y: 65, z: 0 }), blockFace: "Up", cancel: false, isFirstEvent: false });
+  assert.ok(repeat.cancel);
+  assert.equal(dim.getBlock({ x: 40, y: 65, z: 0 }).permutation.getState("kaleidoscope_baking:cups"), 1);
+  assert.ok(p.inv.slots[0], "the second drink stays in hand");
+});

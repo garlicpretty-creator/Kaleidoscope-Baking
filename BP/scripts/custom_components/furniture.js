@@ -234,6 +234,9 @@ world.beforeEvents?.playerInteractWithBlock?.subscribe?.(ev => {
   const onCups = ev.block?.typeId === CUPS_ID;
   if (!onCups && ev.blockFace !== "Up") return;
   ev.cancel = true;
+  // ## Holding the use button repeats this before-event several times a second; only the
+  // first one of a press places a cup (the repeats are still cancelled so nothing else fires).
+  if (ev.isFirstEvent === false) return;
   const { dimension } = ev.block;
   const loc = onCups ? ev.block : { x: ev.block.x, y: ev.block.y + 1, z: ev.block.z };
   system.run(() => placeCup(player, safeBlock(dimension, loc)));
