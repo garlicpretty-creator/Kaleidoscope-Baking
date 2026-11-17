@@ -393,6 +393,9 @@ def paint_item(shape, c1, c2):
     elif s == "shaker":
         d.rectangle([5, 4, 10, 15], fill=a, outline=o)
         d.rectangle([6, 1, 9, 4], fill=lighter(c1))
+    elif s == "piping":
+        d.polygon([(3, 2), (12, 2), (8, 13)], fill=a, outline=o)
+        d.rectangle([7, 13, 8, 15], fill=rgba(c2))
     elif s == "planter":
         d.polygon([(3, 9), (12, 9), (11, 15), (4, 15)], fill=a, outline=o)
         d.line([8, 9, 8, 3], fill=rgba(c2))
@@ -573,6 +576,8 @@ for it in C.ITEMS:
         comps["minecraft:hand_equipped"] = True
     if it["extra"].get("durability"):
         comps["minecraft:durability"] = {"max_durability": it["extra"]["durability"]}
+    if it["extra"].get("compostable"):
+        comps["minecraft:compostable"] = {"composting_chance": it["extra"]["compostable"]}
     f = it["food"]
     if f:
         comps["minecraft:food"] = {"nutrition": f["n"], "saturation_modifier": f["sat"], "can_always_eat": f["always"]}
@@ -900,12 +905,109 @@ for did in C.DRINK_BLOCKS:
     name(f"tile.{kb(did)}.name", it["zh"], it["en"])
     sounds[kb(did)] = "stone"
 
+# --- Display furniture (1.1): simple placeholder geometry until tools/art draws them ---------------
+for st in getattr(C, "FURNITURE", []):
+    sid = st["id"]
+    tex(f"kb_{sid}", f"kb_{sid}")
+    save_png(paint_block("stripes", st["tex"]), f"textures/blocks/kb_{sid}.png")
+    sounds[kb(sid)] = st["sound"]
+    it = next(i for i in C.ITEMS if i["id"] == sid)
+    name(f"tile.{kb(sid)}.name", it["zh"], it["en"])
+    gid = f"geometry.{NS}.{sid}"
+    w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": [cube(o, sz) for o, sz in st["cubes"]]}]))
+    xs = [o[0] for o, s_ in st["cubes"]] + [o[0] + s_[0] for o, s_ in st["cubes"]]
+    ys = [o[1] + s_[1] for o, s_ in st["cubes"]]
+    zs = [o[2] for o, s_ in st["cubes"]] + [o[2] + s_[2] for o, s_ in st["cubes"]]
+    box = {"origin": [max(-8, min(xs)), 0, max(-8, min(zs))], "size": [min(16, max(xs) - min(xs)), min(16, max(ys)), min(16, max(zs) - min(zs))]}
+    block(sid, {
+        "minecraft:geometry": gid,
+        "minecraft:material_instances": {"*": {"texture": f"kb_{sid}", "render_method": MAT}},
+        "minecraft:collision_box": box, "minecraft:selection_box": box,
+        "minecraft:destructible_by_mining": {"seconds_to_destroy": 1.0},
+        "minecraft:light_dampening": 0,
+        "minecraft:map_color": "#%02X%02X%02X" % tuple(st["tex"][:3]),
+        f"{NS}:{sid}": {}
+    })
+
+# --- Placed hand-shaken drinks (1.1): tall takeaway cup with lid and straw, 1..4 per block ----------
+# The drinks themselves (with sweetness / ice) live in world data; see custom_components/furniture.js.
+TAKEAWAY_SPOTS = [(-6, -6), (2, -6), (-6, 2), (2, 2)]
+
+
+def takeaway_geo(n):
+    cubes = []
+    for (x, z) in TAKEAWAY_SPOTS[:n]:
+        cubes.append(cube([x, 0, z], [4, 7, 4], top="lid", material="cup"))
+        cubes.append(cube([x + 1.5, 7, z + 1.5], [1, 3, 1], material="straw"))
+    gid = f"geometry.{NS}.takeaway_{n}"
+    w(f"RP/models/blocks/takeaway_{n}.geo.json", geo(gid, [{"name": "takeaway", "pivot": [0, 0, 0], "cubes": cubes}]))
+    return gid
+
+
+TAKEAWAY_GEOS = {n: takeaway_geo(n) for n in range(1, 5)}
+for t, color in [("kb_takeaway_cup", (235, 240, 245)), ("kb_cup_lid", (210, 215, 220)), ("kb_straw", (240, 120, 140)),
+                 ("kb_fill_shaken", (190, 150, 110))]:
+    tex(t, t)
+    save_png(paint_block("stripes", color), f"textures/blocks/{t}.png")
+SHAKEN_CUPS = f"{NS}:cups"
+block("drink_cups", {
+    "minecraft:geometry": TAKEAWAY_GEOS[1],
+    "minecraft:material_instances": {"*": {"texture": "kb_takeaway_cup", "render_method": MAT},
+                                     "cup": {"texture": "kb_fill_shaken", "render_method": MAT},
+                                     "lid": {"texture": "kb_cup_lid", "render_method": MAT},
+                                     "straw": {"texture": "kb_straw", "render_method": MAT}},
+    "minecraft:collision_box": False, "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, 10, 12]},
+    "minecraft:destructible_by_mining": {"seconds_to_destroy": 0.1},
+    "minecraft:light_dampening": 0,
+    "minecraft:loot": f"loot_tables/{NS}/empty.json",
+    f"{NS}:drink_cups": {}
+}, states={SHAKEN_CUPS: {"values": {"min": 1, "max": 4}}},
+    permutations=[{"condition": cond(SHAKEN_CUPS, n), "components": {"minecraft:geometry": TAKEAWAY_GEOS[n]}} for n in range(2, 5)])
+name(f"tile.{kb('drink_cups')}.name", "手搖杯", "Hand-Shaken Drinks")
+sounds[kb("drink_cups")] = "glass"
+
+# --- Item display entity (1.1): shows one item on display furniture (Cookery millstone pattern) ---
+w(f"BP/entities/{NS}_display.json", {"format_version": "1.16.0", "minecraft:entity": {
+    "description": {"identifier": kb("display"), "is_spawnable": False, "is_summonable": True, "is_experimental": False},
+    "component_groups": {f"{NS}:despawn": {"minecraft:instant_despawn": {"remove_child_entities": False}}},
+    "components": {
+        "minecraft:damage_sensor": {"triggers": {"cause": "all", "deals_damage": False}},
+        "minecraft:persistent": {}, "minecraft:physics": {"has_collision": False, "has_gravity": False},
+        "minecraft:scale": 0, "minecraft:type_family": {"family": ["kb_display"]},
+        "minecraft:health": {"value": 1, "max": 1, "min": 1}, "minecraft:collision_box": {"width": 0, "height": 0},
+        "minecraft:body_rotation_axis_aligned": {}, "minecraft:body_rotation_blocked": {},
+        "minecraft:knockback_resistance": {"value": 1}, "minecraft:movement": {"value": 0},
+        "minecraft:pushable": {"is_pushable": False, "is_pushable_by_piston": False}},
+    "events": {f"{NS}:despawn": {"add": {"component_groups": [f"{NS}:despawn"]}}}}})
+w(f"RP/entity/{NS}_display.entity.json", {"format_version": "1.10.0", "minecraft:client_entity": {"description": {
+    "identifier": kb("display"), "materials": {"default": "zombie"}, "textures": {"default": "textures/entity/kb_display"},
+    "geometry": {"default": f"geometry.{NS}.display"}, "animations": {"pose": f"animation.{NS}.display.pose"},
+    "scripts": {"scale": "0.8", "animate": ["pose"]}, "render_controllers": ["controller.render.default"],
+    "enable_attachables": False}}})
+w(f"RP/models/entity/{NS}_display.geo.json", {"format_version": "1.16.0", "minecraft:geometry": [{
+    "description": {"identifier": f"geometry.{NS}.display", "texture_width": 16, "texture_height": 16,
+                    "visible_bounds_width": 2, "visible_bounds_height": 2, "visible_bounds_offset": [0, 0.5, 0]},
+    "bones": [{"name": "rightitem", "pivot": [0, 0, 0]}]}]})
+w(f"RP/animations/{NS}_display.animation.json", {"format_version": "1.8.0", "animations": {
+    f"animation.{NS}.display.pose": {"loop": True, "bones": {"rightitem": {"position": [0, 2, 0], "rotation": [0, 0, 0]}}}}})
+ent_tex = os.path.join(RP, "textures", "entity", "kb_display.png")
+if not os.path.exists(ent_tex):
+    os.makedirs(os.path.dirname(ent_tex), exist_ok=True)
+    Image.new("RGBA", (16, 16), T).save(ent_tex)
+name(f"entity.{kb('display')}.name", "展示", "Display")
+
 # --- Crafting ---------------------------------------------------------------
 for rid, pattern, key, count in C.CRAFTING:
     w(f"BP/recipes/crafting/{rid}.json", {"format_version": "1.20.10", "minecraft:recipe_shaped": {
         "description": {"identifier": kb(rid)}, "tags": ["crafting_table"], "pattern": pattern,
         "key": {k: {"item": v} for k, v in key.items()}, "result": {"item": kb(rid), "count": count},
         "unlock": [{"item": v} for v in list(dict.fromkeys(key.values()))[:2]]}})
+
+for rid, ingredients, count in getattr(C, "CRAFTING_SHAPELESS", []):
+    w(f"BP/recipes/crafting/{rid}.json", {"format_version": "1.20.10", "minecraft:recipe_shapeless": {
+        "description": {"identifier": kb(rid)}, "tags": ["crafting_table"],
+        "ingredients": [{"item": i} for i in ingredients], "result": {"item": kb(rid), "count": count},
+        "unlock": [{"item": ingredients[0]}]}})
 
 # --- Catalog / textures / sounds / lang --------------------------------------
 groups = {}
@@ -973,6 +1075,7 @@ index = {
                             **({"place": kb(i["place"])} if i["place"] else {})}
               for i in C.ITEMS},
     "mugs": [kb(d) for d in C.DRINK_BLOCKS],
+    "shakenDrinks": [kb(d) for d in getattr(C, "SHAKEN_DRINKS", [])],
     "groups": {g.split(".")[-1]: {"zh_TW": zh, "zh_CN": zh_cn(zh), "en_US": en} for g, (zh, en) in C.GROUP_NAMES.items()},
     "crops": CROP_META, "trees": TREE_META, "planter": PLANTER_META, "desserts": DESSERT_META,
 }

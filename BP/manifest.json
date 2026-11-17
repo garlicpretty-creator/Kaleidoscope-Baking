@@ -5,9 +5,9 @@
     "description": "pack.description",
     "uuid": "7afe7be4-b5de-4b0b-831c-e09b1378b497",
     "version": [
-      0,
-      2,
-      1
+      1,
+      1,
+      0
     ],
     "min_engine_version": [
       1,
@@ -26,9 +26,9 @@
       "type": "data",
       "uuid": "3234191c-bbb0-43dd-b064-0d795637dda4",
       "version": [
-        0,
-        2,
-        1
+        1,
+        1,
+        0
       ]
     },
     {
@@ -37,9 +37,9 @@
       "uuid": "08ead6b6-6f5b-4546-a67f-a86cdbab2cf9",
       "entry": "scripts/main.js",
       "version": [
-        0,
-        2,
-        1
+        1,
+        1,
+        0
       ]
     }
   ],
@@ -55,9 +55,9 @@
     {
       "uuid": "5384f8e8-5c4b-4bc5-9907-ba3324d47f24",
       "version": [
-        0,
-        2,
-        1
+        1,
+        1,
+        0
       ]
     },
     {

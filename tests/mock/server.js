@@ -87,6 +87,11 @@ class MockEntity {
     this._tags = []; this._props = {}; this.rotation = { x: 0, y: 0 };
   }
   addTag(t) { if (!this._tags.includes(t)) this._tags.push(t); return true; }
+  removeTag(t) { this._tags = this._tags.filter(x => x !== t); return true; }
+  hasTag(t) { return this._tags.includes(t); }
+  teleport(l) { this.location = { ...l }; }
+  /** The item display holds its item via `replaceitem ... slot.weapon.mainhand`. */
+  runCommand(cmd) { const m = cmd.match(/slot\.weapon\.mainhand 0 (\S+)/); if (m) this.held = m[1]; }
   getTags() { return [...this._tags]; }
   getProperty(k) { return this._props[k]; }
   setProperty(k, v) { this._props[k] = v; }
@@ -116,7 +121,8 @@ export const world = {
   getDynamicProperty: k => dynamic.get(k),
   setDynamicProperty: (k, v) => (v === undefined ? dynamic.delete(k) : dynamic.set(k, v)),
   getDimension: () => overworld,
-  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs() },
+  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs(), entityLoad: subs() },
+  beforeEvents: { playerInteractWithBlock: subs() },
   getAllPlayers: () => players
 };
 const players = [];
@@ -207,5 +213,6 @@ export const __mock = {
     this.flush();
     return registry;
   },
+  interactBefore(ev) { world.beforeEvents.playerInteractWithBlock._fire(ev); this.flush(); return ev; },
   explode(block, permutation) { world.afterEvents.blockExplode._fire({ block, dimension: block.dimension, explodedBlockPermutation: permutation }); }
 };

@@ -16,12 +16,14 @@ import { CONTENT } from "../data/generated/content.js";
 import { COOKERY_REGISTRATIONS } from "./cookeryData.js";
 import { buildGuidebook, GUIDEBOOK_ID } from "./guidebookData.js";
 import { setAutoConvert } from "../compat/index.js";
+import { registryRevision } from "../api/registry.js";
 
 const KC = Object.freeze({
   ping: "kaleidoscope_cookery:api_ping",
   ready: "kaleidoscope_cookery:api_ready",
   recipe: "kaleidoscope_cookery:register_recipe",
   displayRule: "kaleidoscope_cookery:register_display_rule",
+  oil: "kaleidoscope_cookery:register_oil_container",
   sickle: "kaleidoscope_cookery:sickle_crop_register",
   gbPing: "kaleidoscope_cookery:guidebook_ping",
   gbReady: "kaleidoscope_cookery:guidebook_ready",
@@ -34,6 +36,7 @@ const SETTINGS_EVENT = "kaleidoscope_baking:settings_changed";
 
 let registered = false;
 let guidebookSent = false;
+let publishedRevision = -1;
 export let cookeryCapabilities = [];
 
 export function cookeryMessages(capabilities) {
@@ -45,6 +48,9 @@ export function cookeryMessages(capabilities) {
     for (const id of COOKERY_REGISTRATIONS.teapotMysteryExclude) {
       out.push([KC.recipe, { api: 1, kind: "teapot_mystery_exclude", source: SOURCE, recipe: { id: `${SOURCE}:mystery_exclude/${id.split(":")[1]}`, ingredient: id } }]);
     }
+  }
+  if (capabilities.includes("oil_containers")) {
+    for (const c of COOKERY_REGISTRATIONS.oilContainers ?? []) out.push([KC.oil, { api: 1, source: SOURCE, container: c }]);
   }
   if (capabilities.includes("display_rules")) {
     for (const d of COOKERY_REGISTRATIONS.displayRules) out.push([KC.displayRule, { api: 1, source: SOURCE, id: d.id, mode: d.mode }]);
@@ -66,11 +72,12 @@ function registerWithCookery(capabilities) {
   console.log(`[Kaleidoscope Baking] Connected to Kaleidoscope Cookery (${capabilities.length} capabilities, ${msgs.length} registrations).`);
 }
 
-function publishGuidebook() {
-  if (guidebookSent) return;
+function publishGuidebook(force = false) {
+  if (guidebookSent && !force) return;
   guidebookSent = true;
+  publishedRevision = registryRevision();
   const revision = `r${system.currentTick}`;
-  const chunks = toChunks(buildGuidebook("0.2.1"));
+  const chunks = toChunks(buildGuidebook("1.1.0"));
   enqueueEvent(KC.gbBegin, JSON.stringify({ api: 1, source: SOURCE, id: GUIDEBOOK_ID, revision, chunks: chunks.length }));
   chunks.forEach((data, i) => enqueueEvent(KC.gbChunk, `${SOURCE}\n${GUIDEBOOK_ID}\n${revision}\n${i}\n${data}`));
   enqueueEvent(KC.gbEnd, JSON.stringify({ api: 1, source: SOURCE, id: GUIDEBOOK_ID, revision }));
@@ -90,6 +97,19 @@ system.afterEvents.scriptEventReceive.subscribe(ev => {
       if (typeof v === "boolean") setAutoConvert(v);
     }
   } catch {}
+});
+
+// 1.1: recipes registered by other packs after the first publish also reach the guidebook.
+// The registry revision must stay unchanged for 2 s (one burst = one republish).
+let seenRevision = -1;
+onWorldReady(() => {
+  system.runInterval(() => {
+    if (!guidebookSent) return;
+    const rev = registryRevision();
+    if (rev === publishedRevision) return;
+    if (rev !== seenRevision) { seenRevision = rev; return; }
+    publishGuidebook(true);
+  }, 40);
 });
 
 onWorldReady(() => {

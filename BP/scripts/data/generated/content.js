@@ -1453,6 +1453,403 @@ export const CONTENT = Object.freeze({
    "en_US": "Herb Planter",
    "group": "stations",
    "place": "kaleidoscope_baking:herb_planter"
+  },
+  "kaleidoscope_baking:piping_bag": {
+   "zh_TW": "擠花袋",
+   "zh_CN": "挤花袋",
+   "en_US": "Piping Bag",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:madeleine_mold": {
+   "zh_TW": "瑪德蓮模",
+   "zh_CN": "玛德蓮模",
+   "en_US": "Madeleine Mold",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:pineapple_cake_mold": {
+   "zh_TW": "鳳梨酥模",
+   "zh_CN": "凤梨酥模",
+   "en_US": "Pineapple Cake Mold",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:cookie_cutter": {
+   "zh_TW": "餅乾切模",
+   "zh_CN": "饼干切模",
+   "en_US": "Cookie Cutter",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:empty_jar": {
+   "zh_TW": "空罐子",
+   "zh_CN": "空罐子",
+   "en_US": "Empty Jar",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:butter_jar": {
+   "zh_TW": "奶油罐",
+   "zh_CN": "奶油罐",
+   "en_US": "Butter Jar",
+   "group": "tools"
+  },
+  "kaleidoscope_baking:puff_pastry_dough": {
+   "zh_TW": "千層麵團",
+   "zh_CN": "千层面团",
+   "en_US": "Puff Pastry Dough",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:laminated_dough_1": {
+   "zh_TW": "千層麵團（一擀）",
+   "zh_CN": "千层面团（一擀）",
+   "en_US": "Laminated Dough (1st fold)",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:laminated_dough_2": {
+   "zh_TW": "千層麵團（二擀）",
+   "zh_CN": "千层面团（二擀）",
+   "en_US": "Laminated Dough (2nd fold)",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:puff_pastry": {
+   "zh_TW": "千層酥皮",
+   "zh_CN": "千层酥皮",
+   "en_US": "Puff Pastry",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:puff_pastry_sheet": {
+   "zh_TW": "烤酥皮",
+   "zh_CN": "烤酥皮",
+   "en_US": "Baked Puff Pastry",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:madeleine_batter": {
+   "zh_TW": "瑪德蓮麵糊",
+   "zh_CN": "玛德蓮面糊",
+   "en_US": "Madeleine Batter",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:ma_lai_go_batter": {
+   "zh_TW": "馬拉糕粉漿",
+   "zh_CN": "马拉糕粉浆",
+   "en_US": "Ma Lai Go Batter",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:palmier_dough": {
+   "zh_TW": "蝴蝶酥生胚",
+   "zh_CN": "蝴蝶酥生胚",
+   "en_US": "Raw Palmier",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:raw_portuguese_tart": {
+   "zh_TW": "葡式蛋塔生胚",
+   "zh_CN": "葡式蛋塔生胚",
+   "en_US": "Raw Portuguese Tart",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:raw_pastry_soup": {
+   "zh_TW": "酥皮濃湯生胚",
+   "zh_CN": "酥皮浓汤生胚",
+   "en_US": "Raw Pastry-Topped Soup",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:raw_egg_yolk_pastry": {
+   "zh_TW": "蛋黃酥生胚",
+   "zh_CN": "蛋黄酥生胚",
+   "en_US": "Raw Egg Yolk Pastry",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:raw_pineapple_cake": {
+   "zh_TW": "鳳梨酥生胚",
+   "zh_CN": "凤梨酥生胚",
+   "en_US": "Raw Pineapple Cake",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:shaped_cookie_dough": {
+   "zh_TW": "造型餅乾麵團",
+   "zh_CN": "造型饼干面团",
+   "en_US": "Shaped Cookie Dough",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_white": {
+   "zh_TW": "白色糖霜",
+   "zh_CN": "白色糖霜",
+   "en_US": "White Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_pink": {
+   "zh_TW": "粉紅色糖霜",
+   "zh_CN": "粉红色糖霜",
+   "en_US": "Pink Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_blue": {
+   "zh_TW": "藍色糖霜",
+   "zh_CN": "蓝色糖霜",
+   "en_US": "Blue Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_green": {
+   "zh_TW": "綠色糖霜",
+   "zh_CN": "绿色糖霜",
+   "en_US": "Green Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_yellow": {
+   "zh_TW": "黃色糖霜",
+   "zh_CN": "黄色糖霜",
+   "en_US": "Yellow Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:icing_cocoa": {
+   "zh_TW": "可可色糖霜",
+   "zh_CN": "可可色糖霜",
+   "en_US": "Cocoa Icing",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:salted_egg": {
+   "zh_TW": "鹹蛋",
+   "zh_CN": "咸蛋",
+   "en_US": "Salted Egg",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:salted_egg_yolk": {
+   "zh_TW": "鹹蛋黃",
+   "zh_CN": "咸蛋黄",
+   "en_US": "Salted Egg Yolk",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:pineapple_jam": {
+   "zh_TW": "鳳梨醬",
+   "zh_CN": "凤梨酱",
+   "en_US": "Pineapple Jam",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:pineapple": {
+   "zh_TW": "鳳梨",
+   "zh_CN": "凤梨",
+   "en_US": "Pineapple",
+   "group": "plants"
+  },
+  "kaleidoscope_baking:pineapple_crown": {
+   "zh_TW": "鳳梨冠芽",
+   "zh_CN": "凤梨冠芽",
+   "en_US": "Pineapple Crown",
+   "group": "plants",
+   "place": "kaleidoscope_baking:pineapple_crop"
+  },
+  "kaleidoscope_baking:bread_crumbs": {
+   "zh_TW": "麵包屑",
+   "zh_CN": "面包屑",
+   "en_US": "Bread Crumbs",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:coffee_grounds": {
+   "zh_TW": "咖啡渣",
+   "zh_CN": "咖啡渣",
+   "en_US": "Coffee Grounds",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:fruit_pulp": {
+   "zh_TW": "果渣",
+   "zh_CN": "果渣",
+   "en_US": "Fruit Pulp",
+   "group": "ingredients"
+  },
+  "kaleidoscope_baking:napoleon": {
+   "zh_TW": "拿破崙派",
+   "zh_CN": "拿破崙派",
+   "en_US": "Napoleon",
+   "group": "foods",
+   "food": {
+    "nutrition": 6,
+    "saturation": 0.7
+   }
+  },
+  "kaleidoscope_baking:palmier": {
+   "zh_TW": "蝴蝶酥",
+   "zh_CN": "蝴蝶酥",
+   "en_US": "Palmier",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:portuguese_egg_tart": {
+   "zh_TW": "葡式蛋塔",
+   "zh_CN": "葡式蛋塔",
+   "en_US": "Portuguese Egg Tart",
+   "group": "foods",
+   "food": {
+    "nutrition": 5,
+    "saturation": 0.6
+   }
+  },
+  "kaleidoscope_baking:pastry_soup": {
+   "zh_TW": "酥皮濃湯",
+   "zh_CN": "酥皮浓汤",
+   "en_US": "Pastry-Topped Soup",
+   "group": "foods",
+   "food": {
+    "nutrition": 9,
+    "saturation": 0.8
+   }
+  },
+  "kaleidoscope_baking:cream_soup": {
+   "zh_TW": "奶油濃湯",
+   "zh_CN": "奶油浓汤",
+   "en_US": "Cream Soup",
+   "group": "foods",
+   "food": {
+    "nutrition": 7,
+    "saturation": 0.7
+   }
+  },
+  "kaleidoscope_baking:madeleine": {
+   "zh_TW": "瑪德蓮",
+   "zh_CN": "玛德蓮",
+   "en_US": "Madeleine",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.5
+   }
+  },
+  "kaleidoscope_baking:egg_yolk_pastry": {
+   "zh_TW": "蛋黃酥",
+   "zh_CN": "蛋黄酥",
+   "en_US": "Egg Yolk Pastry",
+   "group": "foods",
+   "food": {
+    "nutrition": 6,
+    "saturation": 0.7
+   }
+  },
+  "kaleidoscope_baking:pineapple_cake": {
+   "zh_TW": "鳳梨酥",
+   "zh_CN": "凤梨酥",
+   "en_US": "Pineapple Cake",
+   "group": "foods",
+   "food": {
+    "nutrition": 4,
+    "saturation": 0.6
+   }
+  },
+  "kaleidoscope_baking:ma_lai_go": {
+   "zh_TW": "馬拉糕",
+   "zh_CN": "马拉糕",
+   "en_US": "Ma Lai Go",
+   "group": "foods",
+   "food": {
+    "nutrition": 5,
+    "saturation": 0.6
+   }
+  },
+  "kaleidoscope_baking:shaped_cookie": {
+   "zh_TW": "造型餅乾",
+   "zh_CN": "造型饼干",
+   "en_US": "Shaped Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 2,
+    "saturation": 0.3
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_white": {
+   "zh_TW": "白色糖霜餅乾",
+   "zh_CN": "白色糖霜饼干",
+   "en_US": "White Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_pink": {
+   "zh_TW": "粉紅色糖霜餅乾",
+   "zh_CN": "粉红色糖霜饼干",
+   "en_US": "Pink Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_blue": {
+   "zh_TW": "藍色糖霜餅乾",
+   "zh_CN": "蓝色糖霜饼干",
+   "en_US": "Blue Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_green": {
+   "zh_TW": "綠色糖霜餅乾",
+   "zh_CN": "绿色糖霜饼干",
+   "en_US": "Green Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_yellow": {
+   "zh_TW": "黃色糖霜餅乾",
+   "zh_CN": "黄色糖霜饼干",
+   "en_US": "Yellow Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:iced_cookie_cocoa": {
+   "zh_TW": "可可色糖霜餅乾",
+   "zh_CN": "可可色糖霜饼干",
+   "en_US": "Cocoa Iced Cookie",
+   "group": "foods",
+   "food": {
+    "nutrition": 3,
+    "saturation": 0.4
+   }
+  },
+  "kaleidoscope_baking:fried_fish": {
+   "zh_TW": "炸魚排",
+   "zh_CN": "炸鱼排",
+   "en_US": "Breaded Fried Fish",
+   "group": "foods",
+   "food": {
+    "nutrition": 7,
+    "saturation": 0.8
+   }
+  },
+  "kaleidoscope_baking:cake_stand": {
+   "zh_TW": "蛋糕架",
+   "zh_CN": "蛋糕架",
+   "en_US": "Cake Stand",
+   "group": "stations",
+   "place": "kaleidoscope_baking:cake_stand"
+  },
+  "kaleidoscope_baking:tea_tray": {
+   "zh_TW": "三層點心架",
+   "zh_CN": "三层点心架",
+   "en_US": "Three-Tier Tea Tray",
+   "group": "stations",
+   "place": "kaleidoscope_baking:tea_tray"
+  },
+  "kaleidoscope_baking:bread_display": {
+   "zh_TW": "麵包展示櫃",
+   "zh_CN": "面包展示櫃",
+   "en_US": "Bread Display",
+   "group": "stations",
+   "place": "kaleidoscope_baking:bread_display"
+  },
+  "kaleidoscope_baking:pastry_case": {
+   "zh_TW": "甜點櫥窗",
+   "zh_CN": "甜点櫥窗",
+   "en_US": "Pastry Case",
+   "group": "stations",
+   "place": "kaleidoscope_baking:pastry_case"
   }
  },
  "mugs": [
@@ -1466,6 +1863,23 @@ export const CONTENT = Object.freeze({
   "kaleidoscope_baking:pour_over_light",
   "kaleidoscope_baking:pour_over_medium",
   "kaleidoscope_baking:pour_over_dark"
+ ],
+ "shakenDrinks": [
+  "kaleidoscope_baking:bubble_milk_tea",
+  "kaleidoscope_baking:brown_sugar_pearl_milk",
+  "kaleidoscope_baking:pearl_black_tea_latte",
+  "kaleidoscope_baking:oolong_milk_foam",
+  "kaleidoscope_baking:lavender_milk_tea",
+  "kaleidoscope_baking:yuanyang",
+  "kaleidoscope_baking:lemon_green_tea",
+  "kaleidoscope_baking:lemon_black_tea",
+  "kaleidoscope_baking:matcha_latte",
+  "kaleidoscope_baking:mint_mocha",
+  "kaleidoscope_baking:iced_coffee",
+  "kaleidoscope_baking:vanilla_milkshake",
+  "kaleidoscope_baking:lemonade",
+  "kaleidoscope_baking:strawberry_milk",
+  "kaleidoscope_baking:hot_cocoa"
  ],
  "groups": {
   "stations": {
@@ -1641,6 +2055,18 @@ export const CONTENT = Object.freeze({
    "wild": [
     "forest",
     "birch"
+   ]
+  },
+  {
+   "id": "kaleidoscope_baking:pineapple_crop",
+   "seed": "kaleidoscope_baking:pineapple_crown",
+   "harvest": "kaleidoscope_baking:pineapple",
+   "max": 7,
+   "reset": 1,
+   "kind": "annual",
+   "wild": [
+    "savanna",
+    "beach"
    ]
   }
  ],

@@ -223,6 +223,30 @@
     "kb_raspberry_bush_stage_3": {
       "textures": "textures/blocks/kb_raspberry_bush_stage_3"
     },
+    "kb_pineapple_crop_stage_0": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_0"
+    },
+    "kb_pineapple_crop_stage_1": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_1"
+    },
+    "kb_pineapple_crop_stage_2": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_2"
+    },
+    "kb_pineapple_crop_stage_3": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_3"
+    },
+    "kb_pineapple_crop_stage_4": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_4"
+    },
+    "kb_pineapple_crop_stage_5": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_5"
+    },
+    "kb_pineapple_crop_stage_6": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_6"
+    },
+    "kb_pineapple_crop_stage_7": {
+      "textures": "textures/blocks/kb_pineapple_crop_stage_7"
+    },
     "kb_cinnamon_sapling_block_stage_0": {
       "textures": "textures/blocks/kb_cinnamon_sapling_block_stage_0"
     },
@@ -330,6 +354,30 @@
     },
     "kb_pour_over_dark_drink": {
       "textures": "textures/blocks/kb_drink_pour_over_dark"
+    },
+    "kb_cake_stand": {
+      "textures": "textures/blocks/kb_cake_stand"
+    },
+    "kb_tea_tray": {
+      "textures": "textures/blocks/kb_tea_tray"
+    },
+    "kb_bread_display": {
+      "textures": "textures/blocks/kb_bread_display"
+    },
+    "kb_pastry_case": {
+      "textures": "textures/blocks/kb_pastry_case"
+    },
+    "kb_takeaway_cup": {
+      "textures": "textures/blocks/kb_takeaway_cup"
+    },
+    "kb_cup_lid": {
+      "textures": "textures/blocks/kb_cup_lid"
+    },
+    "kb_straw": {
+      "textures": "textures/blocks/kb_straw"
+    },
+    "kb_fill_shaken": {
+      "textures": "textures/blocks/kb_fill_shaken"
     }
   }
 }

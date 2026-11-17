@@ -10,7 +10,9 @@
 // Activation is detected from which items exist (ItemTypes); unknown ids never match, so
 // the placeholder namespaces in series.data.js are harmless until real ids are filled in.
 // ============================================================================
-import { BlockPermutation, BlockTypes, ItemTypes, world } from "@minecraft/server";
+import { BlockPermutation, BlockTypes, ItemTypes, system, world } from "@minecraft/server";
+import { REVERSE_REGISTRATIONS } from "./reverse.data.js";
+import { SERIES_TAGS } from "./series.data.js";
 import { resolveEquivalents, mapGrowth } from "../api/compat.js";
 import { setIngredientAliases, registerIngredient } from "../api/ingredients.js";
 import { onWorldReady, setOutputMapper } from "../utils/runtime.js";
@@ -32,6 +34,7 @@ function exists(id, kind) {
 }
 
 onWorldReady(() => {
+  for (const t of SERIES_TAGS) registerIngredient({ api: 1, source: "kaleidoscope_baking_compat", id: t.id, tags: t.tags });
   active = resolveEquivalents(exists);
   if (!active.items.size) return;
   setIngredientAliases(active.aliases);
@@ -62,3 +65,13 @@ export function maybeConvertPlant(block, growthState) {
     return true;
   } catch { return false; }
 }
+
+// 1.1: reverse registrations — send Baking's by-products into a series pack's API once that
+// pack announces itself (see reverse.data.js; event names are placeholders until confirmed).
+const reverseSent = new Set();
+system.afterEvents.scriptEventReceive.subscribe(ev => {
+  const due = REVERSE_REGISTRATIONS.filter(r => r.readyEvent === ev.id);
+  if (!due.length || reverseSent.has(ev.id)) return;
+  reverseSent.add(ev.id);
+  for (const r of due) try { system.sendScriptEvent(r.event, JSON.stringify(r.payload)); } catch {}
+});

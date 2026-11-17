@@ -19,6 +19,9 @@ import { drinkShakerComponent } from "./custom_components/drinkShaker.js";
 import { dessertComponent } from "./custom_components/dessert.js";
 import { drinkStackComponent } from "./custom_components/drinkStack.js";
 import { barkComponent, herbPlanterComponent, plantComponent, treeComponent } from "./custom_components/plants.js";
+import {
+  breadDisplayComponent, cakeStandComponent, drinkCupsComponent, pastryCaseComponent, teaTrayComponent
+} from "./custom_components/furniture.js";
 
 export const BLOCK_COMPONENTS = Object.freeze({
   "kaleidoscope_baking:oven": ovenComponent,
@@ -33,7 +36,13 @@ export const BLOCK_COMPONENTS = Object.freeze({
   "kaleidoscope_baking:plant": plantComponent,
   "kaleidoscope_baking:tree": treeComponent,
   "kaleidoscope_baking:bark": barkComponent,
-  "kaleidoscope_baking:herb_planter": herbPlanterComponent
+  "kaleidoscope_baking:herb_planter": herbPlanterComponent,
+  // 1.1
+  "kaleidoscope_baking:cake_stand": cakeStandComponent,
+  "kaleidoscope_baking:tea_tray": teaTrayComponent,
+  "kaleidoscope_baking:bread_display": breadDisplayComponent,
+  "kaleidoscope_baking:pastry_case": pastryCaseComponent,
+  "kaleidoscope_baking:drink_cups": drinkCupsComponent
 });
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {

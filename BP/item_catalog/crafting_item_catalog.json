@@ -18,7 +18,11 @@
               "kaleidoscope_baking:espresso_machine",
               "kaleidoscope_baking:pour_over_stand",
               "kaleidoscope_baking:drink_shaker",
-              "kaleidoscope_baking:herb_planter"
+              "kaleidoscope_baking:herb_planter",
+              "kaleidoscope_baking:cake_stand",
+              "kaleidoscope_baking:tea_tray",
+              "kaleidoscope_baking:bread_display",
+              "kaleidoscope_baking:pastry_case"
             ]
           },
           {
@@ -39,7 +43,13 @@
               "kaleidoscope_baking:taiyaki_mold",
               "kaleidoscope_baking:coffee_mug",
               "kaleidoscope_baking:takeaway_cup",
-              "kaleidoscope_baking:birthday_candle"
+              "kaleidoscope_baking:birthday_candle",
+              "kaleidoscope_baking:piping_bag",
+              "kaleidoscope_baking:madeleine_mold",
+              "kaleidoscope_baking:pineapple_cake_mold",
+              "kaleidoscope_baking:cookie_cutter",
+              "kaleidoscope_baking:empty_jar",
+              "kaleidoscope_baking:butter_jar"
             ]
           }
         ]
@@ -125,7 +135,32 @@
               "kaleidoscope_baking:raw_blueberry_pie",
               "kaleidoscope_baking:raw_quiche",
               "kaleidoscope_baking:raw_fish_pie",
-              "kaleidoscope_baking:raw_egg_tart"
+              "kaleidoscope_baking:raw_egg_tart",
+              "kaleidoscope_baking:puff_pastry_dough",
+              "kaleidoscope_baking:laminated_dough_1",
+              "kaleidoscope_baking:laminated_dough_2",
+              "kaleidoscope_baking:puff_pastry",
+              "kaleidoscope_baking:puff_pastry_sheet",
+              "kaleidoscope_baking:madeleine_batter",
+              "kaleidoscope_baking:ma_lai_go_batter",
+              "kaleidoscope_baking:palmier_dough",
+              "kaleidoscope_baking:raw_portuguese_tart",
+              "kaleidoscope_baking:raw_pastry_soup",
+              "kaleidoscope_baking:raw_egg_yolk_pastry",
+              "kaleidoscope_baking:raw_pineapple_cake",
+              "kaleidoscope_baking:shaped_cookie_dough",
+              "kaleidoscope_baking:icing_white",
+              "kaleidoscope_baking:icing_pink",
+              "kaleidoscope_baking:icing_blue",
+              "kaleidoscope_baking:icing_green",
+              "kaleidoscope_baking:icing_yellow",
+              "kaleidoscope_baking:icing_cocoa",
+              "kaleidoscope_baking:salted_egg",
+              "kaleidoscope_baking:salted_egg_yolk",
+              "kaleidoscope_baking:pineapple_jam",
+              "kaleidoscope_baking:bread_crumbs",
+              "kaleidoscope_baking:coffee_grounds",
+              "kaleidoscope_baking:fruit_pulp"
             ]
           },
           {
@@ -173,7 +208,24 @@
               "kaleidoscope_baking:fa_gao",
               "kaleidoscope_baking:sesame_ball",
               "kaleidoscope_baking:sesame_mooncake",
-              "kaleidoscope_baking:burnt_food"
+              "kaleidoscope_baking:burnt_food",
+              "kaleidoscope_baking:napoleon",
+              "kaleidoscope_baking:palmier",
+              "kaleidoscope_baking:portuguese_egg_tart",
+              "kaleidoscope_baking:pastry_soup",
+              "kaleidoscope_baking:cream_soup",
+              "kaleidoscope_baking:madeleine",
+              "kaleidoscope_baking:egg_yolk_pastry",
+              "kaleidoscope_baking:pineapple_cake",
+              "kaleidoscope_baking:ma_lai_go",
+              "kaleidoscope_baking:shaped_cookie",
+              "kaleidoscope_baking:iced_cookie_white",
+              "kaleidoscope_baking:iced_cookie_pink",
+              "kaleidoscope_baking:iced_cookie_blue",
+              "kaleidoscope_baking:iced_cookie_green",
+              "kaleidoscope_baking:iced_cookie_yellow",
+              "kaleidoscope_baking:iced_cookie_cocoa",
+              "kaleidoscope_baking:fried_fish"
             ]
           },
           {
@@ -250,6 +302,8 @@
               "kaleidoscope_baking:lemon_sapling",
               "kaleidoscope_baking:lemon",
               "kaleidoscope_baking:lemon_slice",
+              "kaleidoscope_baking:pineapple",
+              "kaleidoscope_baking:pineapple_crown",
               "kaleidoscope_baking:cinnamon_log",
               "kaleidoscope_baking:cinnamon_leaves",
               "kaleidoscope_baking:lemon_leaves"

@@ -4,53 +4,71 @@
 //   kitchen knife         -> cut a slice off as a Cake Slice item (any Cookery-tagged knife)
 //   sneak + empty, whole  -> pick the untouched dessert back up
 // Breaking an untouched dessert drops it (loot table); a started one is just crumbs.
+// No text: crumbs, sounds and the shrinking model are the feedback.
+//
+// PUBLIC (1.1): other packs may put `"kaleidoscope_baking:dessert": {...}` on their own
+// block with a `kaleidoscope_baking:bites` 0..(slices-1) state. Params (all optional):
+//   {"slices": 4, "nutrition": 3, "saturation": 0.5, "slice_item": "kaleidoscope_baking:cake_slice"}
+// The shared slice logic is also used by the cake stand.
 import { applyConsumption, feed, isHungry } from "../events/consumption.js";
 import { CONTENT } from "../data/generated/content.js";
-import { refuse, giveItems, heldItem, isCreative, itemName, particle, sound, stackHasTag, t } from "../utils/runtime.js";
+import { refuse, giveItems, heldItem, isCreative, particle, sound, stackHasTag } from "../utils/runtime.js";
 import { crumbs } from "../utils/visuals.js";
 
 const BITES = "kaleidoscope_baking:bites";
-const SLICES = 4;
-const SLICE_ITEM = "kaleidoscope_baking:cake_slice";
-const KNIFE_TAG = "kaleidoscope_cookery:kitchen_knife";
-const MSG = "kaleidoscope_baking.msg.dessert.";
+const DEFAULT_SLICES = 4;
+export const SLICE_ITEM = "kaleidoscope_baking:cake_slice";
+export const KNIFE_TAG = "kaleidoscope_cookery:kitchen_knife";
+
+export function dessertMeta(id, params = {}) {
+  const meta = CONTENT.desserts[id] ?? {};
+  return {
+    slices: Math.max(1, Math.min(16, Math.floor(Number(params.slices ?? DEFAULT_SLICES)) || DEFAULT_SLICES)),
+    nutrition: Number(params.nutrition ?? meta.nutrition ?? 2),
+    saturation: Number(params.saturation ?? meta.saturation ?? 0.4),
+    sliceItem: params.slice_item ?? SLICE_ITEM
+  };
+}
+export const isPlaceableDessert = id => !!CONTENT.desserts[id];
+
+/**
+ * One interaction with a dessert of `id` that has `bites` eaten (shared by the dessert block
+ * and the cake stand). Returns {bites} (new count; >= slices means finished) or undefined if
+ * nothing happened.
+ */
+export function interactDessert(player, id, bites, meta, at, dimension) {
+  const held = heldItem(player);
+  if (held && stackHasTag(held, KNIFE_TAG)) {
+    giveItems(player, meta.sliceItem, 1);
+    crumbs(dimension, at, id);
+    sound(dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
+    return { bites: bites + 1 };
+  }
+  if (!isHungry(player) && !isCreative(player)) { refuse(dimension, at); return undefined; }
+  feed(player, meta.nutrition, meta.saturation);
+  applyConsumption(player, id);
+  crumbs(dimension, at, id);
+  sound(dimension, "random.burp", at, 0.5, 1.0);
+  particle(dimension, "minecraft:crop_growth_emitter", at);
+  return { bites: bites + 1 };
+}
 
 function bitesOf(block) { try { return Number(block.permutation.getState(BITES)) || 0; } catch { return 0; } }
 
-function takeBite(block, bites) {
-  const next = bites + 1;
-  if (next >= SLICES) { try { block.setType("minecraft:air"); } catch {} return 0; }
-  try { block.setPermutation(block.permutation.withState(BITES, next)); } catch {}
-  return SLICES - next;
-}
-
 export const dessertComponent = {
-  onPlayerInteract({ block, player }) {
+  onPlayerInteract({ block, player }, ctx) {
     if (!player) return;
     const id = block.typeId;
     const bites = bitesOf(block);
-    const held = heldItem(player);
-    const at = { x: block.x + 0.5, y: block.y + 0.5, z: block.z + 0.5 };
-
-    if (held && stackHasTag(held, KNIFE_TAG)) {
-      giveItems(player, SLICE_ITEM, 1);
-      crumbs(block.dimension, at, id);
-      const left = takeBite(block, bites);
-      sound(block.dimension, "block.itemframe.remove_item", at, 0.6, 1.2);
-      return;
-    }
-    if (!held && player.isSneaking && bites === 0) {
+    const meta = dessertMeta(id, ctx?.params ?? {});
+    if (!heldItem(player) && player.isSneaking && bites === 0) {
       try { block.setType("minecraft:air"); } catch {}
       giveItems(player, id, 1);
       return;
     }
-    if (!isHungry(player) && !isCreative(player)) { refuse(block.dimension, at); return; }
-    const meta = CONTENT.desserts[id] ?? { nutrition: 2, saturation: 0.4 };
-    feed(player, meta.nutrition, meta.saturation);
-    applyConsumption(player, id);
-    crumbs(block.dimension, at, id);
-    const left = takeBite(block, bites);
-    sound(block.dimension, "random.burp", at, 0.5, 1.0);
-    particle(block.dimension, "minecraft:crop_growth_emitter", at);
+    const r = interactDessert(player, id, bites, meta, { x: block.x + 0.5, y: block.y + 0.5, z: block.z + 0.5 }, block.dimension);
+    if (!r) return;
+    if (r.bites >= meta.slices) { try { block.setType("minecraft:air"); } catch {} return; }
+    try { block.setPermutation(block.permutation.withState(BITES, r.bites)); } catch {}
   }
 };

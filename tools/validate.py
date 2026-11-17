@@ -19,7 +19,7 @@ BP, RP = os.path.join(ROOT, "BP"), os.path.join(ROOT, "RP")
 NS = "kaleidoscope_baking"
 TAG_ONLY = {f"{NS}:whisk", f"{NS}:mold"}  # tag names (whisk is also an item)
 # Script-event ids and block-state names share the namespace but are not items.
-NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|oven_layer|oven_cell|facing|lit|growth|bites|cup_count|plant|stripped|"
+NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|oven_layer|oven_cell|facing|lit|growth|bites|cup_count|plant|stripped|fill|cups|despawn|drink_cups|ingredient_info|caffeine_adjust|query_ingredient|display|"
                       rf"whisk|frother|mold|cup|caffeine|auto_convert|[a-z_]+_settings|guidebook|open_[a-z_]+|sweet|ice|settings_changed|"
                       rf"(oven|bowl|proof|stand|espresso|pour|shaker|planter|dessert|plant|tree|bark|herb_planter|mixing_bowl|"
                       rf"proofing_basket|decorating_stand|espresso_machine|pour_over_stand|drink_shaker|drink_stack)(\b.*)?)$")

@@ -29,6 +29,7 @@ function interact(block, player) {
     consumeHeld(player, 1);
     if (!isCreative(player)) giveItems(player, "minecraft:bucket", 1);
     giveItems(player, recipe.result, recipe.count);
+    if (recipe.byproduct) giveItems(player, recipe.byproduct, 1);
     writeJson(key, undefined);
     sound(block.dimension, "bucket.empty_water", at(block), 0.6, 1.2);
     // coffee drips through the filter and the glass server fills, then it is poured off

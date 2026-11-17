@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:coffee_grounds",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.ingredients"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:coffee_grounds.name"
+      },
+      "minecraft:icon": "kb_coffee_grounds",
+      "minecraft:max_stack_size": 64,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:fertilizer"
+        ]
+      },
+      "minecraft:compostable": {
+        "composting_chance": 65
+      }
+    }
+  }
+}

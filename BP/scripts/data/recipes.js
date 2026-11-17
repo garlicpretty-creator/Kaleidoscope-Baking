@@ -27,10 +27,33 @@ const proof = (name, time = 1200) =>
 const shake = (name, ingredients, extra = {}) =>
   ({ id: k(`shaker/${name}`), ingredients, shakes: 5, result: k(name), carrier: k("takeaway_cup"), ...extra });
 const brew = (name, additive, time = 120) =>
-  ({ id: k(`espresso/${name}`), input: GROUND_COFFEE, additive, result: k(name), carrier: k("coffee_mug"), time });
+  ({ id: k(`espresso/${name}`), input: GROUND_COFFEE, additive, result: k(name), carrier: k("coffee_mug"), time, byproduct: k("coffee_grounds") });
 
 export const BUILTIN_RECIPES = Object.freeze({
   mixing_bowl: [
+    // 1.1: piping-bag icing (four cookies at once)
+    ...["white", "pink", "blue", "green", "yellow", "cocoa"].map(c =>
+      mix(`iced_cookie_${c}`, [k("shaped_cookie"), k("shaped_cookie"), k("shaped_cookie"), k("shaped_cookie"), k(`icing_${c}`)], 3, 4,
+        { tool: "#kaleidoscope_baking:piping_bag" })),
+    // 1.1: icing and colours (whisk)
+    mix("icing_pink", [k("icing_white"), "minecraft:pink_dye"], 2),
+    mix("icing_blue", [k("icing_white"), "minecraft:light_blue_dye"], 2),
+    mix("icing_green", [k("icing_white"), "minecraft:lime_dye"], 2),
+    mix("icing_yellow", [k("icing_white"), "minecraft:yellow_dye"], 2),
+    mix("icing_cocoa", [k("icing_white"), k("cocoa_powder")], 2),
+    mix("icing_white", ["minecraft:sugar", "minecraft:sugar", EGG], 6, 4),
+    // 1.1: puff pastry family
+    mix("puff_pastry_dough", [k("pie_dough"), BUTTER, BUTTER], 4),
+    mix("palmier_dough", [k("puff_pastry"), "minecraft:sugar"], 2),
+    mix("raw_portuguese_tart", [k("puff_pastry"), k("custard")], 2),
+    mix("raw_pastry_soup", ["#kaleidoscope:soup", k("puff_pastry")], 2),
+    mix("raw_egg_yolk_pastry", [k("puff_pastry"), k("salted_egg_yolk"), k("sesame_paste")], 3),
+    mix("raw_pineapple_cake", [FLOUR, BUTTER, EGG, k("pineapple_jam")], 4),
+    // Baking's pineapple, or 豐收's when Harvest is installed (it leads fruit). The bottle is part
+    // of the recipe because the jam hands its bottle back when used.
+    mix("pineapple_jam", ["#kaleidoscope:pineapple", "#kaleidoscope:pineapple", SWEET, "minecraft:glass_bottle"], 6, 2),
+    mix("madeleine_batter", [FLOUR, EGG, BUTTER, SWEET, LEMONY], 5),
+    mix("ma_lai_go_batter", [FLOUR, k("brown_sugar"), EGG, BUTTER], 4),
     // Dairy & basics (tool decides butter vs frothed milk from the same milk)
     mix("frothed_milk", [MILK], 4, 3, { tool: "#kaleidoscope_baking:frother" }),
     mix("milk_foam_cap", [k("whipped_cream"), MILK], 4, 2, { tool: "#kaleidoscope_baking:frother" }),
@@ -111,6 +134,15 @@ export const BUILTIN_RECIPES = Object.freeze({
     bake("fish_pie", k("raw_fish_pie"), "pie_tin", 600, 300),
     bake("tart_shell", k("pie_crust"), "muffin_tin", 300, 300, 4),
     bake("egg_tart", k("raw_egg_tart"), "muffin_tin", 400, 200, 4),
+    // 1.1
+    bake("puff_pastry_sheet", k("puff_pastry"), "baking_tray", 300, 200, 2),
+    bake("palmier", k("palmier_dough"), "baking_tray", 300, 200, 6),
+    bake("portuguese_egg_tart", k("raw_portuguese_tart"), "muffin_tin", 400, 200, 4),
+    bake("pastry_soup", k("raw_pastry_soup"), "", 400, 300),
+    bake("madeleine", k("madeleine_batter"), "madeleine_mold", 300, 200, 6),
+    bake("egg_yolk_pastry", k("raw_egg_yolk_pastry"), "baking_tray", 450, 250, 4),
+    bake("pineapple_cake", k("raw_pineapple_cake"), "pineapple_cake_mold", 400, 250, 6),
+    bake("shaped_cookie", k("shaped_cookie_dough"), "baking_tray", 300, 200, 6),
     // Coffee roasting: the perfect window is split into light / medium / dark.
     {
       id: k("oven/roast_coffee"), input: k("green_coffee_beans"), mold: k("baking_tray"),
@@ -130,7 +162,9 @@ export const BUILTIN_RECIPES = Object.freeze({
     { id: k("decorating/birthday_cake"), base: k("sponge_cake"), layers: [k("whipped_cream"), k("strawberry"), k("birthday_candle")], result: k("birthday_cake") },
     { id: k("decorating/mint_chocolate_cake"), base: k("chocolate_cake"), layers: [k("whipped_cream"), k("mint_leaves")], result: k("mint_chocolate_cake") },
     { id: k("decorating/strawberry_tart"), base: k("tart_shell"), layers: [k("custard"), k("strawberry")], result: k("strawberry_tart") },
-    { id: k("decorating/lemon_tart"), base: k("tart_shell"), layers: [k("custard"), k("lemon_slice")], result: k("lemon_tart") }
+    { id: k("decorating/lemon_tart"), base: k("tart_shell"), layers: [k("custard"), k("lemon_slice")], result: k("lemon_tart") },
+    // 1.1
+    { id: k("decorating/napoleon"), base: k("puff_pastry_sheet"), layers: [k("custard"), k("puff_pastry_sheet"), SWEET], result: k("napoleon"), count: 2 }
   ],
 
   espresso: [
@@ -144,7 +178,7 @@ export const BUILTIN_RECIPES = Object.freeze({
   ],
 
   pour_over: ["light", "medium", "dark"].map(r => ({
-    id: k(`pour_over/${r}`), input: k(`ground_coffee_${r}`), result: k(`pour_over_${r}`), carrier: k("coffee_mug")
+    id: k(`pour_over/${r}`), input: k(`ground_coffee_${r}`), result: k(`pour_over_${r}`), carrier: k("coffee_mug"), byproduct: k("coffee_grounds")
   })),
 
   shaker: [
@@ -154,14 +188,14 @@ export const BUILTIN_RECIPES = Object.freeze({
     shake("oolong_milk_foam", [k("oolong_tea_base"), k("milk_foam_cap")]),
     shake("lavender_milk_tea", [k("black_tea_base"), MILK, [k("lavender"), k("lavender_sugar")]]),
     shake("yuanyang", [k("espresso"), k("black_tea_base"), MILK]),
-    shake("lemon_green_tea", [k("green_tea_base"), LEMONY]),
-    shake("lemon_black_tea", [k("black_tea_base"), LEMONY]),
+    shake("lemon_green_tea", [k("green_tea_base"), LEMONY], { byproduct: k("fruit_pulp") }),
+    shake("lemon_black_tea", [k("black_tea_base"), LEMONY], { byproduct: k("fruit_pulp") }),
     shake("matcha_latte", [k("matcha_powder"), MILK], { temperature: "any" }),
     shake("mint_mocha", [k("espresso"), k("chocolate_sauce"), k("mint_leaves"), MILK], { temperature: "any" }),
     shake("iced_coffee", [k("espresso"), k("crushed_ice")], { allowIce: false }),
     shake("vanilla_milkshake", [MILK, k("vanilla_extract"), k("crushed_ice")], { allowIce: false }),
-    shake("lemonade", [LEMONY, SWEET, WATER]),
-    shake("strawberry_milk", [k("strawberry"), k("strawberry"), MILK]),
+    shake("lemonade", [LEMONY, SWEET, WATER], { byproduct: k("fruit_pulp") }),
+    shake("strawberry_milk", [k("strawberry"), k("strawberry"), MILK], { byproduct: k("fruit_pulp") }),
     shake("hot_cocoa", [k("cocoa_powder"), MILK, SWEET], { temperature: "hot", carrier: k("coffee_mug") })
   ]
 });

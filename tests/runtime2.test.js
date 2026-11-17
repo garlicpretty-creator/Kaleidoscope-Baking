@@ -218,7 +218,7 @@ test("series compat: Harvest leads strawberries — harvests give Harvest's, rec
   assert.equal(b2.typeId, "kaleidoscope_harvest:strawberry_bush");
 });
 
-test("guidebook: published in chunks Cookery can reassemble, with every item", () => {
+test("guidebook: published in chunks Cookery can reassemble, with every item", async () => {
   system.sendScriptEvent("kaleidoscope_cookery:guidebook_ready", JSON.stringify({ api: 1 }));
   __mock.advance(80);
   const begin = __mock.sent.find(s => s.id === "kaleidoscope_cookery:guidebook_begin");
@@ -229,7 +229,8 @@ test("guidebook: published in chunks Cookery can reassemble, with every item", (
   assert.equal(parts.length, chunks);
   assert.ok(parts.every(p => p.length >= 5 && p.join("\n").length <= 2048), "each message fits in 2048 chars");
   const payload = JSON.parse(parts.sort((a, b) => a[3] - b[3]).map(p => p.slice(4).join("\n")).join(""));
-  assert.equal(payload.entries.length, 189);
+  const { CONTENT } = await import("../BP/scripts/data/generated/content.js");
+  assert.equal(payload.entries.length, Object.keys(CONTENT.items).length);
   const latte = payload.entries.find(e => e.id === kb("latte"));
   assert.ok(latte.recipes.length >= 1);
   assert.ok(payload.names.zh_TW[kb("bubble_milk_tea")] === "珍珠奶茶");

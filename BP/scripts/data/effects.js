@@ -53,13 +53,20 @@ export const BUILTIN_FOOD_EFFECTS = Object.freeze({
   [k("mint_chocolate_cake")]: { category: "dessert", clear: ["slowness"] },
   [k("honey_castella")]: { category: "dessert", effects: [["absorption", 30, 0]] },
   [k("burnt_food")]: { category: "food", effects: [["nausea", 5, 0]] },
+  // 1.1
+  [k("pastry_soup")]: { category: "food", effects: [["regeneration", 10, 0]] },
+  [k("cream_soup")]: { category: "food", effects: [["regeneration", 6, 0]] },
+  [k("fried_fish")]: { category: "food", effects: [["water_breathing", 30, 0]] },
+  [k("egg_yolk_pastry")]: { category: "dessert", effects: [["absorption", 20, 0]] },
 
   // Plain desserts (afternoon-tea partners)
   ...Object.fromEntries([
     "sponge_cake", "chocolate_cake", "strawberry_cream_cake", "birthday_cake", "cheesecake", "matcha_chiffon",
     "lemon_poppy_cake", "blueberry_muffin", "taiyaki", "butter_cookie", "chocolate_cookie", "scone",
     "apple_pie", "blueberry_pie", "strawberry_tart", "lemon_tart", "egg_tart", "cake_slice", "croissant",
-    "pineapple_bun", "donut", "pancakes", "french_toast", "fa_gao", "sesame_ball", "sesame_mooncake"
+    "pineapple_bun", "donut", "pancakes", "french_toast", "fa_gao", "sesame_ball", "sesame_mooncake",
+    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "pineapple_cake", "ma_lai_go", "shaped_cookie",
+    "iced_cookie_white", "iced_cookie_pink", "iced_cookie_blue", "iced_cookie_green", "iced_cookie_yellow", "iced_cookie_cocoa"
   ].map(n => [k(n), { category: "dessert" }])),
 
   // Kaleidoscope Cookery teas also calm palpitations (ids are public Cookery items)

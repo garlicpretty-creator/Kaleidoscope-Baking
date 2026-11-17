@@ -23,6 +23,9 @@ const TAG_EXAMPLES = {
   "#kaleidoscope:cooked_fish": "minecraft:cooked_salmon", "#kaleidoscope:vegetable": "minecraft:carrot",
   "#kaleidoscope:herb": "kaleidoscope_baking:thyme", "#kaleidoscope:dairy": "kaleidoscope_baking:butter",
   "#kaleidoscope:ground_coffee": "kaleidoscope_baking:ground_coffee_medium",
+  "#kaleidoscope:pineapple": "kaleidoscope_baking:pineapple",
+  "#kaleidoscope:soup": "kaleidoscope_cookery:pork_bone_soup",
+  "#kaleidoscope_baking:piping_bag": "kaleidoscope_baking:piping_bag",
   "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk", "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother"
 };
 const example = spec => (spec.startsWith("#") ? TAG_EXAMPLES[spec] : spec);
@@ -120,9 +123,34 @@ const HELP = {
   "kaleidoscope_baking:herb_planter": {
     zh_TW: ["種下香草插枝或草莓，長在室內也可以。"], en_US: ["Plant herb cuttings or strawberries indoors."]
   },
+  "kaleidoscope_baking:pineapple": {
+    zh_TW: ["野生於熱帶草原、海灘；種在耕地上。", "安裝森羅物語：豐收時，以豐收的鳳梨為主。"],
+    en_US: ["Grows wild in savannas and on beaches; plant on farmland.", "With Kaleidoscope Harvest installed, Harvest's pineapple leads."]
+  },
+  "kaleidoscope_baking:cake_stand": {
+    zh_TW: ["手持整顆蛋糕或派放上去展示，一樣能一片一片吃。", "潛行空手可拿回完整的甜點。"],
+    en_US: ["Place a whole cake or pie on it; eat it slice by slice.", "Sneak with an empty hand to take an untouched dessert back."]
+  },
+  "kaleidoscope_baking:tea_tray": {
+    zh_TW: ["放最多 3 個小點心。", "從架上吃東西時，下午茶加成的時間放寬到 60 秒。"],
+    en_US: ["Holds up to 3 small treats.", "Eating from it widens the afternoon-tea window to 60 s."]
+  },
+  "kaleidoscope_baking:bread_display": {
+    zh_TW: ["收納 9 格麵包或點心，前 3 格會顯示在櫃子裡。"], en_US: ["Stores 9 stacks of bread or pastries; the first 3 are shown."]
+  },
+  "kaleidoscope_baking:pastry_case": {
+    zh_TW: ["收納 9 格點心，前 3 格會顯示在櫥窗裡。"], en_US: ["Stores 9 stacks of pastries; the first 3 are shown."]
+  },
+  "kaleidoscope_baking:piping_bag": {
+    zh_TW: ["在攪拌盆放 4 片造型餅乾和 1 份色糖霜，用擠花袋點 3 下。"], en_US: ["Put 4 shaped cookies and 1 icing in the mixing bowl, then use the piping bag 3 times."]
+  },
+  "kaleidoscope_baking:bubble_milk_tea": {
+    zh_TW: ["潛行手持手搖飲對方塊頂面使用即可放下（最多 4 杯），甜度與冰塊會保留。"],
+    en_US: ["Sneak and use a hand-shaken drink on a block top to put it down (up to 4); sweetness and ice are kept."]
+  },
   "kaleidoscope_baking:espresso": {
-    zh_TW: ["咖啡因 +2。短時間喝 3 杯以上會心悸，5 以上嚴重心悸；牛奶、熱可可、茶可以舒緩。"],
-    en_US: ["Caffeine +2. 3+ causes palpitations, 5+ severe; milk, hot cocoa and tea calm it."]
+    zh_TW: ["可以直接放在桌上疊杯（最多 4 杯）。", "咖啡因 +2。短時間喝 3 杯以上會心悸，5 以上嚴重心悸；牛奶、熱可可、茶可以舒緩。"],
+    en_US: ["Can be placed and stacked on a table (up to 4).", "Caffeine +2. 3+ causes palpitations, 5+ severe; milk, hot cocoa and tea calm it."]
   }
 };
 
@@ -196,7 +224,9 @@ export function buildGuidebook(version = "1") {
         titleKey: "settings_title", titleFallback: "Baking Settings", submitKey: "save", submitFallback: "Save",
         responseEvent: "kaleidoscope_baking:settings_changed",
         fields: [
-          { id: "auto_convert", type: "toggle", labelKey: "auto_convert", fallback: "Auto-convert plants", default: true, save: false },
+          // ## Cookery stores this per player (in Cookery's own property scope), so the form shows
+          // the value this player last saved; the world-wide setting is applied via responseEvent.
+          { id: "auto_convert", type: "toggle", labelKey: "auto_convert", fallback: "Auto-convert plants", default: true, property: "kaleidoscope_baking:auto_convert" },
           { id: "note", type: "label", textKey: "auto_convert_note", fallback: "" }
         ]
       }

@@ -14,6 +14,8 @@ const VEG = ["kaleidoscope:vegetable"];
 const MEAT_RAW = ["kaleidoscope:meat", "kaleidoscope:raw_meat"];
 const MEAT_COOKED = ["kaleidoscope:meat", "kaleidoscope:cooked_meat"];
 
+export const COOKERY_SOUPS = Object.freeze(["beef_meatball_soup", "borscht", "chicken_and_mushroom_stew", "fearsome_thick_soup", "lamb_and_radish_soup", "donkey_soup", "tomato_beef_brisket_soup", "dough_drop_soup", "four_joy_meatball_soup", "spicy_blood_stew", "pork_bone_soup", "pufferfish_soup", "seafood_miso_soup", "wild_mushroom_rabbit_soup"]);
+
 export const BUILTIN_INGREDIENT_TAGS = Object.freeze({
   // Dairy / eggs / sweeteners
   "minecraft:egg": EGG,
@@ -70,6 +72,12 @@ export const BUILTIN_INGREDIENT_TAGS = Object.freeze({
   "minecraft:cooked_mutton": MEAT_COOKED,
   "minecraft:cooked_rabbit": MEAT_COOKED,
 
+  // Kaleidoscope Cookery soups (1.1: pastry-topped soup)
+  ...Object.fromEntries(COOKERY_SOUPS.map(n => [`kaleidoscope_cookery:${n}`, ["kaleidoscope:soup"]])),
+  "minecraft:mushroom_stew": ["kaleidoscope:soup"],
+  "minecraft:rabbit_stew": ["kaleidoscope:soup"],
+  "minecraft:beetroot_soup": ["kaleidoscope:soup"],
+
   // Baked goods from other packs
   "minecraft:bread": ["kaleidoscope:bread"],
   "minecraft:cookie": ["kaleidoscope:cookie", "kaleidoscope:pastry"],
@@ -95,5 +103,12 @@ export const CONTAINER_RETURNS = Object.freeze({
   "kaleidoscope_baking:black_tea_base": "minecraft:glass_bottle",
   "kaleidoscope_baking:green_tea_base": "minecraft:glass_bottle",
   "kaleidoscope_baking:oolong_tea_base": "minecraft:glass_bottle",
-  "kaleidoscope_baking:espresso": "kaleidoscope_baking:coffee_mug"
+  "kaleidoscope_baking:espresso": "kaleidoscope_baking:coffee_mug",
+  "kaleidoscope_baking:pineapple_jam": "minecraft:glass_bottle",
+  // Soups keep their bowl (pastry-topped soup is baked in its own crust)
+  "kaleidoscope_baking:cream_soup": "minecraft:bowl",
+  "minecraft:mushroom_stew": "minecraft:bowl",
+  "minecraft:rabbit_stew": "minecraft:bowl",
+  "minecraft:beetroot_soup": "minecraft:bowl",
+  ...Object.fromEntries(COOKERY_SOUPS.map(n => [`kaleidoscope_cookery:${n}`, "minecraft:bowl"]))
 });

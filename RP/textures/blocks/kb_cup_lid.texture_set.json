@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cup_lid",
+    "normal": "kb_cup_lid_normal",
+    "metalness_emissive_roughness": "kb_cup_lid_mer"
+  }
+}

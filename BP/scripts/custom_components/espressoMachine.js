@@ -53,6 +53,8 @@ function interact(block, player) {
       const cup = carrierFor(s.ready);
       if (!takeCarrier(player, cup)) { refuse(block.dimension, spout(block)); return; }
       giveItems(player, s.ready, 1);
+      const by = all("espresso").find(r => r.result === s.ready)?.byproduct;
+      if (by) giveItems(player, by, 1);
       s.ready = "";
       showContents(block, KIND.espresso, { fill: 0 });
       sound(block.dimension, "random.pop", spout(block), 0.6, 1.1);

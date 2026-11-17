@@ -19,7 +19,7 @@ import {
 import { bump, KIND, playMotion, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
-const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
+const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother", "kaleidoscope_baking:piping_bag"];
 const PREFIX = "kb_bowl";
 const MSG = "kaleidoscope_baking.msg.bowl.";
 

@@ -46,6 +46,7 @@ function makeDrink(recipe, sweet, ice) {
 function deliver(player, block, recipe, sweet, ice) {
   const stack = makeDrink(recipe, sweet, ice);
   if (stack) giveStack(player, stack); else giveItems(player, recipe.result, recipe.count);
+  if (recipe.byproduct) giveItems(player, recipe.byproduct, 1);
   sound(block.dimension, "random.orb", top(block), 0.6, 1.2);
   particle(block.dimension, "minecraft:villager_happy", top(block));
 }

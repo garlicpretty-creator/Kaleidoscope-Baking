@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:bread_display"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "PPP",
+      "G G",
+      "PPP"
+    ],
+    "key": {
+      "P": {
+        "item": "minecraft:oak_planks"
+      },
+      "G": {
+        "item": "minecraft:glass_pane"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:bread_display",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:oak_planks"
+      },
+      {
+        "item": "minecraft:glass_pane"
+      }
+    ]
+  }
+}

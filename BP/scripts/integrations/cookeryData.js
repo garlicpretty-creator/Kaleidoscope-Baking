@@ -20,6 +20,10 @@ const dry = (name, input, result, duration = 1800) =>
   recipe("bamboo_tray", "bamboo_tray", { id: k(`tray/${name}`), input, result, process: "dry", duration });
 const pot = (name, ingredients, result, count, carrier = "", time = 300) =>
   recipe("stockpot_exact", "stockpot_exact", { id: k(`stockpot/${name}`), ingredients, result, count, carrier, time, base: "minecraft:water" });
+const tool = (name, input, toolId, result, count) =>
+  recipe("chopping_board_tool", "chopping_board_tool", { id: k(`board/${name}`), input, tool: toolId, result, count, consumeTool: false });
+const milkPot = (name, ingredients, result, count, carrier = "", time = 300) =>
+  recipe("stockpot_exact", "stockpot_exact", { id: k(`stockpot/${name}`), ingredients, result, count, carrier, time, base: "minecraft:milk" });
 const wok = (name, ingredients, result, count, carrier = "", time = 200) =>
   recipe("wok", "wok", { id: k(`wok/${name}`), ingredients, result, count, carrier, time });
 
@@ -77,18 +81,43 @@ export const COOKERY_REGISTRATIONS = Object.freeze({
     wok("pancakes", [k("cake_batter"), k("butter")], k("pancakes"), 3),
     wok("donut", [k("proofed_donut_dough"), kc("oil")], k("donut"), 3),
     wok("sesame_ball", [k("sesame_ball_dough"), kc("oil")], k("sesame_ball"), 4),
-    wok("brown_sugar_syrup", [k("brown_sugar"), k("brown_sugar")], k("brown_sugar_syrup"), 2, BOTTLE)
+    wok("brown_sugar_syrup", [k("brown_sugar"), k("brown_sugar")], k("brown_sugar_syrup"), 2, BOTTLE),
+
+    // ---- 1.1 ----
+    // Puff pastry: three folds with the rolling pin
+    tool("laminate_1", k("puff_pastry_dough"), k("rolling_pin"), k("laminated_dough_1"), 1),
+    tool("laminate_2", k("laminated_dough_1"), k("rolling_pin"), k("laminated_dough_2"), 1),
+    tool("laminate_3", k("laminated_dough_2"), k("rolling_pin"), k("puff_pastry"), 2),
+    tool("shaped_cookie_dough", k("cookie_dough"), k("cookie_cutter"), k("shaped_cookie_dough"), 2),
+    board("salted_egg_yolk", k("salted_egg"), k("salted_egg_yolk"), 1, 1),
+    board("bread_crumbs_baguette", k("baguette"), k("bread_crumbs"), 4, 2),
+    board("bread_crumbs_bread", "minecraft:bread", k("bread_crumbs"), 3, 2),
+    // Salted egg: wet-cured on the bamboo tray (rain / dripping water)
+    recipe("bamboo_tray", "bamboo_tray", { id: k("tray/salted_egg"), input: "minecraft:egg", result: k("salted_egg"), process: "wet", duration: 2400 }),
+    recipe("steamer", "steamer", { id: k("steamer/ma_lai_go"), input: k("ma_lai_go_batter"), result: k("ma_lai_go"), count: 4, time: 400 }),
+    // Milk-based stockpot (Cookery fills its stockpot with milk from a milk bucket natively)
+    milkPot("custard_milk", [EGGS, SUGARS], k("custard"), 3),
+    milkPot("cream_soup", [["minecraft:carrot", "minecraft:potato", kc("tomato")], [k("butter")]], k("cream_soup"), 2, "minecraft:bowl"),
+    wok("fried_fish", [["minecraft:cod", "minecraft:salmon"], k("bread_crumbs"), EGGS], k("fried_fish"), 2)
   ],
+
+  // Cookery Wok accepts butter from a Butter Jar instead of oil (oil-container API).
+  oilContainers: [{
+    id: k("butter_jar"), empty: k("empty_jar"), oil: k("butter"), capacity: 8, defaultAmount: 8,
+    amountProperty: "kb_butter_amount"
+  }],
 
   // Cookery's Wok and Stockpot only accept registered ingredients; Mystery Tea must not
   // swallow our drink ingredients.
-  teapotMysteryExclude: [k("green_coffee_beans"), k("coffee_cherry"), k("tapioca_pearls"), k("crushed_ice")],
+  teapotMysteryExclude: [k("green_coffee_beans"), k("coffee_cherry"), k("tapioca_pearls"), k("crushed_ice"), k("coffee_grounds"), k("fruit_pulp")],
 
   // Small foods render as flat items on Cookery tables / fruit baskets.
   displayRules: [
     "butter_cookie", "chocolate_cookie", "lavender_cookie", "toast_slice", "cake_slice", "croissant", "scone",
     "blueberry_muffin", "taiyaki", "savory_taiyaki", "egg_tart", "strawberry_tart", "lemon_tart", "donut",
-    "pineapple_bun", "poppy_seed_bagel", "cinnamon_roll", "sesame_mooncake", "sesame_ball", "fa_gao", "lemon", "strawberry"
+    "pineapple_bun", "poppy_seed_bagel", "cinnamon_roll", "sesame_mooncake", "sesame_ball", "fa_gao", "lemon", "strawberry",
+    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "egg_yolk_pastry", "pineapple_cake", "ma_lai_go", "pineapple",
+    "shaped_cookie", "iced_cookie_white", "iced_cookie_pink", "iced_cookie_blue", "iced_cookie_green", "iced_cookie_yellow", "iced_cookie_cocoa"
   ].map(n => ({ id: k(n), mode: "item" })),
 
   // Cookery's sickle sweeps these crops (5x2x5). Only stage-based crops, not trees.
