@@ -116,7 +116,7 @@ export const COOKERY_REGISTRATIONS = Object.freeze({
     "butter_cookie", "chocolate_cookie", "lavender_cookie", "toast_slice", "cake_slice", "croissant", "scone",
     "blueberry_muffin", "taiyaki", "savory_taiyaki", "egg_tart", "strawberry_tart", "lemon_tart", "donut",
     "pineapple_bun", "poppy_seed_bagel", "cinnamon_roll", "sesame_mooncake", "sesame_ball", "fa_gao", "lemon", "strawberry",
-    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "egg_yolk_pastry", "pineapple_cake", "ma_lai_go",
+    "napoleon", "palmier", "portuguese_egg_tart", "madeleine", "egg_yolk_pastry", "pineapple_cake", "ma_lai_go", "pineapple",
     "shaped_cookie", "iced_cookie_white", "iced_cookie_pink", "iced_cookie_blue", "iced_cookie_green", "iced_cookie_yellow", "iced_cookie_cocoa"
   ].map(n => ({ id: k(n), mode: "item" })),
 

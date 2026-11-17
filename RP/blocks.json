@@ -105,6 +105,9 @@
   "kaleidoscope_baking:raspberry_bush": {
     "sound": "grass"
   },
+  "kaleidoscope_baking:pineapple_crop": {
+    "sound": "grass"
+  },
   "kaleidoscope_baking:cinnamon_sapling_block": {
     "sound": "grass"
   },

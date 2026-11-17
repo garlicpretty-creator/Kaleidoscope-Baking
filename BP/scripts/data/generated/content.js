@@ -1579,6 +1579,18 @@ export const CONTENT = Object.freeze({
    "en_US": "Pineapple Jam",
    "group": "ingredients"
   },
+  "kaleidoscope_baking:pineapple": {
+   "zh_TW": "鳳梨",
+   "zh_CN": "凤梨",
+   "en_US": "Pineapple",
+   "group": "plants"
+  },
+  "kaleidoscope_baking:pineapple_crown": {
+   "zh_TW": "鳳梨冠芽",
+   "zh_CN": "凤梨冠芽",
+   "en_US": "Pineapple Crown",
+   "group": "plants"
+  },
   "kaleidoscope_baking:bread_crumbs": {
    "zh_TW": "麵包屑",
    "zh_CN": "面包屑",
@@ -1966,6 +1978,18 @@ export const CONTENT = Object.freeze({
    "wild": [
     "forest",
     "birch"
+   ]
+  },
+  {
+   "id": "kaleidoscope_baking:pineapple_crop",
+   "seed": "kaleidoscope_baking:pineapple_crown",
+   "harvest": "kaleidoscope_baking:pineapple",
+   "max": 7,
+   "reset": 1,
+   "kind": "annual",
+   "wild": [
+    "savanna",
+    "beach"
    ]
   }
  ],

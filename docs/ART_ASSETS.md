@@ -66,6 +66,7 @@
 | 草莓 | `textures/blocks/kb_strawberry_bush_stage_0..3.png` |
 | 藍莓 | `textures/blocks/kb_blueberry_bush_stage_0..3.png` |
 | 覆盆子 | `textures/blocks/kb_raspberry_bush_stage_0..3.png` |
+| 鳳梨 | `textures/blocks/kb_pineapple_crop_stage_0..7.png` |
 
 ## 樹
 
@@ -273,6 +274,8 @@
 | `kb_lemon_sapling.png` | 檸檬樹苗 |
 | `kb_lemon.png` | 檸檬 |
 | `kb_lemon_slice.png` | 檸檬片 |
+| `kb_pineapple.png` | 鳳梨 |
+| `kb_pineapple_crown.png` | 鳳梨冠芽 |
 
 ### 烘焙美食
 

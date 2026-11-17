@@ -386,8 +386,13 @@ for col, zh, en, rgb, _ in ICING_COLORS:
 ing("salted_egg", "鹹蛋", "Salted Egg", ("ball", (210, 220, 210), None), ["kaleidoscope:egg_product"])
 ing("salted_egg_yolk", "鹹蛋黃", "Salted Egg Yolk", ("ball", C["orange"], None), ["kaleidoscope:egg_product"])
 ing("pineapple_jam", "鳳梨醬", "Pineapple Jam", ("jar", C["lemon"], None), ["kaleidoscope:jam"], 16)
-# Pineapple is led by 豐收 (decided): Baking ships NO pineapple plant. Pineapple jam / pineapple
-# cakes use `#kaleidoscope:pineapple`, which 豐收's pineapple satisfies (see compat/series.data.js).
+# Pineapple (decided): Baking ships its own, and 豐收's pineapple leads when Harvest is installed
+# (fruit category, see compat/series.data.js) — same rule as strawberries.
+plant_item("pineapple", "鳳梨", "Pineapple", ("lemon", C["yellow"], C["green"]), ["kaleidoscope:fruit", "kaleidoscope:pineapple"])
+plant_item("pineapple_crown", "鳳梨冠芽", "Pineapple Crown", ("cutting", C["green"], C["yellow"]), ["kaleidoscope:seed"],
+           place="pineapple_crop", place_on="farmland")
+crop("pineapple_crop", "鳳梨", "Pineapple", "annual", "pineapple_crown", ("pineapple", 1, 1), 8, "farmland", C["green"], C["yellow"],
+     chance=9, wild=["savanna", "beach"])
 # By-products (also sent to series packs through reverse registration)
 ing("bread_crumbs", "麵包屑", "Bread Crumbs", ("powder", C["tan"], C["crust"]), ["kaleidoscope:bread_crumbs"], compostable=50)
 ing("coffee_grounds", "咖啡渣", "Coffee Grounds", ("powder", C["dkbrown"], None), ["kaleidoscope:fertilizer"], compostable=65)

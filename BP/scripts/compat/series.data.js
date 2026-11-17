@@ -56,6 +56,9 @@ export const EQUIVALENTS = Object.freeze([
     block: { baking: kb("raspberry_bush"), primary: [`${F}:raspberry_bush`], bakingMax: 3, primaryState: `${F}:growth`, primaryMax: 3 } },
   { baking: kb("lemon"), category: "fruit", primary: [`${F}:lemon`] },
   { baking: kb("lemon_sapling"), category: "fruit", primary: [`${F}:lemon_sapling`] },
+  { baking: kb("pineapple"), category: "fruit", primary: [`${F}:pineapple`],
+    block: { baking: kb("pineapple_crop"), primary: [`${F}:pineapple_crop`, `${F}:pineapple`], bakingMax: 7, primaryState: `${F}:growth`, primaryMax: 7 } },
+  { baking: kb("pineapple_crown"), category: "fruit", primary: [`${F}:pineapple_crown`, `${F}:pineapple_seeds`] },
 
 
   // Crafting materials -> 樂牧
@@ -70,9 +73,6 @@ export const EQUIVALENTS = Object.freeze([
 /**
  * Series items Baking has no equivalent for but uses through `#kaleidoscope:*` tags. They are
  * registered as ingredients at world load (harmless when the pack is absent).
- * 1.1 decision: pineapple is ONLY provided by 豐收 — pineapple jam / cakes need Harvest.
+ * (Items that DO have a Baking equivalent are handled by EQUIVALENTS above instead.)
  */
-export const SERIES_TAGS = Object.freeze([
-  { id: `${F}:pineapple`, tags: ["kaleidoscope:fruit", "kaleidoscope:pineapple"] },
-  { id: `${F}:pineapple_slice`, tags: ["kaleidoscope:fruit", "kaleidoscope:pineapple"] }
-]);
+export const SERIES_TAGS = Object.freeze([]);

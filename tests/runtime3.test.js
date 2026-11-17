@@ -162,11 +162,13 @@ test("hot drinks: Baking's own mug stack — add the same drink, take one back, 
   assert.deepEqual(dim.spawned.map(x => [x.id, x.amount]), [[kb("latte"), 2]]);
 });
 
-test("pineapple comes from Harvest: its pineapple makes jam, Baking ships no pineapple", async () => {
+test("pineapple: Baking ships its own; jam accepts it (and Harvest's via the lead-pack alias)", async () => {
   const { CONTENT } = await import("../BP/scripts/data/generated/content.js");
-  assert.equal(CONTENT.items[kb("pineapple")], undefined);
+  assert.ok(CONTENT.items[kb("pineapple")]);
   const { getMixingRecipe } = await import("../BP/scripts/api/registry.js");
-  const r = getMixingRecipe(["kaleidoscope_harvest:pineapple", "kaleidoscope_harvest:pineapple", "minecraft:sugar", "minecraft:glass_bottle"], kb("whisk"));
+  const { EQUIVALENTS } = await import("../BP/scripts/compat/series.data.js");
+  assert.equal(EQUIVALENTS.find(e => e.baking === kb("pineapple"))?.category, "fruit", "豐收 leads pineapple");
+  const r = getMixingRecipe([kb("pineapple"), kb("pineapple"), "minecraft:sugar", "minecraft:glass_bottle"], kb("whisk"));
   assert.equal(r?.result, kb("pineapple_jam"));
 });
 
