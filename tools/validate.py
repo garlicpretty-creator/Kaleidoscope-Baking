@@ -176,6 +176,24 @@ for p in glob.glob(f"{BP}/recipes/**/*.json", recursive=True):
             if res.startswith(NS) and res not in items:
                 err(f"{rel(p)}: result {res} is not a defined item")
 
+# 6. PBR: the resource pack declares it, and every colour texture has its texture set and maps
+#    (tools/art/pbr_maps.py; tools/gen_content.py runs it). Flat UI art is never lit and has none.
+if "pbr" not in (load(f"{RP}/manifest.json") or {}).get("capabilities", []):
+    err("RP/manifest.json: the pbr capability is missing")
+for p in glob.glob(f"{RP}/textures/**/*.png", recursive=True):
+    q = p.replace(os.sep, "/")
+    if "/textures/ui/" in q:
+        continue
+    layer = re.search(r"_(mer|normal)\.png$", q)
+    if layer:
+        if not os.path.exists(q[:layer.start()] + ".png"):
+            err(f"{rel(p)}: PBR map without a colour texture")
+        continue
+    base = q[:-4]
+    for need in (".texture_set.json", "_normal.png", "_mer.png"):
+        if not os.path.exists(base + need):
+            err(f"{rel(p)}: no {need.lstrip('._')}, run python tools/art/pbr_maps.py")
+
 if errors:
     print("\n".join(f"✗ {e}" for e in errors))
     print(f"\n{len(errors)} problem(s).")

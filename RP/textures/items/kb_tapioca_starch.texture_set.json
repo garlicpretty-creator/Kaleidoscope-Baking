@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_tapioca_starch",
+    "normal": "kb_tapioca_starch_normal",
+    "metalness_emissive_roughness": "kb_tapioca_starch_mer"
+  }
+}

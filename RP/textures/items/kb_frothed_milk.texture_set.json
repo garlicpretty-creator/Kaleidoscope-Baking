@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_frothed_milk",
+    "normal": "kb_frothed_milk_normal",
+    "metalness_emissive_roughness": "kb_frothed_milk_mer"
+  }
+}

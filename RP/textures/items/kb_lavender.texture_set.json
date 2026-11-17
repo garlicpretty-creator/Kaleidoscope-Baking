@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_lavender",
+    "normal": "kb_lavender_normal",
+    "metalness_emissive_roughness": "kb_lavender_mer"
+  }
+}

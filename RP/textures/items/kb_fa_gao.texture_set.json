@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_fa_gao",
+    "normal": "kb_fa_gao_normal",
+    "metalness_emissive_roughness": "kb_fa_gao_mer"
+  }
+}

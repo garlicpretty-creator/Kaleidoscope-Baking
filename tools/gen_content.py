@@ -1053,3 +1053,6 @@ with open(os.path.join(ROOT, "docs", "ART_ASSETS.md"), "w", encoding="utf-8") as
 # --- Item icons: the picked Retro Diffusion icons (art/icons) always win over placeholders -----------------
 import subprocess  # noqa: E402
 subprocess.run([sys.executable, os.path.join(ROOT, "tools", "art", "rd_icons.py"), "apply"], check=True)
+
+# --- PBR: a normal and an MER map and a texture set for every texture, made from the finished pictures --------
+subprocess.run([sys.executable, os.path.join(ROOT, "tools", "art", "pbr_maps.py")], check=True)
