@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:pour_over_stand.name"
+      },
       "minecraft:icon": "kb_pour_over_stand",
       "minecraft:max_stack_size": 64,
       "minecraft:block_placer": {

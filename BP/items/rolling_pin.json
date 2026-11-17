@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:rolling_pin.name"
+      },
       "minecraft:icon": "kb_rolling_pin",
       "minecraft:max_stack_size": 1,
       "minecraft:hand_equipped": true

@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:fa_gao.name"
+      },
       "minecraft:icon": "kb_fa_gao",
       "minecraft:max_stack_size": 64,
       "minecraft:tags": {

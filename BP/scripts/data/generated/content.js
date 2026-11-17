@@ -1415,7 +1415,7 @@ export const CONTENT = Object.freeze({
  "groups": {
   "stations": {
    "zh_TW": "烘焙廚具",
-   "zh_CN": "烘焙廚具",
+   "zh_CN": "烘焙厨具",
    "en_US": "Baking Stations"
   },
   "tools": {

@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:yuanyang.name"
+      },
       "minecraft:icon": "kb_yuanyang",
       "minecraft:max_stack_size": 1,
       "minecraft:tags": {

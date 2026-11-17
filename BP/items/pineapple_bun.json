@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:pineapple_bun.name"
+      },
       "minecraft:icon": "kb_pineapple_bun",
       "minecraft:max_stack_size": 64,
       "minecraft:tags": {

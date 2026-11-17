@@ -249,7 +249,10 @@
               "kaleidoscope_baking:dried_blueberry",
               "kaleidoscope_baking:lemon_sapling",
               "kaleidoscope_baking:lemon",
-              "kaleidoscope_baking:lemon_slice"
+              "kaleidoscope_baking:lemon_slice",
+              "kaleidoscope_baking:cinnamon_log",
+              "kaleidoscope_baking:cinnamon_leaves",
+              "kaleidoscope_baking:lemon_leaves"
             ]
           }
         ]

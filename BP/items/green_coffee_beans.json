@@ -9,6 +9,9 @@
       }
     },
     "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:green_coffee_beans.name"
+      },
       "minecraft:icon": "kb_green_coffee_beans",
       "minecraft:max_stack_size": 64,
       "minecraft:tags": {
