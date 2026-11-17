@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.40",
+  "format_version": "1.21.90",
   "minecraft:recipe_shaped": {
     "description": {
       "identifier": "kb:oven"
@@ -16,15 +16,15 @@
     },
     "pattern": [
       "BBB",
-      "BFB",
+      "BGB",
       "III"
     ],
     "key": {
       "B": {
         "item": "minecraft:brick"
       },
-      "F": {
-        "item": "minecraft:furnace"
+      "G": {
+        "item": "minecraft:glass_pane"
       },
       "I": {
         "item": "minecraft:iron_ingot"

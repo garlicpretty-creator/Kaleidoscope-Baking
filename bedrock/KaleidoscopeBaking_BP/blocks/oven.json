@@ -1,10 +1,46 @@
 {
-  "format_version": "1.21.40",
+  "format_version": "1.21.90",
   "minecraft:block": {
     "description": {
       "identifier": "kb:oven",
       "menu_category": {
         "category": "items"
+      },
+      "states": {
+        "kb:food": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "kb:time": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "kb:fuel": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
       },
       "traits": {
         "minecraft:placement_direction": {
@@ -17,19 +53,12 @@
     },
     "components": {
       "minecraft:geometry": "geometry.kb_oven",
-      "minecraft:material_instances": {
-        "*": {
-          "texture": "kb_oven",
-          "render_method": "alpha_test"
-        }
-      },
       "minecraft:destructible_by_mining": {
         "seconds_to_destroy": 1.5
       },
       "minecraft:destructible_by_explosion": {
         "explosion_resistance": 6
       },
-      "minecraft:map_color": "#b4553d",
       "minecraft:collision_box": {
         "origin": [
           -8,
@@ -54,14 +83,1927 @@
           16
         ]
       },
-      "minecraft:crafting_table": {
-        "table_name": "tile.kb:oven.name",
-        "crafting_tags": [
-          "kb_oven"
-        ]
-      }
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_oven",
+          "render_method": "alpha_test"
+        },
+        "glass": {
+          "texture": "kb_oven_glass",
+          "render_method": "blend"
+        },
+        "food": {
+          "texture": "kb_oven_food_empty",
+          "render_method": "alpha_test"
+        },
+        "fire": {
+          "texture": "kb_oven_fire_out",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:map_color": "#b4553d",
+      "minecraft:tick": {
+        "interval_range": [
+          200,
+          200
+        ],
+        "looping": true
+      },
+      "kb:oven": {}
     },
     "permutations": [
+      {
+        "condition": "q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:light_emission": 12
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 0 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_empty",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_out",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 0 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_empty",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 1 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_dough_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 2 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_croissant_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 3 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cookies_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 4 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_egg_tart_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 5 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_macaron_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 6 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_pudding_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 7 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cream_puff_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 8 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_cinnamon_roll_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 9 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_berry_cake_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 0 && q.block_state('kb:time') <= 1 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_raw",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 2 && q.block_state('kb:time') <= 3 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_half",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 4 && q.block_state('kb:time') <= 6 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_done",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:food') == 10 && q.block_state('kb:time') >= 7 && q.block_state('kb:time') <= 7 && q.block_state('kb:fuel') > 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven",
+              "render_method": "alpha_test"
+            },
+            "glass": {
+              "texture": "kb_oven_glass",
+              "render_method": "blend"
+            },
+            "food": {
+              "texture": "kb_oven_food_raw_chocolate_cake_burnt",
+              "render_method": "alpha_test"
+            },
+            "fire": {
+              "texture": "kb_oven_fire_lit",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
       {
         "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
         "components": {

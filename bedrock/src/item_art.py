@@ -294,19 +294,3 @@ ITEMS = {
         ".oooooooooooo",
     ],
 }
-
-# Food stats: nutrition, saturation_modifier, optional container returned after eating
-FOOD = {
-    "toast": (5, 0.6, None),
-    "butter_cookie": (2, 0.3, None),
-    "croissant": (6, 0.7, None),
-    "egg_tart": (5, 0.6, None),
-    "macaron": (3, 0.4, None),
-    "pudding": (6, 0.6, "minecraft:bowl"),
-    "cream_puff": (5, 0.5, None),
-    "cinnamon_roll": (7, 0.6, None),
-    "berry_cake_slice": (6, 0.5, None),
-    "chocolate_cake_slice": (7, 0.6, None),
-    "dough": (1, 0.1, None),
-    "sweet_dough": (2, 0.2, None),
-}

@@ -3,10 +3,16 @@
 
     python bedrock/build.py
 
-Regenerates every generated file in bedrock/KaleidoscopeBaking_BP and
-bedrock/KaleidoscopeBaking_RP from the sources in bedrock/src, then writes
-bedrock/dist/Kaleidoscope_Baking.mcaddon (double-click to import into Minecraft).
+Sources:
+  models/*.bbmodel      3D blocks, edited in Blockbench (Bedrock Block format)
+  art/icons/*.png       chosen item icons (Retro Diffusion); hand-drawn grids are the fallback
+  src/gameplay.py       items, recipes, oven & bowl data
+  src/scripts/main.js   immersive oven / mixing-bowl behaviour (Script API)
+
+Output: KaleidoscopeBaking_BP/, KaleidoscopeBaking_RP/ and dist/Kaleidoscope_Baking.mcaddon
 """
+import base64
+import io
 import json
 import shutil
 import sys
@@ -17,85 +23,27 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
-from block_models import BLOCKS  # noqa: E402
-from item_art import FOOD, ITEMS, PALETTE  # noqa: E402
+import gameplay as G  # noqa: E402
+import textures as T  # noqa: E402
+from item_art import ITEMS as GRIDS, PALETTE  # noqa: E402
 
-NS = "kb"
+NS = G.NS
 BP = ROOT / "KaleidoscopeBaking_BP"
 RP = ROOT / "KaleidoscopeBaking_RP"
 DIST = ROOT / "dist"
-VERSION = [1, 0, 0]
-MIN_ENGINE = [1, 21, 40]
-FMT = "1.21.40"
+MODELS = ROOT / "models"
+VERSION = [1, 1, 0]
+MIN_ENGINE = [1, 21, 90]
+FMT = "1.21.90"
+SCRIPT_API = "2.0.0"
 
 UUID_BP_HEADER = "88b78dd9-56f3-431d-80cf-5b9c56919d60"
 UUID_BP_MODULE = "6f340e4e-ccc9-45fa-b962-c0a4fc0ab763"
+UUID_BP_SCRIPT = "bda7f8ef-32ee-4569-8562-1d82c45d2e9d"
 UUID_RP_HEADER = "2869ff9e-ec55-455d-a0e0-0b4841678bbd"
 UUID_RP_MODULE = "9624a47c-18db-4d4e-99c8-a3581860a44d"
 
-ITEM_NAMES = {
-    "flour": ("Flour", "麵粉"),
-    "butter": ("Butter", "奶油"),
-    "dough": ("Dough", "麵團"),
-    "sweet_dough": ("Sweet Dough", "甜麵團"),
-    "whipped_cream": ("Whipped Cream", "打發鮮奶油"),
-    "chocolate_bar": ("Chocolate Bar", "巧克力磚"),
-    "toast": ("Toast", "吐司"),
-    "butter_cookie": ("Butter Cookie", "奶油餅乾"),
-    "croissant": ("Croissant", "可頌"),
-    "egg_tart": ("Egg Tart", "蛋塔"),
-    "macaron": ("Macaron", "馬卡龍"),
-    "pudding": ("Caramel Pudding", "焦糖布丁"),
-    "cream_puff": ("Cream Puff", "泡芙"),
-    "cinnamon_roll": ("Cinnamon Roll", "肉桂捲"),
-    "berry_cake_slice": ("Berry Shortcake Slice", "莓果蛋糕切片"),
-    "chocolate_cake_slice": ("Chocolate Cake Slice", "巧克力蛋糕切片"),
-}
-
-M = "minecraft:"
-K = f"{NS}:"
-# (id, station, result_count, ingredients, shape-or-None, shaped-key)
-RECIPES = [
-    # --- crafting table ---
-    ("flour", "crafting_table", 1, [M + "wheat"], None, None),
-    ("butter", "crafting_table", 2, [M + "milk_bucket"], None, None),
-    ("mixing_bowl", "crafting_table", 1, None, ["C C", " C "], {"C": M + "clay_ball"}),
-    ("baking_tray", "crafting_table", 1, None, ["N N", "NNN"], {"N": M + "iron_nugget"}),
-    ("oven", "crafting_table", 1, None, ["BBB", "BFB", "III"],
-     {"B": M + "brick", "F": M + "furnace", "I": M + "iron_ingot"}),
-    # --- mixing bowl ---
-    ("dough", "mixing_bowl", 2, [K + "flour", K + "flour", M + "egg"], None, None),
-    ("sweet_dough", "mixing_bowl", 2, [K + "flour", K + "flour", M + "sugar", M + "egg", K + "butter"], None, None),
-    ("whipped_cream", "mixing_bowl", 3, [M + "milk_bucket", M + "sugar"], None, None),
-    ("chocolate_bar", "mixing_bowl", 2, [M + "cocoa_beans", M + "cocoa_beans", M + "sugar", K + "butter"], None, None),
-    # --- oven ---
-    ("toast", "oven", 2, [K + "dough"], None, None),
-    ("butter_cookie", "oven", 6, [K + "sweet_dough", K + "butter"], None, None),
-    ("croissant", "oven", 2, [K + "dough", K + "butter"], None, None),
-    ("egg_tart", "oven", 3, [K + "sweet_dough", M + "egg", M + "sugar"], None, None),
-    ("macaron", "oven", 4, [K + "sweet_dough", M + "egg", M + "sweet_berries"], None, None),
-    ("pudding", "oven", 1, [M + "egg", M + "milk_bucket", M + "sugar", M + "bowl"], None, None),
-    ("cream_puff", "oven", 3, [K + "dough", K + "whipped_cream", M + "egg"], None, None),
-    ("cinnamon_roll", "oven", 3, [K + "sweet_dough", M + "sugar", K + "butter"], None, None),
-    ("berry_cake_slice", "oven", 4, [K + "sweet_dough", K + "whipped_cream", M + "sweet_berries", M + "sweet_berries"], None, None),
-    ("chocolate_cake_slice", "oven", 4, [K + "sweet_dough", K + "whipped_cream", K + "chocolate_bar"], None, None),
-]
-STATION_TAG = {"crafting_table": "crafting_table", "mixing_bowl": f"{NS}_mixing_bowl", "oven": f"{NS}_oven"}
-
-
-# ---------------------------------------------------------------- helpers
-def hexrgb(h):
-    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) + (255,)
-
-
-def noise(x, y, seed=0):
-    n = (x * 374761393 + y * 668265263 + seed * 2147483647) & 0xFFFFFFFF
-    n = ((n ^ (n >> 13)) * 1274126177) & 0xFFFFFFFF
-    return (n ^ (n >> 16)) / 0xFFFFFFFF
-
-
-def shade(rgb, f):
-    return tuple(max(0, min(255, int(c * f))) for c in rgb[:3]) + (255,)
+terrain = {}  # terrain_texture.json entries
 
 
 def write_json(path, data):
@@ -103,200 +51,80 @@ def write_json(path, data):
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-# ---------------------------------------------------------------- block materials
-def mat_color(mat, x, y, w, h, seed):
-    r = noise(x, y, seed)
-    if mat == "brick":
-        mortar = hexrgb("#d8c2a2")
-        row = y // 3
-        off = 2 if row % 2 else 0
-        if y % 3 == 2 or (x + off) % 6 == 5:
-            return mortar
-        return shade(hexrgb("#b4553d"), 0.88 + 0.2 * r)
-    if mat == "oven_front":
-        if x < 2 or x >= w - 2 or y < 1 or y >= h - 1:
-            return mat_color("brick", x, y, w, h, seed)
-        if x < 3 or x >= w - 3 or y < 2 or y >= h - 3:
-            return shade(hexrgb("#4a4f57"), 0.9 + 0.15 * r)
-        if y >= h - 4:  # knobs row
-            return hexrgb("#d9b44a") if x in (4, w - 5) else hexrgb("#4a4f57")
-        glow = 1.0 - (y - 2) / max(1, h - 6) * 0.35
-        base = "#ffd166" if (x + y) % 5 == 0 and r > 0.4 else "#ff9a3c"
-        return shade(hexrgb(base), glow + 0.1 * r)
-    if mat == "oven_top":
-        return shade(hexrgb("#5b616a"), 0.9 + 0.2 * r)
-    if mat == "iron":
-        return shade(hexrgb("#c3cbd3"), 0.9 + 0.15 * r)
-    if mat == "iron_dark":
-        return shade(hexrgb("#6b7580"), 0.9 + 0.15 * r)
-    if mat == "ceramic":
-        return shade(hexrgb("#86bce0"), 0.95 + 0.1 * r)
-    if mat == "ceramic_rim":
-        return hexrgb("#f4f8fb")
-    if mat == "ceramic_dark":
-        return shade(hexrgb("#4f7fa8"), 0.95 + 0.1 * r)
-    if mat == "batter":
-        return shade(hexrgb("#f6e2b3"), 0.93 + 0.12 * r)
-    if mat == "wood":
-        return shade(hexrgb("#c08a55"), 0.85 + 0.2 * r)
-    if mat == "cookie":
-        if r > 0.85:
-            return hexrgb("#5a3326")
-        return shade(hexrgb("#e3a55a"), 0.9 + 0.15 * r)
-    raise ValueError(f"unknown material {mat}")
+def save_block_tex(img, rel):
+    """Save RP/textures/blocks/<rel>.png and register it as kb_<rel with / -> _>."""
+    p = RP / "textures" / "blocks" / f"{rel}.png"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    img.save(p)
+    key = f"{NS}_" + rel.replace("/", "_")
+    terrain[key] = {"textures": f"textures/blocks/{rel}"}
+    return key
 
 
-FACE_DIMS = {  # face -> (horizontal axis index, vertical axis index) into size [x,y,z]
-    "north": (0, 1), "south": (0, 1), "east": (2, 1), "west": (2, 1), "up": (0, 2), "down": (0, 2),
-}
+def q(state):
+    return f"q.block_state('{state}')"
 
 
-def build_block(name, spec):
-    # collect faces
-    rects = []
-    for ci, c in enumerate(spec["cubes"]):
-        for face, mat in c["faces"].items():
-            a, b = FACE_DIMS[face]
-            w, h = max(1, c["size"][a]), max(1, c["size"][b])
-            rects.append({"cube": ci, "face": face, "mat": mat, "w": w, "h": h})
-    # shelf pack
-    tw = 64
-    while True:
-        x = y = shelf_h = 0
-        ok = True
-        for r in sorted(rects, key=lambda r: (-r["h"], -r["w"])):
-            if x + r["w"] > tw:
-                x, y, shelf_h = 0, y + shelf_h, 0
-            r["u"], r["v"] = x, y
-            x += r["w"]
-            shelf_h = max(shelf_h, r["h"])
-        th = y + shelf_h
-        if th <= tw:
-            break
-        tw *= 2
-    th = tw
-    img = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
-    for i, r in enumerate(rects):
-        for py in range(r["h"]):
-            for px in range(r["w"]):
-                img.putpixel((r["u"] + px, r["v"] + py), mat_color(r["mat"], px, py, r["w"], r["h"], i))
-    tex_path = RP / "textures" / "blocks" / f"{name}.png"
-    tex_path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(tex_path)
-
-    cubes = []
-    for ci, c in enumerate(spec["cubes"]):
-        uv = {}
-        for r in rects:
-            if r["cube"] == ci:
-                uv[r["face"]] = {"uv": [r["u"], r["v"]], "uv_size": [r["w"], r["h"]]}
-        cubes.append({"origin": c["origin"], "size": c["size"], "uv": uv})
-    geo = {
-        "format_version": "1.16.0",
-        "minecraft:geometry": [{
-            "description": {
-                "identifier": f"geometry.{NS}_{name}",
-                "texture_width": tw,
-                "texture_height": th,
-                "visible_bounds_width": 2,
-                "visible_bounds_height": 2.5,
-                "visible_bounds_offset": [0, 0.75, 0],
-            },
-            "bones": [{"name": "root", "pivot": [0, 0, 0], "cubes": cubes}],
-        }],
-    }
-    write_json(RP / "models" / "blocks" / f"{name}.geo.json", geo)
-
-    # behaviour definition
-    origin, size = spec["collision"]
-    comps = {
-        "minecraft:geometry": f"geometry.{NS}_{name}",
-        "minecraft:material_instances": {"*": {"texture": f"{NS}_{name}", "render_method": "alpha_test"}},
-        "minecraft:destructible_by_mining": {"seconds_to_destroy": 1.5},
-        "minecraft:destructible_by_explosion": {"explosion_resistance": 6},
-        "minecraft:map_color": "#b4553d" if name == "oven" else "#c3cbd3",
-        "minecraft:collision_box": {"origin": origin, "size": size},
-        "minecraft:selection_box": {"origin": origin, "size": size},
-    }
-    if not spec["full_block"]:
-        comps["minecraft:light_dampening"] = 0
-    if spec["station"]:
-        comps["minecraft:crafting_table"] = {
-            "table_name": f"tile.{NS}:{name}.name",
-            "crafting_tags": [STATION_TAG[name]],
-        }
-    desc = {"identifier": f"{NS}:{name}", "menu_category": {"category": "items"}}
-    block = {"description": desc, "components": comps}
-    if spec["rotatable"]:
-        desc["traits"] = {"minecraft:placement_direction": {
-            "enabled_states": ["minecraft:cardinal_direction"], "y_rotation_offset": 180}}
-        rot = {"north": 0, "west": 90, "south": 180, "east": -90}
-        block["permutations"] = [
-            {"condition": f"q.block_state('minecraft:cardinal_direction') == '{d}'",
-             "components": {"minecraft:transformation": {"rotation": [0, deg, 0]}}}
-            for d, deg in rot.items()
-        ]
-    write_json(BP / "blocks" / f"{name}.json", {"format_version": FMT, "minecraft:block": block})
-
-
-# ---------------------------------------------------------------- items
-def render_icon(grid):
+# ================================================================ items
+def grid_icon(name):
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    assert len(grid) <= 16
-    for y, row in enumerate(grid):
-        assert len(row) <= 16, row
+    for y, row in enumerate(GRIDS[name]):
         for x, ch in enumerate(row):
-            col = PALETTE[ch]
-            if col:
-                img.putpixel((x, y), hexrgb(col))
+            if PALETTE[ch]:
+                img.putpixel((x, y), T.hexrgb(PALETTE[ch]))
     return img
 
 
 def item_icon(name):
-    """Prefer a chosen Retro Diffusion icon (art/icons/<name>.png); fall back to the hand-drawn grid."""
     chosen = ROOT / "art" / "icons" / f"{name}.png"
     if chosen.exists():
         img = Image.open(chosen).convert("RGBA")
         if img.size != (16, 16):
             img = img.resize((16, 16), Image.NEAREST)
-        a = img.getchannel("A").point(lambda v: 255 if v >= 128 else 0)
-        img.putalpha(a)
+        img.putalpha(img.getchannel("A").point(lambda v: 255 if v >= 128 else 0))
         return img
-    return render_icon(ITEMS[name])
+    if name in GRIDS:
+        return grid_icon(name)
+    raise SystemExit(f"no icon for {name}: add art/icons/{name}.png")
 
 
-def build_item(name):
-    img = item_icon(name)
-    p = RP / "textures" / "items" / f"{name}.png"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    img.save(p)
-    comps = {
-        "minecraft:icon": f"{NS}_{name}",
-        "minecraft:display_name": {"value": f"item.{NS}:{name}.name"},
-        "minecraft:max_stack_size": 64,
-    }
-    if name in FOOD:
-        nut, sat, conv = FOOD[name]
-        food = {"nutrition": nut, "saturation_modifier": sat}
-        if conv:
-            food["using_converts_to"] = conv
-        comps["minecraft:food"] = food
-        comps["minecraft:use_animation"] = "eat"
-        comps["minecraft:use_modifiers"] = {"use_duration": 1.6, "movement_modifier": 0.35}
-    write_json(BP / "items" / f"{name}.json", {
-        "format_version": FMT,
-        "minecraft:item": {"description": {"identifier": f"{NS}:{name}", "menu_category": {"category": "items"}},
-                           "components": comps},
+def build_items():
+    data = {}
+    for name in G.ITEM_NAMES:
+        p = RP / "textures" / "items" / f"{name}.png"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        item_icon(name).save(p)
+        data[f"{NS}_{name}"] = {"textures": f"textures/items/{name}"}
+        comps = {
+            "minecraft:icon": f"{NS}_{name}",
+            "minecraft:display_name": {"value": f"item.{NS}:{name}.name"},
+            "minecraft:max_stack_size": 64,
+        }
+        if name in G.FOOD:
+            nut, sat, conv = G.FOOD[name]
+            food = {"nutrition": nut, "saturation_modifier": sat}
+            if conv:
+                food["using_converts_to"] = conv
+            comps["minecraft:food"] = food
+            comps["minecraft:use_animation"] = "eat"
+            comps["minecraft:use_modifiers"] = {"use_duration": 1.6, "movement_modifier": 0.35}
+        write_json(BP / "items" / f"{name}.json", {
+            "format_version": FMT,
+            "minecraft:item": {
+                "description": {"identifier": f"{NS}:{name}", "menu_category": {"category": "items"}},
+                "components": comps,
+            },
+        })
+    write_json(RP / "textures" / "item_texture.json", {
+        "resource_pack_name": "kaleidoscope_baking", "texture_name": "atlas.items", "texture_data": data,
     })
 
 
 def build_recipes():
-    out = BP / "recipes"
-    for rid, station, count, ingredients, shape, key in RECIPES:
-        desc = {"identifier": f"{NS}:{rid}"}
+    for rid, count, ingredients, shape, key in G.CRAFTING:
         body = {
-            "description": desc,
-            "tags": [STATION_TAG[station]],
+            "description": {"identifier": f"{NS}:{rid}"},
+            "tags": ["crafting_table"],
             "unlock": {"context": "AlwaysUnlocked"},
             "result": {"item": f"{NS}:{rid}", "count": count},
         }
@@ -307,17 +135,278 @@ def build_recipes():
         else:
             body["ingredients"] = [{"item": i} for i in ingredients]
             data = {"format_version": FMT, "minecraft:recipe_shapeless": body}
-        write_json(out / f"{rid}.json", data)
+        write_json(BP / "recipes" / f"{rid}.json", data)
 
 
-# ---------------------------------------------------------------- packs
+# ================================================================ Blockbench -> Bedrock geometry
+def decode_texture(tex):
+    src = tex.get("source", "")
+    if not src.startswith("data:image"):
+        raise SystemExit(f"texture {tex.get('name')} is not embedded; in Blockbench use "
+                         "'Texture > Embed' (or save with textures embedded)")
+    return Image.open(io.BytesIO(base64.b64decode(src.split(",", 1)[1]))).convert("RGBA")
+
+
+def tex_stem(tex):
+    return Path(tex["name"]).stem
+
+
+def bbmodel_to_geo(bb):
+    res_w, res_h = bb["resolution"]["width"], bb["resolution"]["height"]
+    texs = bb["textures"]
+    els = {e["uuid"]: e for e in bb["elements"] if e.get("type", "cube") == "cube"}
+
+    def conv_cube(e):
+        f, t = e["from"], e["to"]
+        c = {"origin": [-t[0], f[1], f[2]], "size": [t[i] - f[i] for i in range(3)]}
+        if e.get("inflate"):
+            c["inflate"] = e["inflate"]
+        rot = e.get("rotation")
+        if rot and any(rot):
+            o = e.get("origin", [0, 0, 0])
+            c["pivot"] = [-o[0], o[1], o[2]]
+            c["rotation"] = [-rot[0], -rot[1], rot[2]]
+        uv = {}
+        for face, fd in e.get("faces", {}).items():
+            ti = fd.get("texture")
+            if ti is None or ti is False:
+                continue
+            ti = int(ti)
+            tex = texs[ti]
+            sx = res_w / tex.get("uv_width", res_w)
+            sy = res_h / tex.get("uv_height", res_h)
+            u1, v1, u2, v2 = fd["uv"]
+            if face in ("up", "down"):  # Blockbench flips these on Bedrock export
+                entry = {"uv": [u2 * sx, v2 * sy], "uv_size": [(u1 - u2) * sx, (v1 - v2) * sy]}
+            else:
+                entry = {"uv": [u1 * sx, v1 * sy], "uv_size": [(u2 - u1) * sx, (v2 - v1) * sy]}
+            if fd.get("rotation"):
+                entry["uv_rotation"] = fd["rotation"]
+            if ti != 0:
+                entry["material_instance"] = tex_stem(tex)
+            uv[face] = entry
+        c["uv"] = uv
+        return c
+
+    bones, used = [], set()
+
+    def walk(group, parent):
+        o = group.get("origin", [0, 0, 0])
+        bone = {"name": group["name"], "pivot": [-o[0], o[1], o[2]]}
+        if parent:
+            bone["parent"] = parent
+        rot = group.get("rotation")
+        if rot and any(rot):
+            bone["rotation"] = [-rot[0], -rot[1], rot[2]]
+        cubes = []
+        bones.append(bone)
+        for child in group.get("children", []):
+            if isinstance(child, str):
+                if child in els:
+                    cubes.append(conv_cube(els[child]))
+                    used.add(child)
+            else:
+                walk(child, group["name"])
+        if cubes:
+            bone["cubes"] = cubes
+
+    loose = []
+    for node in bb.get("outliner", []):
+        if isinstance(node, str):
+            loose.append(node)
+        else:
+            walk(node, None)
+    loose += [u for u in els if u not in used and u not in loose]
+    if loose:
+        bones.insert(0, {"name": "root", "pivot": [0, 0, 0], "cubes": [conv_cube(els[u]) for u in loose]})
+
+    vb = bb.get("visible_box", [2, 2.5, 0.75])
+    return {
+        "format_version": "1.16.0",
+        "minecraft:geometry": [{
+            "description": {
+                "identifier": "geometry." + bb.get("model_identifier", NS + "_" + bb["name"]),
+                "texture_width": res_w, "texture_height": res_h,
+                "visible_bounds_width": vb[0], "visible_bounds_height": vb[1],
+                "visible_bounds_offset": [0, vb[2], 0],
+            },
+            "bones": bones,
+        }],
+    }
+
+
+def load_model(name):
+    path = MODELS / f"{name}.bbmodel"
+    if not path.exists():
+        raise SystemExit(f"missing {path}; run: python bedrock/tools/make_bbmodel.py {name}")
+    bb = json.loads(path.read_text(encoding="utf-8"))
+    write_json(RP / "models" / "blocks" / f"{name}.geo.json", bbmodel_to_geo(bb))
+    textures = {}
+    for i, tex in enumerate(bb["textures"]):
+        img = decode_texture(tex)
+        rel = name if i == 0 else f"{name}_{tex_stem(tex)}"
+        textures["*" if i == 0 else tex_stem(tex)] = (img, save_block_tex(img, rel))
+    return textures
+
+
+# ================================================================ blocks
+def base_block(name, collision, comps, states=None, rotatable=False, perms=()):
+    desc = {"identifier": f"{NS}:{name}", "menu_category": {"category": "items"}}
+    if states:
+        desc["states"] = states
+    components = {
+        "minecraft:geometry": f"geometry.{NS}_{name}",
+        "minecraft:destructible_by_mining": {"seconds_to_destroy": 1.5},
+        "minecraft:destructible_by_explosion": {"explosion_resistance": 6},
+        "minecraft:collision_box": {"origin": collision[0], "size": collision[1]},
+        "minecraft:selection_box": {"origin": collision[0], "size": collision[1]},
+        **comps,
+    }
+    permutations = list(perms)
+    if rotatable:
+        desc["traits"] = {"minecraft:placement_direction": {
+            "enabled_states": ["minecraft:cardinal_direction"], "y_rotation_offset": 180}}
+        for d, deg in {"north": 0, "west": 90, "south": 180, "east": -90}.items():
+            permutations.append({
+                "condition": f"{q('minecraft:cardinal_direction')} == '{d}'",
+                "components": {"minecraft:transformation": {"rotation": [0, deg, 0]}},
+            })
+    block = {"description": desc, "components": components}
+    if permutations:
+        block["permutations"] = permutations
+    write_json(BP / "blocks" / f"{name}.json", {"format_version": FMT, "minecraft:block": block})
+
+
+def build_oven():
+    tex = load_model("oven")
+    main_key, glass_key = tex["*"][1], tex["glass"][1]
+    fire_keys = [save_block_tex(T.fire(False), "oven_fire/out"), save_block_tex(T.fire(True), "oven_fire/lit")]
+    empty_key = save_block_tex(T.blank(), "oven_food/empty")
+    stage_names = ["raw", "half", "done", "burnt"]
+    food_keys = []
+    for raw, result, _ in G.OVEN_FOODS:
+        r, d = item_icon(raw), item_icon(result)
+        food_keys.append([save_block_tex(T.food_stage(r, d, s), f"oven_food/{raw}_{stage_names[s]}") for s in range(4)])
+
+    def mats(food_key, fire_key):
+        return {"minecraft:material_instances": {
+            "*": {"texture": main_key, "render_method": "alpha_test"},
+            "glass": {"texture": glass_key, "render_method": "blend"},
+            "food": {"texture": food_key, "render_method": "alpha_test"},
+            "fire": {"texture": fire_key, "render_method": "alpha_test"},
+        }}
+
+    perms = [{"condition": f"{q('kb:fuel')} > 0", "components": {"minecraft:light_emission": 12}}]
+    for lit in (0, 1):
+        fire_cond = f"{q('kb:fuel')} > 0" if lit else f"{q('kb:fuel')} == 0"
+        perms.append({"condition": f"{q('kb:food')} == 0 && {fire_cond}",
+                      "components": mats(empty_key, fire_keys[lit])})
+        for fi in range(len(G.OVEN_FOODS)):
+            for s in range(4):
+                times = [t for t, st in enumerate(G.STAGE_OF_TIME) if st == s]
+                cond = (f"{q('kb:food')} == {fi + 1} && {q('kb:time')} >= {times[0]} && "
+                        f"{q('kb:time')} <= {times[-1]} && {fire_cond}")
+                perms.append({"condition": cond, "components": mats(food_keys[fi][s], fire_keys[lit])})
+
+    base_block(
+        "oven", ([-8, 0, -8], [16, 16, 16]),
+        {
+            **mats(empty_key, fire_keys[0]),
+            "minecraft:map_color": "#b4553d",
+            "minecraft:tick": {"interval_range": [G.TICK_SECONDS * 20, G.TICK_SECONDS * 20], "looping": True},
+            "kb:oven": {},
+        },
+        states={
+            "kb:food": list(range(len(G.OVEN_FOODS) + 1)),
+            "kb:time": list(range(G.MAX_TIME + 1)),
+            "kb:fuel": list(range(G.MAX_FUEL + 1)),
+        },
+        rotatable=True, perms=perms,
+    )
+
+
+def build_bowl():
+    tex = load_model("mixing_bowl")
+    main_key = tex["*"][1]
+    lumpy = save_block_tex(T.batter(None), "bowl_batter/lumpy")
+    keys = [lumpy]
+    for result, _, _ in G.BOWL_RECIPES:
+        col = T.average_color(item_icon(result))
+        col = tuple(min(255, int(c * 0.6 + 255 * 0.4 * (c / 255) + 30)) for c in col[:3]) + (255,)
+        keys.append(save_block_tex(T.batter(col), f"bowl_batter/{result}"))
+
+    def mats(batter_key):
+        return {"minecraft:material_instances": {
+            "*": {"texture": main_key, "render_method": "alpha_test"},
+            "batter": {"texture": batter_key, "render_method": "alpha_test"},
+        }}
+
+    perms = [{"condition": f"{q('kb:mix')} == {i}", "components": mats(k)} for i, k in enumerate(keys)]
+    base_block(
+        "mixing_bowl", ([-5, 0, -5], [10, 6, 10]),
+        {
+            "minecraft:geometry": {
+                "identifier": f"geometry.{NS}_mixing_bowl",
+                "bone_visibility": {f"fill{n}": f"{q('kb:fill')} >= {n}" for n in range(1, 5)},
+            },
+            **mats(lumpy),
+            "minecraft:light_dampening": 0,
+            "minecraft:map_color": "#86bce0",
+            "kb:mixing_bowl": {},
+        },
+        states={"kb:fill": list(range(5)), "kb:mix": list(range(len(G.BOWL_RECIPES) + 1))},
+        perms=perms,
+    )
+
+
+def build_tray():
+    tex = load_model("baking_tray")
+    base_block(
+        "baking_tray", ([-7, 0, -6], [14, 2, 12]),
+        {
+            "minecraft:material_instances": {"*": {"texture": tex["*"][1], "render_method": "alpha_test"}},
+            "minecraft:light_dampening": 0,
+            "minecraft:map_color": "#c3cbd3",
+        },
+        rotatable=True,
+    )
+
+
+# ================================================================ scripts, packs
+def build_scripts():
+    data = {
+        "OVEN_FOODS": [{"raw": f"{NS}:{r}", "result": f"{NS}:{o}", "count": c} for r, o, c in G.OVEN_FOODS],
+        "FUELS": G.FUELS,
+        "FUEL_SUFFIXES": G.FUEL_SUFFIXES,
+        "STAGE_OF_TIME": G.STAGE_OF_TIME,
+        "MAX_TIME": G.MAX_TIME,
+        "MAX_FUEL": G.MAX_FUEL,
+        "BURNT_RESULT": G.BURNT_RESULT,
+        "BOWL_RECIPES": [{"result": f"{NS}:{r}", "count": c, "ingredients": ing} for r, c, ing in G.BOWL_RECIPES],
+        "STIRS_NEEDED": G.STIRS_NEEDED,
+    }
+    out = BP / "scripts"
+    out.mkdir(parents=True, exist_ok=True)
+    lines = ["// Generated by build.py from src/gameplay.py — do not edit."]
+    lines += [f"export const {k} = {json.dumps(v, ensure_ascii=False)};" for k, v in data.items()]
+    (out / "data.js").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    shutil.copy(ROOT / "src" / "scripts" / "main.js", out / "main.js")
+
+
 def manifests():
     write_json(BP / "manifest.json", {
         "format_version": 2,
         "header": {"name": "pack.name", "description": "pack.description", "uuid": UUID_BP_HEADER,
                    "version": VERSION, "min_engine_version": MIN_ENGINE},
-        "modules": [{"type": "data", "uuid": UUID_BP_MODULE, "version": VERSION}],
-        "dependencies": [{"uuid": UUID_RP_HEADER, "version": VERSION}],
+        "modules": [
+            {"type": "data", "uuid": UUID_BP_MODULE, "version": VERSION},
+            {"type": "script", "language": "javascript", "uuid": UUID_BP_SCRIPT,
+             "entry": "scripts/main.js", "version": VERSION},
+        ],
+        "dependencies": [
+            {"uuid": UUID_RP_HEADER, "version": VERSION},
+            {"module_name": "@minecraft/server", "version": SCRIPT_API},
+        ],
     })
     write_json(RP / "manifest.json", {
         "format_version": 2,
@@ -328,7 +417,7 @@ def manifests():
     })
 
 
-def lang():
+def lang_and_meta():
     for pack, kind in ((BP, "Behavior"), (RP, "Resource")):
         for code, idx, title, desc in (
             ("en_US", 0, f"Kaleidoscope Baking {kind} Pack", "Ovens, mixing bowls and delicious desserts."),
@@ -336,30 +425,25 @@ def lang():
         ):
             lines = [f"pack.name={title}", f"pack.description={desc}"]
             if pack is RP:
-                lines += [f"item.{NS}:{n}.name={v[idx]}" for n, v in ITEM_NAMES.items()]
-                lines += [f"tile.{NS}:{n}.name={b['display'][idx]}" for n, b in BLOCKS.items()]
+                lines += [f"item.{NS}:{n}.name={v[idx]}" for n, v in G.ITEM_NAMES.items()]
+                lines += [f"tile.{NS}:{n}.name={v[idx]}" for n, v in G.BLOCK_NAMES.items()]
             p = pack / "texts" / f"{code}.lang"
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text("\n".join(lines) + "\n", encoding="utf-8")
         write_json(pack / "texts" / "languages.json", ["en_US", "zh_TW"])
 
-    write_json(RP / "textures" / "item_texture.json", {
-        "resource_pack_name": "kaleidoscope_baking", "texture_name": "atlas.items",
-        "texture_data": {f"{NS}_{n}": {"textures": f"textures/items/{n}"} for n in ITEMS},
-    })
     write_json(RP / "textures" / "terrain_texture.json", {
-        "resource_pack_name": "kaleidoscope_baking", "texture_name": "atlas.terrain", "padding": 8,
-        "num_mip_levels": 4,
-        "texture_data": {f"{NS}_{n}": {"textures": f"textures/blocks/{n}"} for n in BLOCKS},
+        "resource_pack_name": "kaleidoscope_baking", "texture_name": "atlas.terrain",
+        "padding": 8, "num_mip_levels": 4, "texture_data": terrain,
     })
     write_json(RP / "blocks.json", {
         "format_version": [1, 1, 0],
-        **{f"{NS}:{n}": {"sound": "stone" if n == "oven" else "metal" if n == "baking_tray" else "stone"}
-           for n in BLOCKS},
+        f"{NS}:oven": {"sound": "stone"},
+        f"{NS}:mixing_bowl": {"sound": "stone"},
+        f"{NS}:baking_tray": {"sound": "metal"},
     })
-
     icon = item_icon("berry_cake_slice").resize((128, 128), Image.NEAREST)
-    bg = Image.new("RGBA", (128, 128), hexrgb("#fde9d2"))
+    bg = Image.new("RGBA", (128, 128), T.hexrgb("#fde9d2"))
     bg.alpha_composite(icon)
     for pack in (BP, RP):
         bg.save(pack / "pack_icon.png")
@@ -380,14 +464,14 @@ def main():
     for pack in (BP, RP):
         if pack.exists():
             shutil.rmtree(pack)
-    for name in ITEMS:
-        assert name in ITEM_NAMES, f"missing display name for {name}"
-        build_item(name)
-    for name, spec in BLOCKS.items():
-        build_block(name, spec)
+    build_items()
     build_recipes()
+    build_oven()
+    build_bowl()
+    build_tray()
+    build_scripts()
     manifests()
-    lang()
+    lang_and_meta()
     print("built", package())
 
 

@@ -39,6 +39,15 @@ PROMPTS = {
     "cinnamon_roll": "cinnamon roll spiral with white icing",
     "berry_cake_slice": "slice of strawberry shortcake, white cream layers, red berry on top",
     "chocolate_cake_slice": "slice of chocolate layer cake with cream layers, cherry on top",
+    "raw_croissant": "raw unbaked croissant dough, pale beige crescent shape",
+    "raw_cookies": "three raw cookie dough balls with chocolate chips, pale dough",
+    "raw_egg_tart": "unbaked egg tart, pale raw pastry shell filled with glossy liquid yellow custard",
+    "raw_macaron": "raw pink macaron shells piped on white parchment paper",
+    "raw_pudding": "small ramekin of raw liquid pale yellow custard",
+    "raw_cream_puff": "raw pale choux pastry dough mounds piped on parchment",
+    "raw_cinnamon_roll": "raw unbaked pale cinnamon roll dough spiral with brown cinnamon swirl",
+    "raw_berry_cake": "round metal cake pan filled with raw vanilla cake batter and red berries",
+    "raw_chocolate_cake": "round metal cake pan filled with raw glossy chocolate cake batter",
 }
 
 

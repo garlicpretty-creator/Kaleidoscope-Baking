@@ -1,66 +1,114 @@
 # 萬花筒烘焙 Kaleidoscope Baking — 基岩版附加包
 
+全沉浸式烘焙：沒有合成介面、沒有文字提示。所有狀態都直接看方塊本身——
+烤箱玻璃門後的甜點顏色、爐膛裡的火、攪拌碗裡的麵糊——再加上聲音與粒子。
+
 ## 安裝
-下載 `dist/Kaleidoscope_Baking.mcaddon`，雙擊即可匯入 Minecraft 基岩版（需 1.21.40 以上）。
+下載 `dist/Kaleidoscope_Baking.mcaddon`，雙擊匯入 Minecraft 基岩版（需 **1.21.90** 以上）。
 建立世界時在「行為包」啟用 **萬花筒烘焙 行為包**（資源包會自動一起套用）。
 
-## 內容
+## 玩法
 
-### 方塊（3D 模型）
-| 方塊 | 功能 | 合成（工作台） |
-|---|---|---|
-| 烤箱 `kb:oven` | 烘焙工作站：右鍵打開，烤出所有甜點 | 磚塊×5 + 熔爐 + 鐵錠×3（`BBB / BFB / III`） |
-| 攪拌碗 `kb:mixing_bowl` | 調理工作站：做麵團、鮮奶油、巧克力 | 黏土球×3（`C C / _C_`） |
-| 烤盤 `kb:baking_tray` | 裝飾 | 鐵粒×5（`N N / NNN`） |
+### 攪拌碗
+1. 手持材料對碗 **右鍵**，材料一個個放進碗裡（碗內材料堆高看得見，最多 6 樣）。
+2. **空手右鍵** 攪拌。攪幾下後，若材料組合正確，碗裡會從「塊狀材料」變成 **滑順的麵糊**（顏色依成品而不同）。
+   組合不對就怎麼攪都不會變滑順。
+3. 麵糊變滑順後 **空手右鍵** 舀出成品。
+4. **蹲下 + 空手右鍵**：把碗倒空，取回所有材料。
+5. 牛奶桶放入後會還你空桶。
 
-### 配方
-| 工作站 | 材料 | 產物 |
+| 放入碗中 | 攪拌後得到 |
+|---|---|
+| 麵粉×2、雞蛋 | 麵團 ×2 |
+| 麵粉×2、糖、雞蛋、奶油 | 甜麵團 ×2 |
+| 牛奶桶、糖 | 打發鮮奶油 ×3 |
+| 可可豆×2、糖、奶油 | 巧克力磚 ×2 |
+| 麵團、奶油 | 生可頌 |
+| 甜麵團、巧克力磚 | 生餅乾麵團 |
+| 甜麵團、雞蛋、糖 | 生蛋塔 |
+| 甜麵團、雞蛋、甜莓 | 生馬卡龍 |
+| 雞蛋、牛奶桶、糖、碗 | 生布丁液 |
+| 麵團、打發鮮奶油、雞蛋 | 生泡芙麵糊 |
+| 甜麵團、糖、奶油 | 生肉桂捲 |
+| 甜麵團、打發鮮奶油、甜莓×2 | 莓果蛋糕麵糊 |
+| 甜麵團、打發鮮奶油、巧克力磚 | 巧克力蛋糕麵糊 |
+
+### 烤箱
+1. **添柴**：手持燃料右鍵烤箱 → 爐膛點燃、烤箱發光、煙囪冒煙。
+   煤炭／木炭／烈焰棒 = 80 秒，原木 = 40 秒，木板 = 20 秒，木棍 = 10 秒（最多存 80 秒）。
+2. **放入**：手持生甜點（或麵團）右鍵 → 甜點出現在玻璃門後的烤架上。
+3. **看著它烤**：有火時每 10 秒推進一次，透過玻璃看到顏色變化：
+   - 0–20 秒：蒼白生麵團
+   - 20–40 秒：微金黃（半熟）
+   - **40–70 秒：金黃酥香 ← 這時拿出來**
+   - 70 秒後：焦黑，冒濃煙
+4. **取出**：空手右鍵。生的／半熟 → 拿回生的；剛好 → 成品；焦掉 → 木炭。
+   火熄滅時烘烤會暫停，加柴後繼續。
+
+| 放入烤箱 | 烤好得到 |
+|---|---|
+| 麵團 | 吐司 ×2 |
+| 生可頌 | 可頌 ×2 |
+| 生餅乾麵團 | 奶油餅乾 ×6 |
+| 生蛋塔 | 蛋塔 ×3 |
+| 生馬卡龍 | 馬卡龍 ×4 |
+| 生布丁液 | 焦糖布丁（吃完還碗） |
+| 生泡芙麵糊 | 泡芙 ×3 |
+| 生肉桂捲 | 肉桂捲 ×3 |
+| 莓果蛋糕麵糊 | 莓果蛋糕切片 ×4 |
+| 巧克力蛋糕麵糊 | 巧克力蛋糕切片 ×4 |
+
+### 工作台合成
+| 物品 | 配方 |
+|---|---|
+| 麵粉 | 小麥 |
+| 奶油 ×2 | 牛奶桶 |
+| 攪拌碗 | 黏土球×3（`C C / _C_`） |
+| 烤盤（裝飾） | 鐵粒×5（`N N / NNN`） |
+| 烤箱 | 磚塊×5 + 玻璃片 + 鐵錠×3（`BBB / BGB / III`） |
+
+## 用 Blockbench 修改 3D 模型
+3D 模型的原始檔是 `models/*.bbmodel`（Blockbench「Bedrock Block」格式，材質已內嵌）。
+
+1. Blockbench → `File > Open Model` → 開啟 `bedrock/models/oven.bbmodel`
+2. 修改方塊、上色後 `Ctrl+S` 存檔（材質保持 **內嵌**）
+3. 執行 `python bedrock/build.py` → 自動轉成遊戲用的 `.geo.json` 與材質，並重新打包
+
+模型裡的特殊材質（名稱即「材質實例」，遊戲會依狀態自動替換）：
+
+| 材質名 | 用途 | 遊戲中 |
 |---|---|---|
-| 工作台 | 小麥 | 麵粉 |
-| 工作台 | 牛奶桶 | 奶油 ×2 |
-| 攪拌碗 | 麵粉×2 + 雞蛋 | 麵團 ×2 |
-| 攪拌碗 | 麵粉×2 + 糖 + 雞蛋 + 奶油 | 甜麵團 ×2 |
-| 攪拌碗 | 牛奶桶 + 糖 | 打發鮮奶油 ×3 |
-| 攪拌碗 | 可可豆×2 + 糖 + 奶油 | 巧克力磚 ×2 |
-| 烤箱 | 麵團 | 吐司 ×2 |
-| 烤箱 | 甜麵團 + 奶油 | 奶油餅乾 ×6 |
-| 烤箱 | 麵團 + 奶油 | 可頌 ×2 |
-| 烤箱 | 甜麵團 + 雞蛋 + 糖 | 蛋塔 ×3 |
-| 烤箱 | 甜麵團 + 雞蛋 + 甜莓 | 馬卡龍 ×4 |
-| 烤箱 | 雞蛋 + 牛奶桶 + 糖 + 碗 | 焦糖布丁（吃完還碗） |
-| 烤箱 | 麵團 + 鮮奶油 + 雞蛋 | 泡芙 ×3 |
-| 烤箱 | 甜麵團 + 糖 + 奶油 | 肉桂捲 ×3 |
-| 烤箱 | 甜麵團 + 鮮奶油 + 甜莓×2 | 莓果蛋糕切片 ×4 |
-| 烤箱 | 甜麵團 + 鮮奶油 + 巧克力磚 | 巧克力蛋糕切片 ×4 |
+| `oven.png` 等（第 1 張） | 主材質 | 直接使用 |
+| `glass` | 烤箱玻璃門 | 直接使用（半透明 blend） |
+| `food` | 烤架上的甜點 | 依甜點＋烘烤階段替換 |
+| `fire` | 爐膛 | 點火／熄火替換 |
+| `batter` | 碗內麵糊 | 塊狀／各種滑順麵糊替換 |
+
+- 群組名 `fill1`～`fill4`（攪拌碗）控制麵糊高度顯示，請保留名稱。
+- 想把某個面改成玻璃／食物等，在 Blockbench 把該面指定成對應名稱的材質即可。
+- `tools/make_bbmodel.py` 只用來產生初始模型；已存在的 `.bbmodel` 不會被覆蓋（除非加 `--force`）。
+
+## 換圖示（Retro Diffusion）
+```bash
+RD_API_KEY=rdpk-xxxx python bedrock/tools/rd_generate.py raw_macaron --n 4 --seed 99
+cp bedrock/art/rd/raw_macaron_3.png bedrock/art/icons/raw_macaron.png
+python bedrock/build.py
+```
+使用 `rd_plus__mc_item`（MC Item）風格、16×16、自動去背。烤箱內各階段外觀由「生」與「熟」圖示自動推算。
 
 ## 專案結構
 ```
 bedrock/
-├─ build.py                  # 一鍵產生所有 JSON / 材質 / 模型並打包 .mcaddon
-├─ src/item_art.py           # 手繪備用圖示（16×16 字元格）+ 食物數值
-├─ src/block_models.py       # 3D 方塊模型定義（cube 清單）
-├─ tools/rd_generate.py      # 用 Retro Diffusion API 生成圖示
-├─ art/rd/                   # Retro Diffusion 生成的候選圖（每個物品 2 張）
-├─ art/icons/                # 選定使用的圖示（build.py 優先使用這裡）
-├─ KaleidoscopeBaking_BP/    # 行為包（自動產生）
-├─ KaleidoscopeBaking_RP/    # 資源包（自動產生）
-└─ dist/Kaleidoscope_Baking.mcaddon
+├─ models/*.bbmodel          # 3D 模型（Blockbench 原始檔）
+├─ art/icons/                # 使用中的物品圖示；art/rd/ 為 Retro Diffusion 候選圖
+├─ src/gameplay.py           # 物品、配方、烤箱時間、燃料等數值
+├─ src/scripts/main.js       # 沉浸式互動腳本（Script API @minecraft/server 2.0.0）
+├─ src/textures.py           # 玻璃、火、麵糊、烘烤階段等材質產生
+├─ tools/                    # make_bbmodel.py、rd_generate.py
+├─ build.py                  # 一鍵建置 → KaleidoscopeBaking_BP / _RP / dist/*.mcaddon
 ```
 
-## 修改流程
-- **改配方 / 名稱**：編輯 `build.py` 的 `RECIPES` / `ITEM_NAMES`，執行 `python bedrock/build.py`
-- **換圖示**：
-  ```bash
-  RD_API_KEY=rdpk-xxxx python bedrock/tools/rd_generate.py macaron --n 4 --seed 99
-  cp bedrock/art/rd/macaron_3.png bedrock/art/icons/macaron.png
-  python bedrock/build.py
-  ```
-  使用 `rd_plus__mc_item`（MC Item）風格，16×16、自動去背；Studio 方案會從方案額度扣，不扣 balance。
-- **在 Blockbench 精修 3D 模型**：`File > Open Model` 開啟
-  `KaleidoscopeBaking_RP/models/blocks/oven.geo.json`，材質選 `textures/blocks/oven.png`。
-  手動修改後若不想被 `build.py` 覆蓋，把該方塊從 `src/block_models.py` 移除，改為直接維護 Blockbench 匯出的檔案。
-
 ## 尚待遊戲內確認
-本包僅以腳本產生，尚未在遊戲中實測，以下項目請進遊戲確認：
-- 烤箱放置後正面是否朝向玩家（若相反，把 `build.py` 的 `y_rotation_offset` 改成 0）
-- 自訂工作站的標題是否顯示中文名稱
+本包以腳本建置並通過 Script API 型別檢查，尚未在遊戲中實測：
+- 烤箱放置後正面（玻璃門）是否朝向玩家；若相反，把 `build.py` 的 `y_rotation_offset` 改成 0
+- 玻璃半透明（blend）與其他面（alpha_test）混用是否正常顯示
