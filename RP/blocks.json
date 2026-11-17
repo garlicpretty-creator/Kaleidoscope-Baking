@@ -1,0 +1,9 @@
+{
+  "format_version": "1.21.40",
+  "kaleidoscope_baking:oven": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:mixing_bowl": {
+    "sound": "metal"
+  }
+}

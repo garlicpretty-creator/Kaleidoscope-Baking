@@ -1,0 +1,29 @@
+{
+  "resource_pack_name": "Kaleidoscope Baking",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "kb_oven_brick": {
+      "textures": "textures/blocks/kb_oven_brick"
+    },
+    "kb_oven_top": {
+      "textures": "textures/blocks/kb_oven_top"
+    },
+    "kb_oven_chimney": {
+      "textures": "textures/blocks/kb_oven_chimney"
+    },
+    "kb_oven_door": {
+      "textures": "textures/blocks/kb_oven_door"
+    },
+    "kb_oven_firebox": {
+      "textures": "textures/blocks/kb_oven_firebox"
+    },
+    "kb_oven_firebox_lit": {
+      "textures": "textures/blocks/kb_oven_firebox_lit"
+    },
+    "kb_mixing_bowl": {
+      "textures": "textures/blocks/kb_mixing_bowl"
+    }
+  }
+}

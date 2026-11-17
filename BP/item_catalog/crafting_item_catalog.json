@@ -1,0 +1,64 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:crafting_items_catalog": {
+    "categories": [
+      {
+        "category_name": "equipment",
+        "groups": [
+          {
+            "group_identifier": {
+              "icon": "kaleidoscope_baking:oven",
+              "name": "kaleidoscope_baking:itemGroup.name.stations"
+            },
+            "items": [
+              "kaleidoscope_baking:oven",
+              "kaleidoscope_baking:mixing_bowl"
+            ]
+          },
+          {
+            "group_identifier": {
+              "icon": "kaleidoscope_baking:whisk",
+              "name": "kaleidoscope_baking:itemGroup.name.tools"
+            },
+            "items": [
+              "kaleidoscope_baking:whisk",
+              "kaleidoscope_baking:cake_mold",
+              "kaleidoscope_baking:loaf_pan",
+              "kaleidoscope_baking:baking_tray"
+            ]
+          }
+        ]
+      },
+      {
+        "category_name": "items",
+        "groups": [
+          {
+            "group_identifier": {
+              "icon": "kaleidoscope_baking:butter",
+              "name": "kaleidoscope_baking:itemGroup.name.ingredients"
+            },
+            "items": [
+              "kaleidoscope_baking:butter",
+              "kaleidoscope_baking:cake_batter",
+              "kaleidoscope_baking:bread_dough",
+              "kaleidoscope_baking:cookie_dough"
+            ]
+          },
+          {
+            "group_identifier": {
+              "icon": "kaleidoscope_baking:sponge_cake",
+              "name": "kaleidoscope_baking:itemGroup.name.foods"
+            },
+            "items": [
+              "kaleidoscope_baking:sponge_cake",
+              "kaleidoscope_baking:toast_loaf",
+              "kaleidoscope_baking:toast_slice",
+              "kaleidoscope_baking:butter_cookie",
+              "kaleidoscope_baking:burnt_food"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "resource_pack_name": "Kaleidoscope Baking",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "kb_oven": {
+      "textures": "textures/items/kb_oven"
+    },
+    "kb_mixing_bowl": {
+      "textures": "textures/items/kb_mixing_bowl"
+    },
+    "kb_whisk": {
+      "textures": "textures/items/kb_whisk"
+    },
+    "kb_cake_mold": {
+      "textures": "textures/items/kb_cake_mold"
+    },
+    "kb_loaf_pan": {
+      "textures": "textures/items/kb_loaf_pan"
+    },
+    "kb_baking_tray": {
+      "textures": "textures/items/kb_baking_tray"
+    },
+    "kb_butter": {
+      "textures": "textures/items/kb_butter"
+    },
+    "kb_cake_batter": {
+      "textures": "textures/items/kb_cake_batter"
+    },
+    "kb_bread_dough": {
+      "textures": "textures/items/kb_bread_dough"
+    },
+    "kb_cookie_dough": {
+      "textures": "textures/items/kb_cookie_dough"
+    },
+    "kb_sponge_cake": {
+      "textures": "textures/items/kb_sponge_cake"
+    },
+    "kb_toast_loaf": {
+      "textures": "textures/items/kb_toast_loaf"
+    },
+    "kb_toast_slice": {
+      "textures": "textures/items/kb_toast_slice"
+    },
+    "kb_butter_cookie": {
+      "textures": "textures/items/kb_butter_cookie"
+    },
+    "kb_burnt_food": {
+      "textures": "textures/items/kb_burnt_food"
+    }
+  }
+}

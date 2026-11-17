@@ -1,0 +1,145 @@
+// Minimal in-memory stand-in for @minecraft/server, enough to drive Baking's block
+// components end-to-end under Node. Block/item metadata is read from the real BP JSON so
+// the mock can't drift from the pack (default states, tags, stack sizes).
+import { readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+const BP = fileURLToPath(new URL("../../BP/", import.meta.url));
+const json = p => JSON.parse(readFileSync(p, "utf8"));
+
+const ITEM_META = new Map();
+for (const f of readdirSync(BP + "items")) {
+  const d = json(BP + "items/" + f)["minecraft:item"];
+  const c = d.components;
+  ITEM_META.set(d.description.identifier, { stack: c["minecraft:max_stack_size"] ?? 64, tags: c["minecraft:tags"]?.tags ?? [] });
+}
+const VANILLA = {
+  "minecraft:coal": [], "minecraft:oak_log": ["minecraft:logs"], "minecraft:lava_bucket": [], "minecraft:bucket": [],
+  "minecraft:milk_bucket": [], "minecraft:water_bucket": [], "minecraft:egg": [], "minecraft:sugar": [],
+  "minecraft:potato": [], "minecraft:baked_potato": [], "minecraft:dirt": [], "minecraft:bread": [],
+  "kaleidoscope_cookery:flour": [], "kaleidoscope_cookery:raw_dough": []
+};
+for (const [id, tags] of Object.entries(VANILLA)) ITEM_META.set(id, { stack: id.endsWith("bucket") ? 1 : 64, tags });
+
+const BLOCK_DEFAULTS = new Map();
+for (const f of readdirSync(BP + "blocks")) {
+  const d = json(BP + "blocks/" + f)["minecraft:block"];
+  const states = {};
+  for (const [k, v] of Object.entries(d.description.states ?? {})) states[k] = v[0];
+  BLOCK_DEFAULTS.set(d.description.identifier, states);
+}
+
+export const EquipmentSlot = { Mainhand: "Mainhand" };
+export const GameMode = { Creative: "Creative", Survival: "Survival" };
+
+export class ItemStack {
+  constructor(id, amount = 1) {
+    const meta = ITEM_META.get(id);
+    if (!meta) throw new Error(`unknown item ${id}`);
+    this.typeId = id; this.amount = amount; this.maxAmount = meta.stack; this._tags = meta.tags;
+    this.localizationKey = `item.${id}.name`;
+  }
+  hasTag(t) { return this._tags.includes(t); }
+  clone() { const s = new ItemStack(this.typeId, this.amount); return s; }
+}
+
+export class BlockPermutation {
+  constructor(id, states) { this.type = { id }; this._states = { ...states }; }
+  static resolve(id, states = {}) { return new BlockPermutation(id, { ...(BLOCK_DEFAULTS.get(id) ?? {}), ...states }); }
+  getState(n) { return this._states[n]; }
+  withState(n, v) { return new BlockPermutation(this.type.id, { ...this._states, [n]: v }); }
+  matches(id) { return this.type.id === id; }
+}
+
+class Block {
+  constructor(dim, loc) { this.dimension = dim; this.x = loc.x; this.y = loc.y; this.z = loc.z; }
+  get permutation() { return this.dimension._blocks.get(this._k()) ?? BlockPermutation.resolve("minecraft:air"); }
+  get typeId() { return this.permutation.type.id; }
+  get isAir() { return this.typeId === "minecraft:air"; }
+  get location() { return { x: this.x, y: this.y, z: this.z }; }
+  _k() { return `${this.x},${this.y},${this.z}`; }
+  setPermutation(p) { this.dimension._blocks.set(this._k(), p); }
+  setType(id) { if (id === "minecraft:air") this.dimension._blocks.delete(this._k()); else this.setPermutation(BlockPermutation.resolve(id)); }
+}
+
+class Dimension {
+  constructor(id) { this.id = id; this._blocks = new Map(); this.spawned = []; this.sounds = []; }
+  getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
+  spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
+  playSound(id) { this.sounds.push(id); }
+  spawnParticle() {}
+}
+
+const subs = () => { const l = []; return { subscribe: f => { l.push(f); return f; }, _fire: e => l.forEach(f => f(e)), _l: l }; };
+const dynamic = new Map();
+const overworld = new Dimension("minecraft:overworld");
+
+export const world = {
+  getDynamicProperty: k => dynamic.get(k),
+  setDynamicProperty: (k, v) => (v === undefined ? dynamic.delete(k) : dynamic.set(k, v)),
+  getDimension: () => overworld,
+  afterEvents: { worldLoad: subs(), blockExplode: subs() }
+};
+
+let runs = [], intervals = new Map(), nextId = 1;
+export const system = {
+  beforeEvents: { startup: subs() },
+  afterEvents: { scriptEventReceive: subs() },
+  run(fn) { runs.push(fn); return nextId++; },
+  runTimeout(fn) { runs.push(fn); return nextId++; },
+  runInterval(fn, ticks) { const id = nextId++; intervals.set(id, { fn, ticks }); return id; },
+  clearRun(id) { intervals.delete(id); },
+  sendScriptEvent(id, message) { sent.push({ id, message }); system.afterEvents.scriptEventReceive._fire({ id, message }); }
+};
+const sent = [];
+
+class Container {
+  constructor(size = 36) { this.size = size; this.slots = new Array(size).fill(undefined); }
+  getItem(i) { return this.slots[i]; }
+  setItem(i, s) { this.slots[i] = s; }
+  addItem(s) {
+    for (let i = 0; i < this.size && s.amount > 0; i++) {
+      const cur = this.slots[i];
+      if (cur && cur.typeId === s.typeId && cur.amount < cur.maxAmount) {
+        const n = Math.min(s.amount, cur.maxAmount - cur.amount); cur.amount += n; s.amount -= n;
+      }
+    }
+    for (let i = 0; i < this.size && s.amount > 0; i++) if (!this.slots[i]) { this.slots[i] = s; return undefined; }
+    return s.amount > 0 ? s : undefined;
+  }
+  count(id) { return this.slots.reduce((n, s) => n + (s?.typeId === id ? s.amount : 0), 0); }
+}
+
+export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) {
+  const inv = new Container();
+  const p = {
+    location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], inv,
+    getGameMode: () => (creative ? GameMode.Creative : GameMode.Survival),
+    onScreenDisplay: { setActionBar: m => p.messages.push(m) },
+    getComponent(name) {
+      if (name === "minecraft:inventory") return { container: inv };
+      if (name === "minecraft:equippable") return {
+        getEquipmentSlot: () => ({
+          hasItem: () => !!inv.slots[0], getItem: () => inv.slots[0], setItem: s => { inv.slots[0] = s; }
+        })
+      };
+    },
+    hold(id, n = 1) { inv.slots[0] = id ? new ItemStack(id, n) : undefined; }
+  };
+  return p;
+}
+
+/** Test controls. */
+export const __mock = {
+  overworld, dynamic, sent,
+  flush() { for (let i = 0; i < 20 && runs.length; i++) { const r = runs; runs = []; r.forEach(f => f()); } },
+  tick(nTimes = 1) { for (let i = 0; i < nTimes; i++) for (const { fn } of [...intervals.values()]) fn(); this.flush(); },
+  startup() {
+    const registry = new Map();
+    system.beforeEvents.startup._fire({ blockComponentRegistry: { registerCustomComponent: (n, c) => registry.set(n, c) } });
+    world.afterEvents.worldLoad._fire({});
+    this.flush();
+    return registry;
+  },
+  explode(block, permutation) { world.afterEvents.blockExplode._fire({ block, dimension: block.dimension, explodedBlockPermutation: permutation }); }
+};
