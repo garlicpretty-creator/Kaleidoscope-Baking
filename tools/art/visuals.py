@@ -2,11 +2,12 @@
 
 Same pattern as Cookery's millstone_visual. Scripts set four entity properties and the client animates:
   kind      1 bowl, 2 proofing basket, 3 decorating stand, 4 espresso machine, 5 pour-over stand, 6 drink shaker,
-            7 oven door (sits on the oven's door block: swings open, its window glows while baking)
+            7 oven door (sits on the oven's hollow door block: swings open, what bakes shows through its window)
   fill      0..16 how much is in it (ingredients, layers, coffee level); 0 hides the contents
   tint      0..7  colour of the contents (TINTS)
   progress  0..1  proofing rise / brewing progress
   active    while true the motion plays (whisking, brewing stream, drips, shaking, oven door open)
+  lit       the oven is baking: embers glow at the back of its mouth
   pop       a short bounce of the contents when something is added
 Moving parts are painted low-poly boxes (kit.Painted); contents are boxes textured with a tint swatch.
 No text anywhere: what is in the station and what it is doing is shown by the model itself.
@@ -68,7 +69,7 @@ IRON = ramp((64, 62, 66), lo=0.6, hi=1.7)
 
 @painter
 def door_panel(t):
-    """Cast-iron oven door: riveted frame, dark glass window, brass handle (the glow is its own bone)."""
+    """Cast-iron oven door: riveted frame, a clear glass window to watch the bake through, brass handle below."""
     if t.face not in ("south", "north"):
         return IRON[1]
     u, v, w, h = t.u, t.v, t.w, t.h
@@ -76,8 +77,12 @@ def door_panel(t):
         return IRON[1]
     if (u, v) in ((1, 1), (w - 2, 1), (1, h - 2), (w - 2, h - 2)):
         return IRON[4]
-    if 3 <= u <= w - 4 and 3 <= v <= 5:
-        return (34, 26, 24) if u not in (3, w - 4) and v not in (3, 5) else IRON[3]
+    if 2 <= u <= w - 3 and 2 <= v <= 8:
+        if u in (2, w - 3) or v in (2, 8):
+            return IRON[4]  # window frame
+        if (u, v) in ((4, 4), (5, 3)):
+            return (222, 234, 238)  # a glint, so the opening reads as glass
+        return CLEAR
     return IRON[3] if noise(u, v, 17) > 0.9 else IRON[2]
 
 
@@ -125,10 +130,11 @@ def parts(kind):
         # local space of the door block: its front face is z = 8. The door hangs half a pixel in front of it
         # (never coplanar with the block face) and swings on its hinge at x = -6.
         return ([Box(-6, 1.5, 8.5, 6, 14.5, 9.5, "panel", bone="door"),
-                 Box(2.5, 6, 9.5, 4, 8.5, 10.5, "brass", bone="door"),
-                 Box(-3, 9, 9.5, 3, 11, 9.75, "glow", bone="door_glow")],
-                {"panel": door_panel, "brass": brass, "glow": glow}, {"door": (-6, 8, 9), "door_glow": (0, 10, 9.5)},
-                {"door_glow": "door"})
+                 Box(2.5, 2.5, 9.5, 4, 4.5, 10.5, "brass", bone="door"),
+                 # embers at the back of the mouth (the block's back wall is z = -6); it does not swing with the door
+                 Box(-4, 3.5, -5.75, 4, 8.5, -5.5, "glow", bone="door_glow")],
+                {"panel": door_panel, "brass": brass, "glow": glow}, {"door": (-6, 8, 9), "door_glow": (0, 6, -5.5)},
+                {})
     if kind == "shaker":
         return ([Box(-6, 1, -4, 0, 8, 2, "steel", bone="shaker"), Box(-5, 8, -3, -1, 10, 1, "steel", bone="shaker"),
                  Box(-4, 10, -2, -2, 11, 0, "steel", bone="shaker")], {"steel": steel}, {"shaker": (-3, 1, -1)})
@@ -143,7 +149,7 @@ CONTENTS = {
     "espresso": ("crema", (-1, 4.5, 3, 1, 4.75, 5), (0, 4.5, 4)),
     "pour": ("carafe", (-3, 1, -1, 3, 5, 5), (0, 1, 2)),
     "shaker": ("ice", (2, 7.5, 1, 4, 8, 3), (3, 7.5, 2)),
-    "oven": ("tray", (-4, 5, 0, 4, 5.5, 6), (0, 5, 3)),
+    "oven": ("tray", (-4, 3.25, -4, 4, 6.5, 3), (0, 3.25, -0.5)),  # the bake, on the floor of the hollow mouth
 }
 
 
@@ -185,7 +191,8 @@ ANIMATIONS = {
     },
     "oven": {
         "door": {"rotation": [0, "-v.kb_door * 105", 0]},
-        "door_glow": {"scale": f"{P('progress')} > 0 ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"},
+        "door_glow": {"scale": f"{P('lit')} ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"},
+        "tray": {"scale": [1, "0.55 + v.kb_prog * 0.45", 1]},  # the bake rises as it cooks
     },
     "shaker": {
         "shaker": {"rotation": [f"{ACTIVE} ? math.sin(q.life_time * 1500) * 14 : 0", 0, f"{ACTIVE} ? math.cos(q.life_time * 1500) * 14 : 0"],
@@ -265,6 +272,7 @@ def build(write_json, rp, bp):
                             f"{NS}:tint": {"type": "int", "range": [0, len(TINTS) - 1], "default": 0, "client_sync": True},
                             f"{NS}:progress": {"type": "float", "range": [0.0, 1.0], "default": 0.0, "client_sync": True},
                             f"{NS}:active": {"type": "bool", "default": False, "client_sync": True},
+                            f"{NS}:lit": {"type": "bool", "default": False, "client_sync": True},
                             f"{NS}:pop": {"type": "bool", "default": False, "client_sync": True}}},
         "component_groups": {f"{NS}:despawn": {"minecraft:instant_despawn": {"remove_child_entities": False}}},
         "components": {

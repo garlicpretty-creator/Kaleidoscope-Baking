@@ -1,4 +1,4 @@
-"""Oven face textures (the oven is a 3x3x3 of full blocks, opaque): firebrick, top, chimney, iron door, firebox."""
+"""Oven face textures (the oven is a 3x3x3 of full blocks, opaque): firebrick, top, chimney, the mouth's inside walls, firebox."""
 import math
 
 from PIL import Image
@@ -61,17 +61,11 @@ def chimney(x, y):
 
 
 def door(x, y):
-    """The oven's mouth, behind the swinging door (station_visual kind 7): dark inside, warm light, a baking tray."""
-    if not (2 <= x <= 13 and 2 <= y <= 14):
-        return brick_px(x, y)
-    if x in (2, 13) or y in (2, 14):
-        return (96, 52, 36)  # brick reveal around the opening
-    if y == 10 and 4 <= x <= 11:
-        return IRON[3]  # tray edge
-    if y == 9 and 5 <= x <= 10:
-        return (222, 170, 96) if x % 2 else (200, 140, 70)  # loaves on the tray
-    d = abs(x - 7.5) + abs(y - 11)
-    return (120, 52, 26) if d < 3 else ((78, 36, 22) if d < 6 else SOOT)
+    """Inside walls of the oven's mouth. The door block is hollow (oven_mouth model, tools/gen_content.py), so what
+    is baking is seen through the door's window: sooty firebrick, darker toward the top where the smoke gathers."""
+    r, g, b = brick_px(x, y, 5)[:3]
+    k = 0.26 + 0.16 * (y / 15)
+    return (int(r * k) + 8, int(g * k) + 6, int(b * k) + 6)
 
 
 def _arch(x, y):

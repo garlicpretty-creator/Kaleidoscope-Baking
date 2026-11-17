@@ -47,6 +47,11 @@
           "default": false,
           "client_sync": true
         },
+        "kaleidoscope_baking:lit": {
+          "type": "bool",
+          "default": false,
+          "client_sync": true
+        },
         "kaleidoscope_baking:pop": {
           "type": "bool",
           "default": false,

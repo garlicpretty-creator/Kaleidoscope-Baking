@@ -111,7 +111,14 @@
           ]
         },
         "door_glow": {
-          "scale": "q.property('kaleidoscope_baking:progress') > 0 ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"
+          "scale": "q.property('kaleidoscope_baking:lit') ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"
+        },
+        "tray": {
+          "scale": [
+            1,
+            "0.55 + v.kb_prog * 0.45",
+            1
+          ]
         }
       }
     },

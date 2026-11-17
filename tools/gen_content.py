@@ -583,10 +583,39 @@ for it in C.ITEMS:
 
 # --- Oven textures (block JSON from gen_oven_block.mjs) -------------------
 for t, kind in [("oven_brick", "brick"), ("oven_top", "brick"), ("oven_chimney", "chimney"), ("oven_door", "door"),
-                ("oven_firebox", "firebox"), ("oven_firebox_lit", "firebox_lit")]:
+                ("oven_firebox", "firebox"), ("oven_firebox_lit", "firebox_lit")]:  # oven_door = the mouth's inside walls
     tex(f"kb_{t}", f"kb_{t}")
     save_png(paint_block(kind, (156, 90, 60) if t != "oven_top" else (120, 70, 50)), f"textures/blocks/kb_{t}.png")
 name(f"tile.{kb('oven')}.name", "烤箱", "Oven")
+
+
+def oven_mouth_cube(x0, y0, z0, x1, y1, z1, skip=()):
+    """A wall of the hollow door block. Faces on the block's outside are firebrick; the rest are the sooty inside."""
+    spans = {"north": (x0, x1, y0, y1, z0 == -8), "south": (x0, x1, y0, y1, z1 == 8),
+             "west": (z0, z1, y0, y1, x0 == -8), "east": (z0, z1, y0, y1, x1 == 8),
+             "up": (x0, x1, z0, z1, y1 == 16), "down": (x0, x1, z0, z1, y0 == 0)}
+    faces = {}
+    for f, (a0, a1, b0, b1, outer) in spans.items():
+        if f in skip:
+            continue
+        face = {"uv": [a0 + 8, 16 - b1 if f not in ("up", "down") else b0 + 8], "uv_size": [a1 - a0, b1 - b0]}
+        if not outer:
+            face["material_instance"] = "inside"
+        faces[f] = face
+    return {"origin": [x0, y0, z0], "size": [x1 - x0, y1 - y0, z1 - z0], "uv": faces}
+
+
+# The oven's door block: a 10 x 10 x 14 mouth open to the front (+z, turned by the block's facing), so the bake the
+# door visual draws inside it (tools/art/visuals.py kind 7) is seen through the door's window or with the door open.
+w("RP/models/blocks/oven_mouth.geo.json", {"format_version": "1.21.60", "minecraft:geometry": [{
+    "description": {"identifier": f"geometry.{NS}.oven_mouth", "texture_width": 16, "texture_height": 16,
+                    "visible_bounds_width": 2, "visible_bounds_height": 2, "visible_bounds_offset": [0, 0.5, 0]},
+    "bones": [{"name": "mouth", "pivot": [0, 0, 0], "cubes": [
+        oven_mouth_cube(-8, 0, -8, 8, 3, 8),                                              # floor
+        oven_mouth_cube(-8, 13, -8, 8, 16, 8),                                            # ceiling
+        oven_mouth_cube(-8, 3, -8, -5, 13, 8, skip=("up", "down")),                       # sides
+        oven_mouth_cube(5, 3, -8, 8, 13, 8, skip=("up", "down")),
+        oven_mouth_cube(-5, 3, -8, 5, 13, -6, skip=("up", "down", "east", "west"))]}]}]})  # back
 sounds[kb("oven")] = "stone"
 
 # --- Stations -------------------------------------------------------------

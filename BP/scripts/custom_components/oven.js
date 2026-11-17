@@ -10,6 +10,10 @@
 //   oven input      -> load into a free slot    (mold is taken from the inventory if needed)
 //   empty hand      -> take out finished / burnt items (+ molds)
 //   sneak + empty   -> also pull out unfinished items (raw input + mold come back)
+//   empty hand on the door, nothing to take -> open / close the door (it stays as it is left)
+//
+// The door block is hollow and the door has a window: the bake sits inside, rising as it cooks and turning
+// golden when done or dark when burnt, with embers glowing behind it while the oven is lit.
 //   anything else   -> show status
 //
 // ## State lives in a world dynamic property per oven (Baking-owned; not shared across
@@ -30,7 +34,7 @@ import {
   refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, onWorldReady, parseLocKey,
   particle, readJson, safeBlock, sound, spawnItems, t, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
-import { KIND, playMotion, removeVisual, showContents, steam } from "../utils/visuals.js";
+import { KIND, holdMotion, playMotion, removeVisual, showContents, steam, tintOf } from "../utils/visuals.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
@@ -139,7 +143,8 @@ function destroyOven(dimension, c, dropOvenItem) {
 }
 
 // ---------------------------------------------------------------------------
-// Door visual (station_visual kind 7): swings open when something goes in or out, glows while baking
+// Door visual (station_visual kind 7): swings open when something goes in or out and stays open if the player
+// left it open; the bake shows inside, and embers glow while the oven is lit
 // ---------------------------------------------------------------------------
 function doorBlock(dimension, c, facing) {
   const o = partOffset(doorPart(facing));
@@ -149,9 +154,20 @@ function openDoor(dimension, c, facing) {
   const d = doorBlock(dimension, c, facing);
   if (d?.typeId === OVEN_ID) playMotion(d, KIND.oven, 30);
 }
-function showDoor(dimension, c, facing, lit) {
+const TINT_BURNT = 6, TINT_BAKED = 7; // visuals TINTS: coffee-dark, caramel-gold
+function showDoor(dimension, c, facing, lit, s) {
   const d = doorBlock(dimension, c, facing);
-  if (d?.typeId === OVEN_ID) showContents(d, KIND.oven, { fill: 0, progress: lit ? 1 : 0 });
+  if (d?.typeId !== OVEN_ID) return;
+  const slots = (s?.slots ?? []).filter(Boolean);
+  let tint = 0, progress = 0;
+  if (slots.length) {
+    const recipes = slots.map(slot => getOvenRecipeById(slot.recipe));
+    const phases = slots.map((slot, i) => phaseOf(slot, recipes[i]));
+    tint = phases.includes("burnt") ? TINT_BURNT : phases.every(p => p === "perfect") ? TINT_BAKED : tintOf(slots.map(slot => slot.input));
+    progress = Math.max(...slots.map((slot, i) => percent(slot, recipes[i]))) / 100;
+  }
+  showContents(d, KIND.oven, { fill: slots.length, tint, progress, lit });
+  holdMotion(d, KIND.oven, !!s?.open);
 }
 
 function setLit(dimension, c, facing, lit) {
@@ -219,7 +235,7 @@ function interact(block, player) {
   const s = loadState(key, facing) ?? emptyOvenState(facing);
 
   const held = heldItem(player);
-  let changed = false;
+  let changed = false, toggled = false;
   if (held) {
     const fuel = getFuel(held.typeId);
     const recipe = fuel ? undefined : getOvenRecipe(held.typeId);
@@ -228,13 +244,18 @@ function interact(block, player) {
     else refuse(dimension, centre(c)); // neither fuel nor something that bakes
   } else if (takeOut(player, dimension, c, s)) {
     changed = true;
+  } else if (partOf(block.permutation) === doorPart(facing)) {
+    // Nothing to take: the door itself opens or closes, and stays that way.
+    s.open = !s.open;
+    changed = toggled = true;
+    sound(dimension, s.open ? "open.iron_door" : "close.iron_door", doorOutside(c, facing), 0.8, 1.0);
   }
   if (changed) {
     saveState(key, s);
     const lit = isLit(s, getOvenRecipeById);
     setLit(dimension, c, facing, lit);
-    if (!getFuel(held?.typeId ?? "")) openDoor(dimension, c, facing); // loading / taking out opens the door
-    showDoor(dimension, c, facing, lit);
+    if (!toggled && !getFuel(held?.typeId ?? "")) openDoor(dimension, c, facing); // loading / taking out opens the door
+    showDoor(dimension, c, facing, lit, s);
   }
 }
 
@@ -260,7 +281,7 @@ function tickAll() {
     const res = tickOven(s, TICK_INTERVAL, getOvenRecipeById);
     if (res.changed) saveState(key, s);
     setLit(dimension, o.loc, facing, res.lit);
-    showDoor(dimension, o.loc, facing, res.lit);
+    showDoor(dimension, o.loc, facing, res.lit, s);
     if (res.lit) {
       const top = partOffset(CHIMNEY_PART);
       particle(dimension, "minecraft:campfire_smoke_particle", { x: o.loc.x + 0.5, y: o.loc.y + top.dy + 1.1, z: o.loc.z + 0.5 });

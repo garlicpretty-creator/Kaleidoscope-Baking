@@ -28,10 +28,18 @@ permutations.push({
 
 // Door and firebox face outward on the oven's front. Parts never overlap, so exactly one
 // permutation (besides the base) applies to any block.
+// The door block is hollow (RP/models/blocks/oven_mouth.geo.json, open toward +z) so the bake inside shows through
+// the door's window; +y rotation turns that south-facing mouth toward the oven's front. It lets light in.
+const MOUTH_ROTATION = { south: 0, east: 90, north: 180, west: 270 };
 for (const f of FACINGS) {
   permutations.push({
     condition: `${part(doorPart(f))} && ${facing(f)}`,
-    components: { "minecraft:material_instances": { "*": tex(BRICK), [f]: tex("kb_oven_door") } }
+    components: {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+      "minecraft:material_instances": { "*": tex(BRICK), inside: tex("kb_oven_door") },
+      "minecraft:transformation": { rotation: [0, MOUTH_ROTATION[f], 0] },
+      "minecraft:light_dampening": 0
+    }
   });
   for (const on of [false, true]) {
     const components = {

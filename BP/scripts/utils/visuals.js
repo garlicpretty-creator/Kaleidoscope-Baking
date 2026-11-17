@@ -12,6 +12,7 @@ export const KIND = Object.freeze({ bowl: 1, proof: 2, stand: 3, espresso: 4, po
 const YAW = { south: 0, west: 90, north: 180, east: -90 };
 
 const motions = new Map(); // station tag -> latest motion stamp
+const held = new Set(); // station tags whose motion stays on (an oven door left open)
 const tagOf = b => `kb_vis:${b.dimension.id}:${b.x},${b.y},${b.z}`;
 const centre = b => ({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 });
 
@@ -63,14 +64,25 @@ export function tintOf(ids) {
   return 0;
 }
 
-/** Shows what the station holds: fill 0..16 (0 hides it), tint 0..7, progress 0..1. */
-export function showContents(block, kind, { fill = 0, tint = 0, progress = 0 } = {}) {
+/** Shows what the station holds: fill 0..16 (0 hides it), tint 0..7, progress 0..1; lit = the oven's embers glow. */
+export function showContents(block, kind, { fill = 0, tint = 0, progress = 0, lit = false } = {}) {
   const e = ensureVisual(block, kind);
   if (!e) return;
   const set = (k, v) => { try { if (e.getProperty(`${NS}:${k}`) !== v) e.setProperty(`${NS}:${k}`, v); } catch {} };
   set("fill", Math.max(0, Math.min(16, Math.round(fill))));
   set("tint", Math.max(0, Math.min(7, tint)));
   set("progress", Math.max(0, Math.min(1, Number(progress) || 0)));
+  set("lit", !!lit);
+}
+
+/** Leaves the station's motion on (an oven door left open) or lets it rest; a playMotion in between still plays. */
+export function holdMotion(block, kind, on) {
+  const e = ensureVisual(block, kind);
+  if (!e) return;
+  const key = tagOf(block);
+  if (on) held.add(key); else held.delete(key);
+  const want = on || motions.has(key);
+  try { if (e.getProperty(`${NS}:active`) !== want) e.setProperty(`${NS}:active`, want); } catch {}
 }
 
 /** Plays the station's motion for `ticks` (whisk, stream, drips, shake). */
@@ -84,7 +96,7 @@ export function playMotion(block, kind, ticks = 12) {
   system.runTimeout(() => {
     if (motions.get(key) !== stamp) return; // a newer motion extended it
     motions.delete(key);
-    try { if (e.isValid === undefined || e.isValid) e.setProperty(`${NS}:active`, false); } catch {}
+    try { if (e.isValid === undefined || e.isValid) e.setProperty(`${NS}:active`, held.has(key)); } catch {}
   }, ticks);
 }
 
@@ -119,6 +131,7 @@ export function crumbs(dimension, loc, id) {
 }
 
 export function removeVisual(block) {
+  held.delete(tagOf(block));
   const e = find(block);
   if (e) try { e.triggerEvent(`${NS}:despawn`); } catch { try { e.remove(); } catch {} }
 }

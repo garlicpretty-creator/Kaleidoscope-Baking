@@ -186,7 +186,7 @@ test("oven: a late duplicate teardown never refunds a second oven", () => {
   assert.equal(dim.spawned.filter(s => s.id === OVEN).length, 1);
 });
 
-test("oven door visual: opens when loading, glows while baking, removed with the oven", () => {
+test("oven door visual: opens when loading, shows the bake, opens and closes by hand, removed with the oven", () => {
   const VIS = "kaleidoscope_baking:station_visual";
   const p = makePlayer({ x: 30.5, z: 5.5 });
   assert.ok(placeOven(p, { x: 30, y: 64, z: 0 }));
@@ -201,7 +201,31 @@ test("oven door visual: opens when loading, glows while baking, removed with the
   p.hold("minecraft:coal", 1);
   oven.onPlayerInteract({ block: dim.getBlock({ x: 30, y: 64, z: 0 }), player: p });
   __mock.tick(1);
-  assert.equal(v.getProperty("kaleidoscope_baking:progress"), 1, "the window glows while baking");
+  const prop = k => v.getProperty(`kaleidoscope_baking:${k}`);
+  assert.equal(prop("lit"), true, "embers glow while baking");
+  assert.equal(prop("fill"), 1, "the bake shows inside the mouth");
+  assert.ok(prop("progress") > 0 && prop("progress") < 1, "it rises as it cooks");
+  __mock.tick(3);
+  assert.equal(prop("active"), false, "the door swings shut again after loading");
+  // An empty hand on the door with nothing ready to take opens it, and it stays open; again closes it.
+  const doorBlock = dim.getBlock({ x: 30, y: 65, z: 1 });
+  p.hold(undefined);
+  oven.onPlayerInteract({ block: doorBlock, player: p });
+  assert.equal(prop("active"), true, "the door opens by hand");
+  __mock.tick(5);
+  assert.equal(prop("active"), true, "and stays open");
+  assert.equal(p.inv.count("minecraft:potato"), 0, "the unfinished bake stays in");
+  oven.onPlayerInteract({ block: dim.getBlock({ x: 31, y: 64, z: 0 }), player: p });
+  assert.equal(prop("active"), true, "other parts of the oven do not move the door");
+  oven.onPlayerInteract({ block: doorBlock, player: p });
+  assert.equal(prop("active"), false, "the door closes by hand");
+  // Done: golden. Left in: dark.
+  __mock.tick(8);
+  assert.equal(prop("tint"), 7, "a finished bake turns golden");
+  assert.equal(prop("progress"), 1);
+  __mock.tick(30);
+  assert.equal(prop("tint"), 6, "a burnt one turns dark");
+  assert.equal(prop("lit"), false, "nothing left to bake: the embers die down");
   const ctrl = dim.getBlock({ x: 30, y: 64, z: 0 });
   oven.onPlayerBreak({ block: ctrl, brokenBlockPermutation: ctrl.permutation, player: p });
   assert.equal(near().length, 0, "breaking the oven removes the door");
