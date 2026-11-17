@@ -1,0 +1,17 @@
+{
+  "resource_pack_name": "kaleidoscope_baking",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "kb_oven": {
+      "textures": "textures/blocks/oven"
+    },
+    "kb_mixing_bowl": {
+      "textures": "textures/blocks/mixing_bowl"
+    },
+    "kb_baking_tray": {
+      "textures": "textures/blocks/baking_tray"
+    }
+  }
+}

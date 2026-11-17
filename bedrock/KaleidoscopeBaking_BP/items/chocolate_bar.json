@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kb:chocolate_bar",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_chocolate_bar",
+      "minecraft:display_name": {
+        "value": "item.kb:chocolate_bar.name"
+      },
+      "minecraft:max_stack_size": 64
+    }
+  }
+}

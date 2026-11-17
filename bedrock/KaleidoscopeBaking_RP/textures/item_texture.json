@@ -1,0 +1,54 @@
+{
+  "resource_pack_name": "kaleidoscope_baking",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "kb_flour": {
+      "textures": "textures/items/flour"
+    },
+    "kb_butter": {
+      "textures": "textures/items/butter"
+    },
+    "kb_dough": {
+      "textures": "textures/items/dough"
+    },
+    "kb_sweet_dough": {
+      "textures": "textures/items/sweet_dough"
+    },
+    "kb_whipped_cream": {
+      "textures": "textures/items/whipped_cream"
+    },
+    "kb_chocolate_bar": {
+      "textures": "textures/items/chocolate_bar"
+    },
+    "kb_toast": {
+      "textures": "textures/items/toast"
+    },
+    "kb_butter_cookie": {
+      "textures": "textures/items/butter_cookie"
+    },
+    "kb_croissant": {
+      "textures": "textures/items/croissant"
+    },
+    "kb_egg_tart": {
+      "textures": "textures/items/egg_tart"
+    },
+    "kb_macaron": {
+      "textures": "textures/items/macaron"
+    },
+    "kb_pudding": {
+      "textures": "textures/items/pudding"
+    },
+    "kb_cream_puff": {
+      "textures": "textures/items/cream_puff"
+    },
+    "kb_cinnamon_roll": {
+      "textures": "textures/items/cinnamon_roll"
+    },
+    "kb_berry_cake_slice": {
+      "textures": "textures/items/berry_cake_slice"
+    },
+    "kb_chocolate_cake_slice": {
+      "textures": "textures/items/chocolate_cake_slice"
+    }
+  }
+}

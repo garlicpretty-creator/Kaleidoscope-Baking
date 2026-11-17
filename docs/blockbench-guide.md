@@ -1,5 +1,11 @@
 # Blockbench 3D 製作進修指南（Kaleidoscope-Baking 專用）
 
+> **基岩版（目前專案採用）**：新建專案選 **Bedrock Block**，或直接 `File > Open Model` 開啟
+> `bedrock/KaleidoscopeBaking_RP/models/blocks/*.geo.json`（烤箱、攪拌碗、烤盤已做好可直接練習修改）。
+> 基岩版方塊模型限制：整體須在 30×30×30 px 內、可任意角度旋轉單一軸、支援 Per-face UV；
+> 匯出 `File > Export > Export Bedrock Geometry`。基岩版方塊不支援動畫，要動畫需改做實體（Entity）。
+> 下方 Java 相關段落僅供參考。
+
 本指南針對 **Minecraft Java 版模組（Forge / NeoForge）** 的廚具方塊與甜點物品，
 目標是做出風格與 Kaleidoscope Cookery 一致的模型（像素感、16x 材質、圓潤可愛）。
 

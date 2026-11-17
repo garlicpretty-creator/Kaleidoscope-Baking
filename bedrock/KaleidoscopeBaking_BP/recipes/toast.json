@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "kb:toast"
+    },
+    "tags": [
+      "kb_oven"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "result": {
+      "item": "kb:toast",
+      "count": 2
+    },
+    "ingredients": [
+      {
+        "item": "kb:dough"
+      }
+    ]
+  }
+}

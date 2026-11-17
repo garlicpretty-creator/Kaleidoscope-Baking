@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "kb:macaron"
+    },
+    "tags": [
+      "kb_oven"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "result": {
+      "item": "kb:macaron",
+      "count": 4
+    },
+    "ingredients": [
+      {
+        "item": "kb:sweet_dough"
+      },
+      {
+        "item": "minecraft:egg"
+      },
+      {
+        "item": "minecraft:sweet_berries"
+      }
+    ]
+  }
+}

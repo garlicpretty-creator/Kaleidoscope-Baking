@@ -1,0 +1,35 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "kb:sweet_dough"
+    },
+    "tags": [
+      "kb_mixing_bowl"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "result": {
+      "item": "kb:sweet_dough",
+      "count": 2
+    },
+    "ingredients": [
+      {
+        "item": "kb:flour"
+      },
+      {
+        "item": "kb:flour"
+      },
+      {
+        "item": "minecraft:sugar"
+      },
+      {
+        "item": "minecraft:egg"
+      },
+      {
+        "item": "kb:butter"
+      }
+    ]
+  }
+}
