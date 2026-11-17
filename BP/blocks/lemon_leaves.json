@@ -1,0 +1,99 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:lemon_leaves",
+      "menu_category": {
+        "category": "nature"
+      },
+      "states": {
+        "kaleidoscope_baking:growth": {
+          "values": {
+            "min": 0,
+            "max": 3
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_lemon_leaves_0",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.3
+      },
+      "minecraft:light_dampening": 1,
+      "minecraft:flammable": {
+        "catch_chance_modifier": 30,
+        "destroy_chance_modifier": 60
+      },
+      "minecraft:map_color": "#5AA046",
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/lemon_leaves.json",
+      "minecraft:tags": [
+        "leaves"
+      ],
+      "kaleidoscope_baking:plant": {
+        "max": 3,
+        "chance": 10,
+        "min_light": 0,
+        "kind": "perennial",
+        "harvest": "kaleidoscope_baking:lemon",
+        "harvest_min": 1,
+        "harvest_max": 2,
+        "reset": 0,
+        "spread": false
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_lemon_leaves_0",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_lemon_leaves_1",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_lemon_leaves_2",
+              "render_method": "alpha_test"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_lemon_leaves_3",
+              "render_method": "alpha_test"
+            }
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/lemon_leaves_ripe.json"
+        }
+      }
+    ]
+  }
+}

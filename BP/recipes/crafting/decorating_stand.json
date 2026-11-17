@@ -1,0 +1,36 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:decorating_stand"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " P ",
+      " S ",
+      "SSS"
+    ],
+    "key": {
+      "P": {
+        "item": "minecraft:heavy_weighted_pressure_plate"
+      },
+      "S": {
+        "item": "minecraft:smooth_stone_slab"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:decorating_stand",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:heavy_weighted_pressure_plate"
+      },
+      {
+        "item": "minecraft:smooth_stone_slab"
+      }
+    ]
+  }
+}

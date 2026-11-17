@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:coffee_mug"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "C C",
+      "CCC"
+    ],
+    "key": {
+      "C": {
+        "item": "minecraft:clay_ball"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:coffee_mug",
+      "count": 4
+    },
+    "unlock": [
+      {
+        "item": "minecraft:clay_ball"
+      }
+    ]
+  }
+}

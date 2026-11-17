@@ -1,0 +1,573 @@
+{
+  "resource_pack_name": "Kaleidoscope Baking",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "kb_oven": {
+      "textures": "textures/items/kb_oven"
+    },
+    "kb_mixing_bowl": {
+      "textures": "textures/items/kb_mixing_bowl"
+    },
+    "kb_proofing_basket": {
+      "textures": "textures/items/kb_proofing_basket"
+    },
+    "kb_decorating_stand": {
+      "textures": "textures/items/kb_decorating_stand"
+    },
+    "kb_espresso_machine": {
+      "textures": "textures/items/kb_espresso_machine"
+    },
+    "kb_pour_over_stand": {
+      "textures": "textures/items/kb_pour_over_stand"
+    },
+    "kb_drink_shaker": {
+      "textures": "textures/items/kb_drink_shaker"
+    },
+    "kb_whisk": {
+      "textures": "textures/items/kb_whisk"
+    },
+    "kb_milk_frother": {
+      "textures": "textures/items/kb_milk_frother"
+    },
+    "kb_rolling_pin": {
+      "textures": "textures/items/kb_rolling_pin"
+    },
+    "kb_bread_knife": {
+      "textures": "textures/items/kb_bread_knife"
+    },
+    "kb_cake_mold": {
+      "textures": "textures/items/kb_cake_mold"
+    },
+    "kb_loaf_pan": {
+      "textures": "textures/items/kb_loaf_pan"
+    },
+    "kb_baking_tray": {
+      "textures": "textures/items/kb_baking_tray"
+    },
+    "kb_pie_tin": {
+      "textures": "textures/items/kb_pie_tin"
+    },
+    "kb_muffin_tin": {
+      "textures": "textures/items/kb_muffin_tin"
+    },
+    "kb_taiyaki_mold": {
+      "textures": "textures/items/kb_taiyaki_mold"
+    },
+    "kb_coffee_mug": {
+      "textures": "textures/items/kb_coffee_mug"
+    },
+    "kb_takeaway_cup": {
+      "textures": "textures/items/kb_takeaway_cup"
+    },
+    "kb_birthday_candle": {
+      "textures": "textures/items/kb_birthday_candle"
+    },
+    "kb_butter": {
+      "textures": "textures/items/kb_butter"
+    },
+    "kb_whipped_cream": {
+      "textures": "textures/items/kb_whipped_cream"
+    },
+    "kb_cream_cheese": {
+      "textures": "textures/items/kb_cream_cheese"
+    },
+    "kb_frothed_milk": {
+      "textures": "textures/items/kb_frothed_milk"
+    },
+    "kb_milk_foam_cap": {
+      "textures": "textures/items/kb_milk_foam_cap"
+    },
+    "kb_yeast": {
+      "textures": "textures/items/kb_yeast"
+    },
+    "kb_cocoa_powder": {
+      "textures": "textures/items/kb_cocoa_powder"
+    },
+    "kb_brown_sugar": {
+      "textures": "textures/items/kb_brown_sugar"
+    },
+    "kb_brown_sugar_syrup": {
+      "textures": "textures/items/kb_brown_sugar_syrup"
+    },
+    "kb_caramel": {
+      "textures": "textures/items/kb_caramel"
+    },
+    "kb_custard": {
+      "textures": "textures/items/kb_custard"
+    },
+    "kb_chocolate_sauce": {
+      "textures": "textures/items/kb_chocolate_sauce"
+    },
+    "kb_strawberry_jam": {
+      "textures": "textures/items/kb_strawberry_jam"
+    },
+    "kb_blueberry_jam": {
+      "textures": "textures/items/kb_blueberry_jam"
+    },
+    "kb_vanilla_extract": {
+      "textures": "textures/items/kb_vanilla_extract"
+    },
+    "kb_cinnamon_powder": {
+      "textures": "textures/items/kb_cinnamon_powder"
+    },
+    "kb_sesame_paste": {
+      "textures": "textures/items/kb_sesame_paste"
+    },
+    "kb_lavender_sugar": {
+      "textures": "textures/items/kb_lavender_sugar"
+    },
+    "kb_stevia_sugar": {
+      "textures": "textures/items/kb_stevia_sugar"
+    },
+    "kb_matcha_powder": {
+      "textures": "textures/items/kb_matcha_powder"
+    },
+    "kb_poppy_seeds": {
+      "textures": "textures/items/kb_poppy_seeds"
+    },
+    "kb_crushed_ice": {
+      "textures": "textures/items/kb_crushed_ice"
+    },
+    "kb_tapioca_starch": {
+      "textures": "textures/items/kb_tapioca_starch"
+    },
+    "kb_raw_tapioca_pearls": {
+      "textures": "textures/items/kb_raw_tapioca_pearls"
+    },
+    "kb_tapioca_pearls": {
+      "textures": "textures/items/kb_tapioca_pearls"
+    },
+    "kb_black_tea_base": {
+      "textures": "textures/items/kb_black_tea_base"
+    },
+    "kb_green_tea_base": {
+      "textures": "textures/items/kb_green_tea_base"
+    },
+    "kb_oolong_tea_base": {
+      "textures": "textures/items/kb_oolong_tea_base"
+    },
+    "kb_coffee_cherry": {
+      "textures": "textures/items/kb_coffee_cherry"
+    },
+    "kb_green_coffee_beans": {
+      "textures": "textures/items/kb_green_coffee_beans"
+    },
+    "kb_roasted_coffee_beans_light": {
+      "textures": "textures/items/kb_roasted_coffee_beans_light"
+    },
+    "kb_ground_coffee_light": {
+      "textures": "textures/items/kb_ground_coffee_light"
+    },
+    "kb_roasted_coffee_beans_medium": {
+      "textures": "textures/items/kb_roasted_coffee_beans_medium"
+    },
+    "kb_ground_coffee_medium": {
+      "textures": "textures/items/kb_ground_coffee_medium"
+    },
+    "kb_roasted_coffee_beans_dark": {
+      "textures": "textures/items/kb_roasted_coffee_beans_dark"
+    },
+    "kb_ground_coffee_dark": {
+      "textures": "textures/items/kb_ground_coffee_dark"
+    },
+    "kb_cake_batter": {
+      "textures": "textures/items/kb_cake_batter"
+    },
+    "kb_chocolate_cake_batter": {
+      "textures": "textures/items/kb_chocolate_cake_batter"
+    },
+    "kb_castella_batter": {
+      "textures": "textures/items/kb_castella_batter"
+    },
+    "kb_matcha_batter": {
+      "textures": "textures/items/kb_matcha_batter"
+    },
+    "kb_lemon_poppy_batter": {
+      "textures": "textures/items/kb_lemon_poppy_batter"
+    },
+    "kb_cheesecake_batter": {
+      "textures": "textures/items/kb_cheesecake_batter"
+    },
+    "kb_muffin_batter": {
+      "textures": "textures/items/kb_muffin_batter"
+    },
+    "kb_taiyaki_batter": {
+      "textures": "textures/items/kb_taiyaki_batter"
+    },
+    "kb_savory_taiyaki_batter": {
+      "textures": "textures/items/kb_savory_taiyaki_batter"
+    },
+    "kb_fa_gao_batter": {
+      "textures": "textures/items/kb_fa_gao_batter"
+    },
+    "kb_bread_dough": {
+      "textures": "textures/items/kb_bread_dough"
+    },
+    "kb_proofed_bread_dough": {
+      "textures": "textures/items/kb_proofed_bread_dough"
+    },
+    "kb_croissant_dough": {
+      "textures": "textures/items/kb_croissant_dough"
+    },
+    "kb_proofed_croissant_dough": {
+      "textures": "textures/items/kb_proofed_croissant_dough"
+    },
+    "kb_cinnamon_roll_dough": {
+      "textures": "textures/items/kb_cinnamon_roll_dough"
+    },
+    "kb_proofed_cinnamon_roll_dough": {
+      "textures": "textures/items/kb_proofed_cinnamon_roll_dough"
+    },
+    "kb_baguette_dough": {
+      "textures": "textures/items/kb_baguette_dough"
+    },
+    "kb_proofed_baguette_dough": {
+      "textures": "textures/items/kb_proofed_baguette_dough"
+    },
+    "kb_focaccia_dough": {
+      "textures": "textures/items/kb_focaccia_dough"
+    },
+    "kb_proofed_focaccia_dough": {
+      "textures": "textures/items/kb_proofed_focaccia_dough"
+    },
+    "kb_donut_dough": {
+      "textures": "textures/items/kb_donut_dough"
+    },
+    "kb_proofed_donut_dough": {
+      "textures": "textures/items/kb_proofed_donut_dough"
+    },
+    "kb_pineapple_bun_dough": {
+      "textures": "textures/items/kb_pineapple_bun_dough"
+    },
+    "kb_bagel_dough": {
+      "textures": "textures/items/kb_bagel_dough"
+    },
+    "kb_cookie_dough": {
+      "textures": "textures/items/kb_cookie_dough"
+    },
+    "kb_chocolate_cookie_dough": {
+      "textures": "textures/items/kb_chocolate_cookie_dough"
+    },
+    "kb_lavender_cookie_dough": {
+      "textures": "textures/items/kb_lavender_cookie_dough"
+    },
+    "kb_scone_dough": {
+      "textures": "textures/items/kb_scone_dough"
+    },
+    "kb_pie_dough": {
+      "textures": "textures/items/kb_pie_dough"
+    },
+    "kb_sesame_ball_dough": {
+      "textures": "textures/items/kb_sesame_ball_dough"
+    },
+    "kb_mooncake_dough": {
+      "textures": "textures/items/kb_mooncake_dough"
+    },
+    "kb_pie_crust": {
+      "textures": "textures/items/kb_pie_crust"
+    },
+    "kb_raw_apple_pie": {
+      "textures": "textures/items/kb_raw_apple_pie"
+    },
+    "kb_raw_blueberry_pie": {
+      "textures": "textures/items/kb_raw_blueberry_pie"
+    },
+    "kb_raw_quiche": {
+      "textures": "textures/items/kb_raw_quiche"
+    },
+    "kb_raw_fish_pie": {
+      "textures": "textures/items/kb_raw_fish_pie"
+    },
+    "kb_raw_egg_tart": {
+      "textures": "textures/items/kb_raw_egg_tart"
+    },
+    "kb_rosemary": {
+      "textures": "textures/items/kb_rosemary"
+    },
+    "kb_rosemary_cutting": {
+      "textures": "textures/items/kb_rosemary_cutting"
+    },
+    "kb_thyme": {
+      "textures": "textures/items/kb_thyme"
+    },
+    "kb_thyme_cutting": {
+      "textures": "textures/items/kb_thyme_cutting"
+    },
+    "kb_lavender": {
+      "textures": "textures/items/kb_lavender"
+    },
+    "kb_lavender_cutting": {
+      "textures": "textures/items/kb_lavender_cutting"
+    },
+    "kb_mint_leaves": {
+      "textures": "textures/items/kb_mint_leaves"
+    },
+    "kb_mint_cutting": {
+      "textures": "textures/items/kb_mint_cutting"
+    },
+    "kb_dried_rosemary": {
+      "textures": "textures/items/kb_dried_rosemary"
+    },
+    "kb_dried_thyme": {
+      "textures": "textures/items/kb_dried_thyme"
+    },
+    "kb_green_vanilla_pod": {
+      "textures": "textures/items/kb_green_vanilla_pod"
+    },
+    "kb_vanilla_pod": {
+      "textures": "textures/items/kb_vanilla_pod"
+    },
+    "kb_vanilla_cutting": {
+      "textures": "textures/items/kb_vanilla_cutting"
+    },
+    "kb_cinnamon_sapling": {
+      "textures": "textures/items/kb_cinnamon_sapling"
+    },
+    "kb_cinnamon_bark": {
+      "textures": "textures/items/kb_cinnamon_bark"
+    },
+    "kb_cinnamon_stick": {
+      "textures": "textures/items/kb_cinnamon_stick"
+    },
+    "kb_sesame_seeds": {
+      "textures": "textures/items/kb_sesame_seeds"
+    },
+    "kb_black_sesame_seeds": {
+      "textures": "textures/items/kb_black_sesame_seeds"
+    },
+    "kb_stevia_seeds": {
+      "textures": "textures/items/kb_stevia_seeds"
+    },
+    "kb_stevia_leaf": {
+      "textures": "textures/items/kb_stevia_leaf"
+    },
+    "kb_dried_stevia": {
+      "textures": "textures/items/kb_dried_stevia"
+    },
+    "kb_cassava": {
+      "textures": "textures/items/kb_cassava"
+    },
+    "kb_cassava_cutting": {
+      "textures": "textures/items/kb_cassava_cutting"
+    },
+    "kb_strawberry": {
+      "textures": "textures/items/kb_strawberry"
+    },
+    "kb_blueberry": {
+      "textures": "textures/items/kb_blueberry"
+    },
+    "kb_raspberry": {
+      "textures": "textures/items/kb_raspberry"
+    },
+    "kb_dried_blueberry": {
+      "textures": "textures/items/kb_dried_blueberry"
+    },
+    "kb_lemon_sapling": {
+      "textures": "textures/items/kb_lemon_sapling"
+    },
+    "kb_lemon": {
+      "textures": "textures/items/kb_lemon"
+    },
+    "kb_lemon_slice": {
+      "textures": "textures/items/kb_lemon_slice"
+    },
+    "kb_sponge_cake": {
+      "textures": "textures/items/kb_sponge_cake"
+    },
+    "kb_chocolate_cake": {
+      "textures": "textures/items/kb_chocolate_cake"
+    },
+    "kb_strawberry_cream_cake": {
+      "textures": "textures/items/kb_strawberry_cream_cake"
+    },
+    "kb_birthday_cake": {
+      "textures": "textures/items/kb_birthday_cake"
+    },
+    "kb_mint_chocolate_cake": {
+      "textures": "textures/items/kb_mint_chocolate_cake"
+    },
+    "kb_cheesecake": {
+      "textures": "textures/items/kb_cheesecake"
+    },
+    "kb_matcha_chiffon": {
+      "textures": "textures/items/kb_matcha_chiffon"
+    },
+    "kb_apple_pie": {
+      "textures": "textures/items/kb_apple_pie"
+    },
+    "kb_blueberry_pie": {
+      "textures": "textures/items/kb_blueberry_pie"
+    },
+    "kb_quiche": {
+      "textures": "textures/items/kb_quiche"
+    },
+    "kb_fish_pie": {
+      "textures": "textures/items/kb_fish_pie"
+    },
+    "kb_cake_slice": {
+      "textures": "textures/items/kb_cake_slice"
+    },
+    "kb_honey_castella": {
+      "textures": "textures/items/kb_honey_castella"
+    },
+    "kb_lemon_poppy_cake": {
+      "textures": "textures/items/kb_lemon_poppy_cake"
+    },
+    "kb_blueberry_muffin": {
+      "textures": "textures/items/kb_blueberry_muffin"
+    },
+    "kb_taiyaki": {
+      "textures": "textures/items/kb_taiyaki"
+    },
+    "kb_savory_taiyaki": {
+      "textures": "textures/items/kb_savory_taiyaki"
+    },
+    "kb_toast_loaf": {
+      "textures": "textures/items/kb_toast_loaf"
+    },
+    "kb_toast_slice": {
+      "textures": "textures/items/kb_toast_slice"
+    },
+    "kb_french_toast": {
+      "textures": "textures/items/kb_french_toast"
+    },
+    "kb_baguette": {
+      "textures": "textures/items/kb_baguette"
+    },
+    "kb_croissant": {
+      "textures": "textures/items/kb_croissant"
+    },
+    "kb_cinnamon_roll": {
+      "textures": "textures/items/kb_cinnamon_roll"
+    },
+    "kb_rosemary_focaccia": {
+      "textures": "textures/items/kb_rosemary_focaccia"
+    },
+    "kb_pineapple_bun": {
+      "textures": "textures/items/kb_pineapple_bun"
+    },
+    "kb_poppy_seed_bagel": {
+      "textures": "textures/items/kb_poppy_seed_bagel"
+    },
+    "kb_donut": {
+      "textures": "textures/items/kb_donut"
+    },
+    "kb_pancakes": {
+      "textures": "textures/items/kb_pancakes"
+    },
+    "kb_tart_shell": {
+      "textures": "textures/items/kb_tart_shell"
+    },
+    "kb_strawberry_tart": {
+      "textures": "textures/items/kb_strawberry_tart"
+    },
+    "kb_lemon_tart": {
+      "textures": "textures/items/kb_lemon_tart"
+    },
+    "kb_egg_tart": {
+      "textures": "textures/items/kb_egg_tart"
+    },
+    "kb_butter_cookie": {
+      "textures": "textures/items/kb_butter_cookie"
+    },
+    "kb_chocolate_cookie": {
+      "textures": "textures/items/kb_chocolate_cookie"
+    },
+    "kb_lavender_cookie": {
+      "textures": "textures/items/kb_lavender_cookie"
+    },
+    "kb_scone": {
+      "textures": "textures/items/kb_scone"
+    },
+    "kb_fa_gao": {
+      "textures": "textures/items/kb_fa_gao"
+    },
+    "kb_sesame_ball": {
+      "textures": "textures/items/kb_sesame_ball"
+    },
+    "kb_sesame_mooncake": {
+      "textures": "textures/items/kb_sesame_mooncake"
+    },
+    "kb_burnt_food": {
+      "textures": "textures/items/kb_burnt_food"
+    },
+    "kb_espresso": {
+      "textures": "textures/items/kb_espresso"
+    },
+    "kb_americano": {
+      "textures": "textures/items/kb_americano"
+    },
+    "kb_latte": {
+      "textures": "textures/items/kb_latte"
+    },
+    "kb_cappuccino": {
+      "textures": "textures/items/kb_cappuccino"
+    },
+    "kb_mocha": {
+      "textures": "textures/items/kb_mocha"
+    },
+    "kb_caramel_macchiato": {
+      "textures": "textures/items/kb_caramel_macchiato"
+    },
+    "kb_cinnamon_latte": {
+      "textures": "textures/items/kb_cinnamon_latte"
+    },
+    "kb_pour_over_light": {
+      "textures": "textures/items/kb_pour_over_light"
+    },
+    "kb_pour_over_medium": {
+      "textures": "textures/items/kb_pour_over_medium"
+    },
+    "kb_pour_over_dark": {
+      "textures": "textures/items/kb_pour_over_dark"
+    },
+    "kb_hot_cocoa": {
+      "textures": "textures/items/kb_hot_cocoa"
+    },
+    "kb_bubble_milk_tea": {
+      "textures": "textures/items/kb_bubble_milk_tea"
+    },
+    "kb_brown_sugar_pearl_milk": {
+      "textures": "textures/items/kb_brown_sugar_pearl_milk"
+    },
+    "kb_pearl_black_tea_latte": {
+      "textures": "textures/items/kb_pearl_black_tea_latte"
+    },
+    "kb_oolong_milk_foam": {
+      "textures": "textures/items/kb_oolong_milk_foam"
+    },
+    "kb_lavender_milk_tea": {
+      "textures": "textures/items/kb_lavender_milk_tea"
+    },
+    "kb_yuanyang": {
+      "textures": "textures/items/kb_yuanyang"
+    },
+    "kb_lemon_green_tea": {
+      "textures": "textures/items/kb_lemon_green_tea"
+    },
+    "kb_lemon_black_tea": {
+      "textures": "textures/items/kb_lemon_black_tea"
+    },
+    "kb_matcha_latte": {
+      "textures": "textures/items/kb_matcha_latte"
+    },
+    "kb_mint_mocha": {
+      "textures": "textures/items/kb_mint_mocha"
+    },
+    "kb_iced_coffee": {
+      "textures": "textures/items/kb_iced_coffee"
+    },
+    "kb_vanilla_milkshake": {
+      "textures": "textures/items/kb_vanilla_milkshake"
+    },
+    "kb_lemonade": {
+      "textures": "textures/items/kb_lemonade"
+    },
+    "kb_strawberry_milk": {
+      "textures": "textures/items/kb_strawberry_milk"
+    },
+    "kb_herb_planter": {
+      "textures": "textures/items/kb_herb_planter"
+    }
+  }
+}
