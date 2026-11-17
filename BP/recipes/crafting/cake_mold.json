@@ -8,12 +8,15 @@
       "crafting_table"
     ],
     "pattern": [
-      "I I",
+      "IPI",
       "III"
     ],
     "key": {
       "I": {
         "item": "minecraft:iron_ingot"
+      },
+      "P": {
+        "item": "minecraft:paper"
       }
     },
     "result": {
@@ -23,6 +26,9 @@
     "unlock": [
       {
         "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "minecraft:paper"
       }
     ]
   }

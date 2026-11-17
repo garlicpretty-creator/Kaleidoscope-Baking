@@ -18,7 +18,7 @@
 // ============================================================================
 import { BlockPermutation, system, world } from "@minecraft/server";
 import {
-  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, PART_STATE,
+  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, partFromPermutation, partStates,
   controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
@@ -74,7 +74,7 @@ onWorldReady(() => {
 // Structure helpers
 // ---------------------------------------------------------------------------
 function partOf(permutation) {
-  try { const v = permutation.getState(PART_STATE); return typeof v === "number" ? v : CONTROLLER_PART; } catch { return CONTROLLER_PART; }
+  return partFromPermutation(permutation) ?? CONTROLLER_PART;
 }
 function facingOf(permutation) {
   try { const v = permutation.getState(FACING_STATE); return FACINGS.includes(v) ? v : "south"; } catch { return "south"; }
@@ -89,7 +89,7 @@ function controllerBlock(dimension, c) {
   return b?.typeId === OVEN_ID && partOf(b.permutation) === CONTROLLER_PART ? b : undefined;
 }
 function partPermutation(index, facing, lit = false) {
-  return BlockPermutation.resolve(OVEN_ID, { [PART_STATE]: index, [FACING_STATE]: facing, [LIT_STATE]: lit });
+  return BlockPermutation.resolve(OVEN_ID, { ...partStates(index), [FACING_STATE]: facing, [LIT_STATE]: lit });
 }
 function centre(c) { return { x: c.x + 0.5, y: c.y + 1.0, z: c.z + 0.5 }; }
 

@@ -53,9 +53,6 @@
       },
       "minecraft:map_color": "#5AA046",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/sesame_crop_immature.json",
-      "minecraft:tags": [
-        "kaleidoscope:crop"
-      ],
       "kaleidoscope_baking:plant": {
         "max": 7,
         "chance": 12,
@@ -66,7 +63,8 @@
         "harvest_max": 4,
         "reset": 1,
         "spread": false
-      }
+      },
+      "tag:kaleidoscope:crop": {}
     },
     "permutations": [
       {

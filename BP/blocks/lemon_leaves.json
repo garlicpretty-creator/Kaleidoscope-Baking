@@ -33,9 +33,6 @@
       },
       "minecraft:map_color": "#5AA046",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/lemon_leaves.json",
-      "minecraft:tags": [
-        "leaves"
-      ],
       "kaleidoscope_baking:plant": {
         "max": 3,
         "chance": 10,
@@ -46,7 +43,8 @@
         "harvest_max": 2,
         "reset": 0,
         "spread": false
-      }
+      },
+      "tag:leaves": {}
     },
     "permutations": [
       {

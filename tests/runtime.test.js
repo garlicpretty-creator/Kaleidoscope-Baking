@@ -51,7 +51,7 @@ test("oven: placing grows a 3x3x3 structure facing the player", () => {
   assert.equal(ovenBlocks(), 27);
   const door = dim.getBlock({ x: 0, y: 65, z: 1 }).permutation;
   assert.equal(door.getState("kaleidoscope_baking:facing"), "south");
-  assert.equal(door.getState("kaleidoscope_baking:oven_part"), 16);
+  assert.equal(door.getState("kaleidoscope_baking:oven_layer") * 9 + door.getState("kaleidoscope_baking:oven_cell"), 16);
 });
 
 test("oven: placement is refused without a clear 3x3x3 space or when standing inside", () => {

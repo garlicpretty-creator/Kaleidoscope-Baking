@@ -38,7 +38,7 @@
               "minecraft:coarse_dirt",
               "minecraft:farmland",
               "minecraft:moss_block",
-              "minecraft:rooted_dirt"
+              "minecraft:dirt_with_roots"
             ]
           }
         ]
@@ -59,9 +59,6 @@
       },
       "minecraft:map_color": "#326E32",
       "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/coffee_bush_immature.json",
-      "minecraft:tags": [
-        "kaleidoscope:crop"
-      ],
       "kaleidoscope_baking:plant": {
         "max": 3,
         "chance": 8,
@@ -72,7 +69,8 @@
         "harvest_max": 4,
         "reset": 2,
         "spread": false
-      }
+      },
+      "tag:kaleidoscope:crop": {}
     },
     "permutations": [
       {

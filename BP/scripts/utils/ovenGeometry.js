@@ -3,7 +3,7 @@
 // 3x3x3 oven footprint
 // ----------------------------------------------------------------------------
 // The oven is ONE block id (`kaleidoscope_baking:oven`) placed 27 times. Each copy carries
-// `kaleidoscope_baking:oven_part` = index of its offset from the CONTROLLER, which is the
+// a part index (stored as the states oven_layer + oven_cell, see below) = its offset from the CONTROLLER, which is the
 // bottom-centre block (the block the player actually places).
 //
 //   index = dy*9 + (dz+1)*3 + (dx+1)      dx,dz in -1..1, dy in 0..2
@@ -15,7 +15,22 @@
 // ============================================================================
 
 export const OVEN_ID = "kaleidoscope_baking:oven";
-export const PART_STATE = "kaleidoscope_baking:oven_part";
+// A block state may have at most 16 values, so the part index (0..26) is stored as two states:
+// layer = dy (0..2) and cell = (dz+1)*3 + (dx+1) (0..8); index = layer*9 + cell.
+export const LAYER_STATE = "kaleidoscope_baking:oven_layer";
+export const CELL_STATE = "kaleidoscope_baking:oven_cell";
+/** {[LAYER_STATE], [CELL_STATE]} for a part index. */
+export function partStates(index) {
+  const i = Math.max(0, Math.min(26, Math.floor(Number(index)) || 0));
+  return { [LAYER_STATE]: Math.floor(i / 9), [CELL_STATE]: i % 9 };
+}
+/** Part index from a permutation (undefined if it is not an oven part). */
+export function partFromPermutation(permutation) {
+  try {
+    const layer = permutation.getState(LAYER_STATE), cell = permutation.getState(CELL_STATE);
+    return typeof layer === "number" && typeof cell === "number" ? layer * 9 + cell : undefined;
+  } catch { return undefined; }
+}
 export const FACING_STATE = "kaleidoscope_baking:facing";
 export const LIT_STATE = "kaleidoscope_baking:lit";
 

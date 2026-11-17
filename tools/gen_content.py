@@ -521,6 +521,9 @@ def pool(item_id, lo=1, hi=1, chance=None):
 
 
 def block(bid, components, states=None, permutations=None, category="none", traits=None):
+    # Blocks take tags as `tag:<name>` components; a `minecraft:tags` list makes the engine reject the whole block.
+    for tag in components.pop("minecraft:tags", []):
+        components[f"tag:{tag}"] = {}
     desc = {"identifier": kb(bid), "menu_category": {"category": category}}
     if states:
         desc["states"] = states

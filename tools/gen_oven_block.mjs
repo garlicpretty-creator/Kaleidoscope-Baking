@@ -3,12 +3,12 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
-  ALL_PARTS, CHIMNEY_PART, FACINGS, FACING_STATE, LIT_STATE, OVEN_ID, PART_STATE, doorPart, fireboxPart, partOffset
+  ALL_PARTS, CELL_STATE, CHIMNEY_PART, FACINGS, FACING_STATE, LAYER_STATE, LIT_STATE, OVEN_ID, doorPart, fireboxPart, partOffset
 } from "../BP/scripts/utils/ovenGeometry.js";
 
 const out = fileURLToPath(new URL("../BP/blocks/oven.json", import.meta.url));
 const tex = name => ({ texture: name, render_method: "opaque" });
-const part = i => `q.block_state('${PART_STATE}') == ${i}`;
+const part = i => `(q.block_state('${LAYER_STATE}') == ${Math.floor(i / 9)} && q.block_state('${CELL_STATE}') == ${i % 9})`;
 const facing = f => `q.block_state('${FACING_STATE}') == '${f}'`;
 const lit = v => `q.block_state('${LIT_STATE}') == ${v}`;
 const BRICK = "kb_oven_brick";
@@ -49,7 +49,9 @@ const block = {
       identifier: OVEN_ID,
       states: {
         // First value = default permutation = the controller the player places.
-        [PART_STATE]: [...ALL_PARTS],
+        // part index = layer * 9 + cell (a state may have at most 16 values); default = the controller (layer 0, cell 4)
+        [LAYER_STATE]: [0, 1, 2],
+        [CELL_STATE]: [4, 0, 1, 2, 3, 5, 6, 7, 8],
         [FACING_STATE]: ["south", "north", "east", "west"],
         [LIT_STATE]: [false, true]
       }
