@@ -3,7 +3,6 @@
 // wild biome matches when the biome API is available (otherwise any plant can drop).
 import { world } from "@minecraft/server";
 import { CONTENT } from "../data/generated/content.js";
-import { BOP_LIKE } from "../data/generated/bopBiomes.js";
 import { spawnItems } from "../utils/runtime.js";
 
 const GRASS = new Set(["minecraft:short_grass", "minecraft:tall_grass", "minecraft:fern", "minecraft:large_fern"]);
@@ -19,13 +18,7 @@ function biomeTags(dimension, loc) {
     const biome = dimension.getBiome?.(loc);
     if (!biome) return undefined;
     const tags = biome.getTags?.() ?? [];
-    const id = String(biome.id ?? "");
-    const set = new Set([...tags, id.replace("minecraft:", "")]);
-    // Biomes O' Plenty: a BOP biome counts as each vanilla tag/biome it stands in for
-    // (its `bop_like_<x>` tags, or the generated id table when tags are unavailable).
-    for (const t of tags) if (t.startsWith("bop_like_")) set.add(t.slice(9));
-    for (const t of BOP_LIKE[id] ?? []) set.add(t);
-    return set;
+    return new Set([...tags, String(biome.id ?? "").replace("minecraft:", "")]);
   } catch { return undefined; }
 }
 

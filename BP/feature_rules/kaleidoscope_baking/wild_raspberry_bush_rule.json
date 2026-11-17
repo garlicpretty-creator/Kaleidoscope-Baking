@@ -17,17 +17,7 @@
           {
             "test": "has_biome_tag",
             "operator": "==",
-            "value": "bop_like_forest"
-          },
-          {
-            "test": "has_biome_tag",
-            "operator": "==",
             "value": "birch"
-          },
-          {
-            "test": "has_biome_tag",
-            "operator": "==",
-            "value": "bop_like_birch"
           }
         ]
       }
