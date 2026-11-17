@@ -20,6 +20,18 @@
     "kb_chocolate_bar": {
       "textures": "textures/items/chocolate_bar"
     },
+    "kb_strawberry": {
+      "textures": "textures/items/strawberry"
+    },
+    "kb_vanilla_pod": {
+      "textures": "textures/items/vanilla_pod"
+    },
+    "kb_cinnamon_stick": {
+      "textures": "textures/items/cinnamon_stick"
+    },
+    "kb_cinnamon_sapling": {
+      "textures": "textures/items/cinnamon_sapling"
+    },
     "kb_raw_croissant": {
       "textures": "textures/items/raw_croissant"
     },

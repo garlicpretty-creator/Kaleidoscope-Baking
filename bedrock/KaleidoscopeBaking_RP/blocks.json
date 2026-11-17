@@ -12,5 +12,14 @@
   },
   "kb:baking_tray": {
     "sound": "metal"
+  },
+  "kb:strawberry_bush": {
+    "sound": "grass"
+  },
+  "kb:vanilla_vine": {
+    "sound": "grass"
+  },
+  "kb:cinnamon_shrub": {
+    "sound": "grass"
   }
 }

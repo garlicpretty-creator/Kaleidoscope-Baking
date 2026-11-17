@@ -51,6 +51,37 @@ PROMPTS = {
 }
 
 
+# Plants: growth-stage sprites (bottom-anchored) and new crop items
+PLANT_SUFFIX = ", minecraft crop plant sprite, side view, rooted at the bottom edge"
+ITEM_SUFFIX_PLAIN = ", minecraft item"
+PROMPTS.update({
+    "strawberry": "ripe red strawberry with green leafy top",
+    "vanilla_pod": "two long dark brown vanilla bean pods",
+    "cinnamon_stick": "single long thin cinnamon stick, rolled reddish brown bark quill, diagonal",
+    "cinnamon_sapling": "small cinnamon tree sapling with glossy green leaves",
+    "strawberry_bush_0": "tiny green seedling sprout with two small leaves",
+    "strawberry_bush_1": "small low green strawberry plant with serrated leaves",
+    "strawberry_bush_2": "low strawberry bush with white flowers and green leaves",
+    "strawberry_bush_3": "low strawberry bush with many ripe red strawberries and green leaves",
+    "vanilla_vine_0": "tiny green vine sprout curling up",
+    "vanilla_vine_1": "young green vine climbing a short wooden stick",
+    "vanilla_vine_2": "green vine with pale yellow orchid flowers climbing a wooden stick",
+    "vanilla_vine_3": "thin green vine climbing a wooden stick with several long dark brown vanilla bean pods hanging down",
+    "cinnamon_shrub_0": "tiny tree sapling sprout with two leaves",
+    "cinnamon_shrub_1": "small young shrub with glossy green leaves",
+    "cinnamon_shrub_2": "medium shrub with green and reddish young leaves and thin brown stems",
+    "cinnamon_shrub_3": "tall bushy shrub with thick reddish brown bark stems and dense green leaves",
+})
+
+
+def suffix_for(name):
+    if name[-2:] in ("_0", "_1", "_2", "_3"):
+        return PLANT_SUFFIX
+    if name in ("strawberry", "vanilla_pod", "cinnamon_stick", "cinnamon_sapling"):
+        return ITEM_SUFFIX_PLAIN
+    return SUFFIX
+
+
 def call(method, path, payload=None):
     headers = {"Content-Type": "application/json"}
     key = os.environ.get("RD_API_KEY")
@@ -64,7 +95,7 @@ def call(method, path, payload=None):
 
 def generate(name, n, seed, check_cost):
     payload = {
-        "prompt": PROMPTS[name] + SUFFIX,
+        "prompt": PROMPTS[name] + suffix_for(name),
         "prompt_style": STYLE,
         "width": 16,
         "height": 16,

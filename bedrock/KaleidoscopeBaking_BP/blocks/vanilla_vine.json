@@ -1,0 +1,210 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kb:vanilla_vine",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kb:growth": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kb_crop_cross",
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 0
+      },
+      "minecraft:collision_box": false,
+      "minecraft:selection_box": {
+        "origin": [
+          -6,
+          0,
+          -6
+        ],
+        "size": [
+          12,
+          6,
+          12
+        ]
+      },
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_crops_vanilla_vine_0",
+          "render_method": "alpha_test"
+        },
+        "plant": {
+          "texture": "kb_crops_vanilla_vine_0",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:flammable": {
+        "catch_chance_modifier": 60,
+        "destroy_chance_modifier": 100
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:map_color": "#4f8a3a",
+      "minecraft:loot": "loot_tables/empty.json",
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ],
+            "block_filter": [
+              "minecraft:farmland",
+              "minecraft:grass_block",
+              "minecraft:dirt",
+              "minecraft:podzol",
+              "minecraft:coarse_dirt"
+            ]
+          }
+        ]
+      },
+      "kb:crop": {
+        "planter": "kb:vanilla_pod",
+        "fruit": "kb:vanilla_pod",
+        "fruit_count": [
+          1,
+          3
+        ],
+        "regrow_to": 2,
+        "grow_chance": 0.2
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kb:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_crops_vanilla_vine_0",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            },
+            "plant": {
+              "texture": "kb_crops_vanilla_vine_0",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              6,
+              12
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_crops_vanilla_vine_1",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            },
+            "plant": {
+              "texture": "kb_crops_vanilla_vine_1",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              10,
+              12
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_crops_vanilla_vine_2",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            },
+            "plant": {
+              "texture": "kb_crops_vanilla_vine_2",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              14,
+              12
+            ]
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kb:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_crops_vanilla_vine_3",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            },
+            "plant": {
+              "texture": "kb_crops_vanilla_vine_3",
+              "render_method": "alpha_test",
+              "face_dimming": false,
+              "ambient_occlusion": false
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              16,
+              12
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

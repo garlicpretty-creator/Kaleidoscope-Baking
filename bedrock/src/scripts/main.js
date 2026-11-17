@@ -38,10 +38,13 @@ function consumeHeld(player, eq, item) {
   }
 }
 
-function popOut(block, id, count = 1) {
+function popOut(block, id, count = 1, dy = 1.0) {
+  if (count <= 0) return;
   const { x, y, z } = block.location;
-  block.dimension.spawnItem(new ItemStack(id, count), { x: x + 0.5, y: y + 1.0, z: z + 0.5 });
+  block.dimension.spawnItem(new ItemStack(id, count), { x: x + 0.5, y: y + dy, z: z + 0.5 });
 }
+
+const randInt = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
 
 function sound(block, id, volume = 1, pitch = 1) {
   const { x, y, z } = block.location;
@@ -232,7 +235,51 @@ const bowl = {
   },
 };
 
+// ------------------------------------------------------------------ crops
+// Parameters come from the block JSON: "kb:crop": { planter, fruit, fruit_count, regrow_to, grow_chance }
+/** @param {import("@minecraft/server").CustomComponentParameters} p */
+const cropParams = (p) => /** @type {any} */ (p.params);
+const MATURE = 3;
+
+/** @type {BlockCustomComponent} */
+const crop = {
+  onRandomTick({ block }, p) {
+    const g = st(block.permutation, "kb:growth");
+    if (g < MATURE && Math.random() < cropParams(p).grow_chance) setStates(block, { "kb:growth": g + 1 });
+  },
+
+  onPlayerInteract({ block, player }, p) {
+    if (!player) return;
+    const c = cropParams(p);
+    const { eq, item } = mainhand(player);
+    const g = st(block.permutation, "kb:growth");
+
+    if (item?.typeId === "minecraft:bone_meal") {
+      if (g >= MATURE) return;
+      setStates(block, { "kb:growth": g + 1 });
+      consumeHeld(player, eq, item);
+      particle(block, "minecraft:crop_growth_emitter", 0.5, 0.5, 0.5);
+      sound(block, "item.bone_meal.use");
+      return;
+    }
+    if (g === MATURE) {
+      popOut(block, c.fruit, randInt(c.fruit_count[0], c.fruit_count[1]), 0.6);
+      setStates(block, { "kb:growth": c.regrow_to });
+      sound(block, "block.sweet_berry_bush.pick");
+    }
+  },
+
+  onPlayerBreak({ block, brokenBlockPermutation }, p) {
+    const c = cropParams(p);
+    popOut(block, c.planter, 1, 0.3);
+    if (st(brokenBlockPermutation, "kb:growth") === MATURE) {
+      popOut(block, c.fruit, randInt(c.fruit_count[0], c.fruit_count[1]), 0.3);
+    }
+  },
+};
+
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
   blockComponentRegistry.registerCustomComponent("kb:oven", oven);
   blockComponentRegistry.registerCustomComponent("kb:mixing_bowl", bowl);
+  blockComponentRegistry.registerCustomComponent("kb:crop", crop);
 });

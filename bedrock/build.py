@@ -100,6 +100,9 @@ def build_items():
             "minecraft:display_name": {"value": f"item.{NS}:{name}.name"},
             "minecraft:max_stack_size": 64,
         }
+        for crop, c in G.CROPS.items():
+            if c["planter"] == name:
+                comps["minecraft:block_placer"] = {"block": f"{NS}:{crop}", "use_on": G.SOILS}
         if name in G.FOOD:
             nut, sat, conv = G.FOOD[name]
             food = {"nutrition": nut, "saturation_modifier": sat}
@@ -250,8 +253,8 @@ def load_model(name):
 
 
 # ================================================================ blocks
-def base_block(name, collision, comps, states=None, rotatable=False, perms=()):
-    desc = {"identifier": f"{NS}:{name}", "menu_category": {"category": "items"}}
+def base_block(name, collision, comps, states=None, rotatable=False, perms=(), category="items"):
+    desc = {"identifier": f"{NS}:{name}", "menu_category": {"category": category}}
     if states:
         desc["states"] = states
     components = {
@@ -372,6 +375,99 @@ def build_tray():
     )
 
 
+def plant_sprite(name, height=16):
+    """Growth-stage sprite from art/plants/, trimmed, scaled to `height` px, anchored bottom centre."""
+    p = ROOT / "art" / "plants" / f"{name}.png"
+    if not p.exists():
+        raise SystemExit(f"missing {p}")
+    img = Image.open(p).convert("RGBA")
+    if img.size != (16, 16):
+        img = img.resize((16, 16), Image.NEAREST)
+    img.putalpha(img.getchannel("A").point(lambda v: 255 if v >= 128 else 0))
+    bbox = img.getchannel("A").getbbox()
+    out = T.blank()
+    if bbox:
+        part = img.crop(bbox)
+        if part.height > height:
+            k = height / part.height
+            part = part.resize((max(1, round(part.width * k)), height), Image.NEAREST)
+        out.paste(part, ((16 - part.width) // 2, 16 - part.height))
+    return out
+
+
+def build_crops():
+    load_model("crop_cross")
+    write_json(BP / "loot_tables" / "empty.json", {"pools": []})
+    for crop, c in G.CROPS.items():
+        keys = [save_block_tex(plant_sprite(f"{crop}_{s}", c["heights"][s]), f"crops/{crop}_{s}") for s in range(4)]
+        perms = []
+        for s, key in enumerate(keys):
+            h = c["heights"][s]
+            perms.append({"condition": f"{q('kb:growth')} == {s}", "components": {
+                "minecraft:material_instances": {
+                    "*": {"texture": key, "render_method": "alpha_test", "face_dimming": False, "ambient_occlusion": False},
+                    "plant": {"texture": key, "render_method": "alpha_test", "face_dimming": False, "ambient_occlusion": False},
+                },
+                "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, h, 12]},
+            }})
+        base_block(
+            crop, ([-6, 0, -6], [12, 8, 12]),
+            {
+                "minecraft:geometry": f"geometry.{NS}_crop_cross",
+                "minecraft:collision_box": False,
+                "minecraft:selection_box": {"origin": [-6, 0, -6], "size": [12, c["heights"][0], 12]},
+                "minecraft:material_instances": {
+                    "*": {"texture": keys[0], "render_method": "alpha_test"},
+                    "plant": {"texture": keys[0], "render_method": "alpha_test"},
+                },
+                "minecraft:destructible_by_mining": {"seconds_to_destroy": 0},
+                "minecraft:destructible_by_explosion": {"explosion_resistance": 0},
+                "minecraft:flammable": {"catch_chance_modifier": 60, "destroy_chance_modifier": 100},
+                "minecraft:light_dampening": 0,
+                "minecraft:map_color": "#4f8a3a",
+                "minecraft:loot": "loot_tables/empty.json",
+                "minecraft:placement_filter": {"conditions": [
+                    {"allowed_faces": ["up"], "block_filter": G.SOILS}]},
+                "kb:crop": {
+                    "planter": f"{NS}:{c['planter']}", "fruit": f"{NS}:{c['fruit']}",
+                    "fruit_count": c["fruit_count"], "regrow_to": c["regrow_to"], "grow_chance": c["grow_chance"],
+                },
+            },
+            states={"kb:growth": [0, 1, 2, 3]},
+            perms=perms, category="none",
+        )
+        # wild patches, generated fully grown
+        write_json(BP / "features" / f"wild_{crop}.json", {
+            "format_version": "1.13.0",
+            "minecraft:single_block_feature": {
+                "description": {"identifier": f"{NS}:wild_{crop}"},
+                "places_block": {"name": f"{NS}:{crop}", "states": {"kb:growth": 3}},
+                "enforce_placement_rules": False,
+                "enforce_survivability_rules": False,
+                "may_replace": ["minecraft:air"],
+                "may_attach_to": {"bottom": ["minecraft:grass_block", "minecraft:podzol", "minecraft:dirt"]},
+            },
+        })
+        for biome in c["biomes"]:
+            write_json(BP / "feature_rules" / f"wild_{crop}_{biome}.json", {
+                "format_version": "1.13.0",
+                "minecraft:feature_rules": {
+                    "description": {"identifier": f"{NS}:wild_{crop}_{biome}", "places_feature": f"{NS}:wild_{crop}"},
+                    "conditions": {
+                        "placement_pass": "surface_pass",
+                        "minecraft:biome_filter": [{"test": "has_biome_tag", "operator": "==", "value": biome}],
+                    },
+                    "distribution": {
+                        "iterations": 3,
+                        "scatter_chance": {"numerator": 1, "denominator": c["rarity"]},
+                        "x": {"distribution": "uniform", "extent": [0, 15]},
+                        "y": "query.heightmap(variable.worldx, variable.worldz)",
+                        "z": {"distribution": "uniform", "extent": [0, 15]},
+                    },
+                },
+            })
+
+
 # ================================================================ scripts, packs
 def build_scripts():
     data = {
@@ -441,6 +537,7 @@ def lang_and_meta():
         f"{NS}:oven": {"sound": "stone"},
         f"{NS}:mixing_bowl": {"sound": "stone"},
         f"{NS}:baking_tray": {"sound": "metal"},
+        **{f"{NS}:{c}": {"sound": "grass"} for c in G.CROPS},
     })
     icon = item_icon("berry_cake_slice").resize((128, 128), Image.NEAREST)
     bg = Image.new("RGBA", (128, 128), T.hexrgb("#fde9d2"))
@@ -469,6 +566,7 @@ def main():
     build_oven()
     build_bowl()
     build_tray()
+    build_crops()
     build_scripts()
     manifests()
     lang_and_meta()

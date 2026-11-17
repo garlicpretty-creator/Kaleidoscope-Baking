@@ -1,0 +1,37 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kb:strawberry",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_strawberry",
+      "minecraft:display_name": {
+        "value": "item.kb:strawberry.name"
+      },
+      "minecraft:max_stack_size": 64,
+      "minecraft:block_placer": {
+        "block": "kb:strawberry_bush",
+        "use_on": [
+          "minecraft:farmland",
+          "minecraft:grass_block",
+          "minecraft:dirt",
+          "minecraft:podzol",
+          "minecraft:coarse_dirt"
+        ]
+      },
+      "minecraft:food": {
+        "nutrition": 2,
+        "saturation_modifier": 0.3
+      },
+      "minecraft:use_animation": "eat",
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.35
+      }
+    }
+  }
+}

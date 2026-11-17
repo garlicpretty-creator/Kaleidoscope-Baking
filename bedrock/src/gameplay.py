@@ -10,6 +10,11 @@ ITEM_NAMES = {
     "sweet_dough": ("Sweet Dough", "甜麵團"),
     "whipped_cream": ("Whipped Cream", "打發鮮奶油"),
     "chocolate_bar": ("Chocolate Bar", "巧克力磚"),
+    # crops
+    "strawberry": ("Strawberry", "草莓"),
+    "vanilla_pod": ("Vanilla Pod", "香草莢"),
+    "cinnamon_stick": ("Cinnamon Stick", "肉桂棒"),
+    "cinnamon_sapling": ("Cinnamon Sapling", "肉桂苗"),
     # unbaked (go into the oven)
     "raw_croissant": ("Unbaked Croissant", "生可頌"),
     "raw_cookies": ("Cookie Dough Balls", "生餅乾麵團"),
@@ -18,7 +23,7 @@ ITEM_NAMES = {
     "raw_pudding": ("Custard Ramekin", "生布丁液"),
     "raw_cream_puff": ("Choux Dough", "生泡芙麵糊"),
     "raw_cinnamon_roll": ("Unbaked Cinnamon Roll", "生肉桂捲"),
-    "raw_berry_cake": ("Berry Cake Batter", "莓果蛋糕麵糊"),
+    "raw_berry_cake": ("Strawberry Cake Batter", "草莓蛋糕麵糊"),
     "raw_chocolate_cake": ("Chocolate Cake Batter", "巧克力蛋糕麵糊"),
     # baked
     "toast": ("Toast", "吐司"),
@@ -29,7 +34,7 @@ ITEM_NAMES = {
     "pudding": ("Caramel Pudding", "焦糖布丁"),
     "cream_puff": ("Cream Puff", "泡芙"),
     "cinnamon_roll": ("Cinnamon Roll", "肉桂捲"),
-    "berry_cake_slice": ("Berry Shortcake Slice", "莓果蛋糕切片"),
+    "berry_cake_slice": ("Strawberry Shortcake Slice", "草莓蛋糕切片"),
     "chocolate_cake_slice": ("Chocolate Cake Slice", "巧克力蛋糕切片"),
 }
 
@@ -37,10 +42,14 @@ BLOCK_NAMES = {
     "oven": ("Oven", "烤箱"),
     "mixing_bowl": ("Mixing Bowl", "攪拌碗"),
     "baking_tray": ("Baking Tray", "烤盤"),
+    "strawberry_bush": ("Strawberry Bush", "草莓叢"),
+    "vanilla_vine": ("Vanilla Vine", "香草藤"),
+    "cinnamon_shrub": ("Cinnamon Shrub", "肉桂灌木"),
 }
 
 # Food stats: nutrition, saturation, container returned after eating
 FOOD = {
+    "strawberry": (2, 0.3, None),
     "toast": (5, 0.6, None),
     "butter_cookie": (2, 0.3, None),
     "croissant": (6, 0.7, None),
@@ -64,12 +73,12 @@ BOWL_RECIPES = [
     ("chocolate_bar", 2, [M + "cocoa_beans", M + "cocoa_beans", M + "sugar", K + "butter"]),
     ("raw_croissant", 1, [K + "dough", K + "butter"]),
     ("raw_cookies", 1, [K + "sweet_dough", K + "chocolate_bar"]),
-    ("raw_egg_tart", 1, [K + "sweet_dough", M + "egg", M + "sugar"]),
-    ("raw_macaron", 1, [K + "sweet_dough", M + "egg", M + "sweet_berries"]),
-    ("raw_pudding", 1, [M + "egg", M + "milk_bucket", M + "sugar", M + "bowl"]),
+    ("raw_egg_tart", 1, [K + "sweet_dough", M + "egg", M + "sugar", K + "vanilla_pod"]),
+    ("raw_macaron", 1, [K + "sweet_dough", M + "egg", K + "strawberry"]),
+    ("raw_pudding", 1, [M + "egg", M + "milk_bucket", M + "sugar", M + "bowl", K + "vanilla_pod"]),
     ("raw_cream_puff", 1, [K + "dough", K + "whipped_cream", M + "egg"]),
-    ("raw_cinnamon_roll", 1, [K + "sweet_dough", M + "sugar", K + "butter"]),
-    ("raw_berry_cake", 1, [K + "sweet_dough", K + "whipped_cream", M + "sweet_berries", M + "sweet_berries"]),
+    ("raw_cinnamon_roll", 1, [K + "sweet_dough", M + "sugar", K + "butter", K + "cinnamon_stick"]),
+    ("raw_berry_cake", 1, [K + "sweet_dough", K + "whipped_cream", K + "strawberry", K + "strawberry"]),
     ("raw_chocolate_cake", 1, [K + "sweet_dough", K + "whipped_cream", K + "chocolate_bar"]),
 ]
 STIRS_NEEDED = 4
@@ -107,3 +116,24 @@ CRAFTING = [
     ("baking_tray", 1, None, ["N N", "NNN"], {"N": M + "iron_nugget"}),
     ("oven", 1, None, ["BBB", "BGB", "III"], {"B": M + "brick", "G": M + "glass_pane", "I": M + "iron_ingot"}),
 ]
+
+# Crops: 4 growth stages (kb:growth 0..3). Right-click a mature plant to pick it (it drops
+# back to `regrow_to`), bone meal advances a stage, breaking drops the planter (+ fruit if ripe).
+SOILS = [M + "farmland", M + "grass_block", M + "dirt", M + "podzol", M + "coarse_dirt"]
+CROPS = {
+    "strawberry_bush": {
+        "planter": "strawberry", "fruit": "strawberry", "fruit_count": [2, 3], "regrow_to": 2,
+        "grow_chance": 0.3, "heights": [5, 8, 11, 13],
+        "biomes": ["plains", "forest"], "rarity": 6,
+    },
+    "vanilla_vine": {
+        "planter": "vanilla_pod", "fruit": "vanilla_pod", "fruit_count": [1, 3], "regrow_to": 2,
+        "grow_chance": 0.2, "heights": [6, 10, 14, 16],
+        "biomes": ["jungle"], "rarity": 4,
+    },
+    "cinnamon_shrub": {
+        "planter": "cinnamon_sapling", "fruit": "cinnamon_stick", "fruit_count": [1, 3], "regrow_to": 1,
+        "grow_chance": 0.2, "heights": [6, 10, 13, 16],
+        "biomes": ["savanna", "jungle"], "rarity": 5,
+    },
+}

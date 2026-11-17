@@ -11,15 +11,17 @@ becomes a *material instance* the scripts swap per block state:
     food   - the dessert visible inside the oven (raw -> half -> done -> burnt)
     fire   - the firebox (lit / out)
     batter - contents of the mixing bowl (lumpy / mixed)
+    plant  - crop sprite (one per growth stage)
 `bone` groups cubes into a Blockbench group (= geometry bone) so they can be shown/hidden.
 """
 
 ALL = ("north", "south", "east", "west", "up", "down")
 
 
-def cube(name, origin, size, mat=None, tex=None, bone="body", **faces):
+def cube(name, origin, size, mat=None, tex=None, bone="body", rotation=None, pivot=None, **faces):
     return {
         "name": name, "origin": origin, "size": size, "bone": bone, "tex": tex,
+        "rotation": rotation, "pivot": pivot,
         "faces": {f: faces.get(f, mat) for f in ALL},
     }
 
@@ -65,6 +67,13 @@ BLOCKS = {
             cube("batter4", [-4, 5, -4], [8, 1, 8], tex="batter", bone="fill4"),
             cube("spoon_handle", [1, 3, 1], [1, 7, 1], "wood", bone="spoon"),
             cube("spoon_head", [0, 2, 0], [3, 1, 3], "wood", bone="spoon"),
+        ],
+    },
+    # Shared by every crop: two crossed planes; the `plant` texture is swapped per growth stage.
+    "crop_cross": {
+        "cubes": [
+            cube("plane_a", [-8, 0, 0], [16, 16, 0], tex="plant", bone="plant", rotation=[0, 45, 0], pivot=[0, 0, 0]),
+            cube("plane_b", [-8, 0, 0], [16, 16, 0], tex="plant", bone="plant", rotation=[0, -45, 0], pivot=[0, 0, 0]),
         ],
     },
     "baking_tray": {

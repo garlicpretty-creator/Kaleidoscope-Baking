@@ -50,6 +50,9 @@ def preview(tex):
         return T.fire(True)
     if tex == "batter":
         return T.batter(T.hexrgb("#f6e2b3"))
+    if tex == "plant":
+        p = ROOT / "art" / "plants" / "strawberry_bush_3.png"
+        return Image.open(p).convert("RGBA") if p.exists() else T.blank()
     if tex == "food":
         p = ROOT / "art" / "icons" / "croissant.png"
         return Image.open(p).convert("RGBA") if p.exists() else T.blank()
@@ -127,9 +130,14 @@ def make(name, spec):
             "allow_mirror_modeling": True,
             # Blockbench mirrors X for Bedrock: from.x = -(origin.x + size.x)
             "from": [-(ox + sx), oy, oz], "to": [-ox, oy + sy, oz + sz],
-            "autouv": 0, "color": ci % 8, "origin": [0, 0, 0],
+            "autouv": 0, "color": ci % 8,
+            # pivot / rotation, mirrored the same way Blockbench does for Bedrock
+            "origin": [-(c.get("pivot") or [0, 0, 0])[0], *(c.get("pivot") or [0, 0, 0])[1:]],
             "faces": faces, "type": "cube", "uuid": uid(name, "cube", c["name"]),
         }
+        if c.get("rotation"):
+            r = c["rotation"]
+            el["rotation"] = [-r[0], -r[1], r[2]]
         elements.append(el)
         groups.setdefault(c["bone"], []).append(el["uuid"])
 

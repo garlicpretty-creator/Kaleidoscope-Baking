@@ -195,6 +195,48 @@
     },
     "kb_baking_tray": {
       "textures": "textures/blocks/baking_tray"
+    },
+    "kb_crop_cross": {
+      "textures": "textures/blocks/crop_cross"
+    },
+    "kb_crop_cross_plant": {
+      "textures": "textures/blocks/crop_cross_plant"
+    },
+    "kb_crops_strawberry_bush_0": {
+      "textures": "textures/blocks/crops/strawberry_bush_0"
+    },
+    "kb_crops_strawberry_bush_1": {
+      "textures": "textures/blocks/crops/strawberry_bush_1"
+    },
+    "kb_crops_strawberry_bush_2": {
+      "textures": "textures/blocks/crops/strawberry_bush_2"
+    },
+    "kb_crops_strawberry_bush_3": {
+      "textures": "textures/blocks/crops/strawberry_bush_3"
+    },
+    "kb_crops_vanilla_vine_0": {
+      "textures": "textures/blocks/crops/vanilla_vine_0"
+    },
+    "kb_crops_vanilla_vine_1": {
+      "textures": "textures/blocks/crops/vanilla_vine_1"
+    },
+    "kb_crops_vanilla_vine_2": {
+      "textures": "textures/blocks/crops/vanilla_vine_2"
+    },
+    "kb_crops_vanilla_vine_3": {
+      "textures": "textures/blocks/crops/vanilla_vine_3"
+    },
+    "kb_crops_cinnamon_shrub_0": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_0"
+    },
+    "kb_crops_cinnamon_shrub_1": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_1"
+    },
+    "kb_crops_cinnamon_shrub_2": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_2"
+    },
+    "kb_crops_cinnamon_shrub_3": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_3"
     }
   }
 }
