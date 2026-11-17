@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/branding/banner.png" alt="Kaleidoscope Baking" width="600"></p>
+
 # Kaleidoscope-Baking
 A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenware, and delicious desserts
 
