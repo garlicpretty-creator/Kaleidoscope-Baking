@@ -127,16 +127,24 @@ test("oven: aborted slot returns raw input; bad records normalize safely", () =>
 });
 
 test("mixing bowl: add, whisk to completion, spilled liquids never return", () => {
+  setItemTagResolver((id, tag) =>
+    (id === "kaleidoscope_baking:whisk" && tag === "kaleidoscope_baking:whisk") ||
+    (id === "kaleidoscope_baking:milk_frother" && tag === "kaleidoscope_baking:frother"));
   const b = emptyBowl();
   assert.equal(addToBowl(b, "minecraft:dirt").reason, "not_ingredient");
   assert.ok(addToBowl(b, "minecraft:milk_bucket", true).ok);
   let r;
-  for (let i = 0; i < 7; i++) r = whiskBowl(b);
+  for (let i = 0; i < 7; i++) r = whiskBowl(b, "kaleidoscope_baking:whisk");
   assert.equal(r.result, "progress");
-  r = whiskBowl(b);
+  r = whiskBowl(b, "kaleidoscope_baking:whisk");
   assert.equal(r.result, "done");
   assert.equal(r.recipe.result, "kaleidoscope_baking:butter");
   assert.equal(b.items.length, 0);
+
+  // same milk + frother = frothed milk (tool decides the recipe)
+  addToBowl(b, "minecraft:milk_bucket", true);
+  for (let i = 0; i < 4; i++) r = whiskBowl(b, "kaleidoscope_baking:milk_frother");
+  assert.equal(r.recipe.result, "kaleidoscope_baking:frothed_milk");
 
   addToBowl(b, "minecraft:milk_bucket", true);
   addToBowl(b, "minecraft:egg");

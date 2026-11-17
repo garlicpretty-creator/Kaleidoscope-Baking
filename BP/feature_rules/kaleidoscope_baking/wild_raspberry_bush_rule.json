@@ -1,0 +1,48 @@
+{
+  "format_version": "1.13.0",
+  "minecraft:feature_rules": {
+    "description": {
+      "identifier": "kaleidoscope_baking:wild_raspberry_bush_rule",
+      "places_feature": "kaleidoscope_baking:wild_raspberry_bush_scatter"
+    },
+    "conditions": {
+      "placement_pass": "after_surface_pass",
+      "minecraft:biome_filter": {
+        "any_of": [
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
+            "value": "forest"
+          },
+          {
+            "test": "has_biome_tag",
+            "operator": "==",
+            "value": "birch"
+          }
+        ]
+      }
+    },
+    "distribution": {
+      "iterations": 1,
+      "x": {
+        "extent": [
+          0,
+          15
+        ],
+        "distribution": "uniform"
+      },
+      "y": "q.heightmap(v.worldx, v.worldz)",
+      "z": {
+        "extent": [
+          0,
+          15
+        ],
+        "distribution": "uniform"
+      },
+      "scatter_chance": {
+        "numerator": 1,
+        "denominator": 24
+      }
+    }
+  }
+}

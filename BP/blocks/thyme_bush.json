@@ -1,0 +1,176 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:thyme_bush",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:growth": {
+          "values": {
+            "min": 0,
+            "max": 3
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:collision_box": false,
+      "minecraft:light_dampening": 0,
+      "minecraft:geometry": "geometry.kaleidoscope_baking.cross",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_thyme_bush_stage_0",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ],
+            "block_filter": [
+              "minecraft:grass_block",
+              "minecraft:dirt",
+              "minecraft:podzol",
+              "minecraft:coarse_dirt",
+              "minecraft:farmland",
+              "minecraft:moss_block",
+              "minecraft:rooted_dirt"
+            ]
+          }
+        ]
+      },
+      "minecraft:liquid_detection": {
+        "detection_rules": [
+          {
+            "liquid_type": "water",
+            "on_liquid_touches": "popped"
+          }
+        ]
+      },
+      "minecraft:movable": {
+        "movement_type": "popped"
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.0
+      },
+      "minecraft:map_color": "#5AA046",
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/thyme_bush_immature.json",
+      "minecraft:tags": [
+        "kaleidoscope:crop"
+      ],
+      "kaleidoscope_baking:plant": {
+        "max": 3,
+        "chance": 12,
+        "min_light": 9,
+        "kind": "perennial",
+        "harvest": "kaleidoscope_baking:thyme",
+        "harvest_min": 1,
+        "harvest_max": 3,
+        "reset": 1,
+        "spread": false
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_thyme_bush_stage_0",
+              "render_method": "alpha_test"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              4,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/thyme_bush_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_thyme_bush_stage_1",
+              "render_method": "alpha_test"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              8,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/thyme_bush_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_thyme_bush_stage_2",
+              "render_method": "alpha_test"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              12,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/thyme_bush_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_thyme_bush_stage_3",
+              "render_method": "alpha_test"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              16,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/thyme_bush_mature.json"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:cassava",
+      "menu_category": {
+        "category": "nature",
+        "group": "kaleidoscope_baking:itemGroup.name.plants"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_cassava",
+      "minecraft:max_stack_size": 64,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:root_vegetable",
+          "kaleidoscope:vegetable"
+        ]
+      }
+    }
+  }
+}

@@ -3,15 +3,19 @@
 // Kaleidoscope Baking Script Event API v1 — see documentation/KB_EXTENSION_API.md
 // ----------------------------------------------------------------------------
 // Other packs never import Baking's files. They talk to Baking through these events:
-//   kaleidoscope_baking:api_ping              -> Baking answers with api_ready
-//   kaleidoscope_baking:api_ready             <- {api, capabilities, ingredientApi}
-//   kaleidoscope_baking:register_recipe       {api, kind, source, recipe}
-//   kaleidoscope_baking:register_ingredient   {api, source, id, tags}
-//   kaleidoscope_baking:register_fuel         {api, source, fuel:{id, ticks, returns?}}
+//   kaleidoscope_baking:api_ping                -> Baking answers with api_ready
+//   kaleidoscope_baking:api_ready               <- {api, capabilities, ingredientApi}
+//   kaleidoscope_baking:register_recipe         {api, kind, source, recipe}
+//   kaleidoscope_baking:register_ingredient     {api, source, id, tags}
+//   kaleidoscope_baking:register_fuel           {api, source, fuel:{id, ticks, returns?}}
+//   kaleidoscope_baking:register_food_effect    {api, source, id, category, caffeine, reduces, effects, clear}
+//   kaleidoscope_baking:bulk_begin / bulk_chunk / bulk_end   many of the above at once
 // ============================================================================
 import { ItemStack, system } from "@minecraft/server";
 import { KB_API_VERSION, KB_CAPABILITIES, registerFuel, registerRecipe } from "./registry.js";
 import { registerIngredient, setItemTagResolver } from "./ingredients.js";
+import { registerFoodEffect } from "./effects.js";
+import { bulkBegin, bulkChunk, bulkEnd } from "./chunks.js";
 import { onWorldReady } from "../utils/runtime.js";
 
 export const KB_EVENTS = Object.freeze({
@@ -19,7 +23,11 @@ export const KB_EVENTS = Object.freeze({
   ready: "kaleidoscope_baking:api_ready",
   recipe: "kaleidoscope_baking:register_recipe",
   ingredient: "kaleidoscope_baking:register_ingredient",
-  fuel: "kaleidoscope_baking:register_fuel"
+  fuel: "kaleidoscope_baking:register_fuel",
+  foodEffect: "kaleidoscope_baking:register_food_effect",
+  bulkBegin: "kaleidoscope_baking:bulk_begin",
+  bulkChunk: "kaleidoscope_baking:bulk_chunk",
+  bulkEnd: "kaleidoscope_baking:bulk_end"
 });
 
 // Item-JSON tags (minecraft:tags) are read through ItemStack#hasTag. Results are cached:
@@ -46,16 +54,32 @@ function sendReady() {
 const HANDLERS = {
   [KB_EVENTS.recipe]: registerRecipe,
   [KB_EVENTS.ingredient]: registerIngredient,
-  [KB_EVENTS.fuel]: registerFuel
+  [KB_EVENTS.fuel]: registerFuel,
+  [KB_EVENTS.foodEffect]: registerFoodEffect
 };
 
+/** Dispatch one registration; returns the handler result. */
+export function dispatch(id, payload) {
+  const handler = HANDLERS[id];
+  if (!handler) return { ok: false, reason: "event" };
+  const result = handler(payload);
+  if (!result.ok) console.warn(`[Kaleidoscope Baking] Rejected ${id} (${result.reason}).`);
+  return result;
+}
+
 system.afterEvents.scriptEventReceive.subscribe(ev => {
-  if (ev.id === KB_EVENTS.ping) { sendReady(); return; }
-  const handler = HANDLERS[ev.id];
-  if (!handler) return;
   try {
-    const result = handler(JSON.parse(String(ev.message ?? "")));
-    if (!result.ok) console.warn(`[Kaleidoscope Baking] Rejected ${ev.id} (${result.reason}).`);
+    if (ev.id === KB_EVENTS.ping) { sendReady(); return; }
+    if (ev.id === KB_EVENTS.bulkBegin) { bulkBegin(JSON.parse(String(ev.message ?? ""))); return; }
+    if (ev.id === KB_EVENTS.bulkChunk) { bulkChunk(ev.message); return; }
+    if (ev.id === KB_EVENTS.bulkEnd) {
+      const res = bulkEnd(JSON.parse(String(ev.message ?? "")));
+      if (!res.ok) { console.warn(`[Kaleidoscope Baking] Bulk transfer failed (${res.reason}).`); return; }
+      if (Number(res.data?.api) !== 1 || !Array.isArray(res.data.registrations)) return;
+      for (const r of res.data.registrations.slice(0, 4096)) if (r && HANDLERS[r.event]) dispatch(r.event, r.payload);
+      return;
+    }
+    if (HANDLERS[ev.id]) dispatch(ev.id, JSON.parse(String(ev.message ?? "")));
   } catch (err) {
     console.warn(`[Kaleidoscope Baking] Invalid ${ev.id} message: ${err}`);
   }

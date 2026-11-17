@@ -24,6 +24,318 @@
     },
     "kb_mixing_bowl": {
       "textures": "textures/blocks/kb_mixing_bowl"
+    },
+    "kb_proofing_basket": {
+      "textures": "textures/blocks/kb_proofing_basket"
+    },
+    "kb_decorating_stand": {
+      "textures": "textures/blocks/kb_decorating_stand"
+    },
+    "kb_espresso_machine": {
+      "textures": "textures/blocks/kb_espresso_machine"
+    },
+    "kb_pour_over_stand": {
+      "textures": "textures/blocks/kb_pour_over_stand"
+    },
+    "kb_drink_shaker": {
+      "textures": "textures/blocks/kb_drink_shaker"
+    },
+    "kb_herb_planter": {
+      "textures": "textures/blocks/kb_herb_planter"
+    },
+    "kb_rosemary_bush_stage_0": {
+      "textures": "textures/blocks/kb_rosemary_bush_stage_0"
+    },
+    "kb_rosemary_bush_stage_1": {
+      "textures": "textures/blocks/kb_rosemary_bush_stage_1"
+    },
+    "kb_rosemary_bush_stage_2": {
+      "textures": "textures/blocks/kb_rosemary_bush_stage_2"
+    },
+    "kb_rosemary_bush_stage_3": {
+      "textures": "textures/blocks/kb_rosemary_bush_stage_3"
+    },
+    "kb_thyme_bush_stage_0": {
+      "textures": "textures/blocks/kb_thyme_bush_stage_0"
+    },
+    "kb_thyme_bush_stage_1": {
+      "textures": "textures/blocks/kb_thyme_bush_stage_1"
+    },
+    "kb_thyme_bush_stage_2": {
+      "textures": "textures/blocks/kb_thyme_bush_stage_2"
+    },
+    "kb_thyme_bush_stage_3": {
+      "textures": "textures/blocks/kb_thyme_bush_stage_3"
+    },
+    "kb_lavender_bush_stage_0": {
+      "textures": "textures/blocks/kb_lavender_bush_stage_0"
+    },
+    "kb_lavender_bush_stage_1": {
+      "textures": "textures/blocks/kb_lavender_bush_stage_1"
+    },
+    "kb_lavender_bush_stage_2": {
+      "textures": "textures/blocks/kb_lavender_bush_stage_2"
+    },
+    "kb_lavender_bush_stage_3": {
+      "textures": "textures/blocks/kb_lavender_bush_stage_3"
+    },
+    "kb_mint_bush_stage_0": {
+      "textures": "textures/blocks/kb_mint_bush_stage_0"
+    },
+    "kb_mint_bush_stage_1": {
+      "textures": "textures/blocks/kb_mint_bush_stage_1"
+    },
+    "kb_mint_bush_stage_2": {
+      "textures": "textures/blocks/kb_mint_bush_stage_2"
+    },
+    "kb_mint_bush_stage_3": {
+      "textures": "textures/blocks/kb_mint_bush_stage_3"
+    },
+    "kb_vanilla_vine_stage_0": {
+      "textures": "textures/blocks/kb_vanilla_vine_stage_0"
+    },
+    "kb_vanilla_vine_stage_1": {
+      "textures": "textures/blocks/kb_vanilla_vine_stage_1"
+    },
+    "kb_vanilla_vine_stage_2": {
+      "textures": "textures/blocks/kb_vanilla_vine_stage_2"
+    },
+    "kb_vanilla_vine_stage_3": {
+      "textures": "textures/blocks/kb_vanilla_vine_stage_3"
+    },
+    "kb_sesame_crop_stage_0": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_0"
+    },
+    "kb_sesame_crop_stage_1": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_1"
+    },
+    "kb_sesame_crop_stage_2": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_2"
+    },
+    "kb_sesame_crop_stage_3": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_3"
+    },
+    "kb_sesame_crop_stage_4": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_4"
+    },
+    "kb_sesame_crop_stage_5": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_5"
+    },
+    "kb_sesame_crop_stage_6": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_6"
+    },
+    "kb_sesame_crop_stage_7": {
+      "textures": "textures/blocks/kb_sesame_crop_stage_7"
+    },
+    "kb_stevia_crop_stage_0": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_0"
+    },
+    "kb_stevia_crop_stage_1": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_1"
+    },
+    "kb_stevia_crop_stage_2": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_2"
+    },
+    "kb_stevia_crop_stage_3": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_3"
+    },
+    "kb_stevia_crop_stage_4": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_4"
+    },
+    "kb_stevia_crop_stage_5": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_5"
+    },
+    "kb_stevia_crop_stage_6": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_6"
+    },
+    "kb_stevia_crop_stage_7": {
+      "textures": "textures/blocks/kb_stevia_crop_stage_7"
+    },
+    "kb_cassava_crop_stage_0": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_0"
+    },
+    "kb_cassava_crop_stage_1": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_1"
+    },
+    "kb_cassava_crop_stage_2": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_2"
+    },
+    "kb_cassava_crop_stage_3": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_3"
+    },
+    "kb_cassava_crop_stage_4": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_4"
+    },
+    "kb_cassava_crop_stage_5": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_5"
+    },
+    "kb_cassava_crop_stage_6": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_6"
+    },
+    "kb_cassava_crop_stage_7": {
+      "textures": "textures/blocks/kb_cassava_crop_stage_7"
+    },
+    "kb_coffee_bush_stage_0": {
+      "textures": "textures/blocks/kb_coffee_bush_stage_0"
+    },
+    "kb_coffee_bush_stage_1": {
+      "textures": "textures/blocks/kb_coffee_bush_stage_1"
+    },
+    "kb_coffee_bush_stage_2": {
+      "textures": "textures/blocks/kb_coffee_bush_stage_2"
+    },
+    "kb_coffee_bush_stage_3": {
+      "textures": "textures/blocks/kb_coffee_bush_stage_3"
+    },
+    "kb_strawberry_bush_stage_0": {
+      "textures": "textures/blocks/kb_strawberry_bush_stage_0"
+    },
+    "kb_strawberry_bush_stage_1": {
+      "textures": "textures/blocks/kb_strawberry_bush_stage_1"
+    },
+    "kb_strawberry_bush_stage_2": {
+      "textures": "textures/blocks/kb_strawberry_bush_stage_2"
+    },
+    "kb_strawberry_bush_stage_3": {
+      "textures": "textures/blocks/kb_strawberry_bush_stage_3"
+    },
+    "kb_blueberry_bush_stage_0": {
+      "textures": "textures/blocks/kb_blueberry_bush_stage_0"
+    },
+    "kb_blueberry_bush_stage_1": {
+      "textures": "textures/blocks/kb_blueberry_bush_stage_1"
+    },
+    "kb_blueberry_bush_stage_2": {
+      "textures": "textures/blocks/kb_blueberry_bush_stage_2"
+    },
+    "kb_blueberry_bush_stage_3": {
+      "textures": "textures/blocks/kb_blueberry_bush_stage_3"
+    },
+    "kb_raspberry_bush_stage_0": {
+      "textures": "textures/blocks/kb_raspberry_bush_stage_0"
+    },
+    "kb_raspberry_bush_stage_1": {
+      "textures": "textures/blocks/kb_raspberry_bush_stage_1"
+    },
+    "kb_raspberry_bush_stage_2": {
+      "textures": "textures/blocks/kb_raspberry_bush_stage_2"
+    },
+    "kb_raspberry_bush_stage_3": {
+      "textures": "textures/blocks/kb_raspberry_bush_stage_3"
+    },
+    "kb_cinnamon_sapling_block_stage_0": {
+      "textures": "textures/blocks/kb_cinnamon_sapling_block_stage_0"
+    },
+    "kb_cinnamon_sapling_block_stage_1": {
+      "textures": "textures/blocks/kb_cinnamon_sapling_block_stage_1"
+    },
+    "kb_cinnamon_sapling_block_stage_2": {
+      "textures": "textures/blocks/kb_cinnamon_sapling_block_stage_2"
+    },
+    "kb_cinnamon_log_side": {
+      "textures": "textures/blocks/kb_cinnamon_log_side"
+    },
+    "kb_cinnamon_log_stripped": {
+      "textures": "textures/blocks/kb_cinnamon_log_stripped"
+    },
+    "kb_cinnamon_log_top": {
+      "textures": "textures/blocks/kb_cinnamon_log_top"
+    },
+    "kb_cinnamon_leaves_0": {
+      "textures": "textures/blocks/kb_cinnamon_leaves_0"
+    },
+    "kb_lemon_sapling_block_stage_0": {
+      "textures": "textures/blocks/kb_lemon_sapling_block_stage_0"
+    },
+    "kb_lemon_sapling_block_stage_1": {
+      "textures": "textures/blocks/kb_lemon_sapling_block_stage_1"
+    },
+    "kb_lemon_sapling_block_stage_2": {
+      "textures": "textures/blocks/kb_lemon_sapling_block_stage_2"
+    },
+    "kb_lemon_leaves_0": {
+      "textures": "textures/blocks/kb_lemon_leaves_0"
+    },
+    "kb_lemon_leaves_1": {
+      "textures": "textures/blocks/kb_lemon_leaves_1"
+    },
+    "kb_lemon_leaves_2": {
+      "textures": "textures/blocks/kb_lemon_leaves_2"
+    },
+    "kb_lemon_leaves_3": {
+      "textures": "textures/blocks/kb_lemon_leaves_3"
+    },
+    "kb_planter_soil": {
+      "textures": "textures/blocks/kb_planter_soil"
+    },
+    "kb_empty": {
+      "textures": "textures/blocks/kb_empty"
+    },
+    "kb_sponge_cake_top": {
+      "textures": "textures/blocks/kb_sponge_cake_top"
+    },
+    "kb_sponge_cake_side": {
+      "textures": "textures/blocks/kb_sponge_cake_side"
+    },
+    "kb_chocolate_cake_top": {
+      "textures": "textures/blocks/kb_chocolate_cake_top"
+    },
+    "kb_chocolate_cake_side": {
+      "textures": "textures/blocks/kb_chocolate_cake_side"
+    },
+    "kb_strawberry_cream_cake_top": {
+      "textures": "textures/blocks/kb_strawberry_cream_cake_top"
+    },
+    "kb_strawberry_cream_cake_side": {
+      "textures": "textures/blocks/kb_strawberry_cream_cake_side"
+    },
+    "kb_birthday_cake_top": {
+      "textures": "textures/blocks/kb_birthday_cake_top"
+    },
+    "kb_birthday_cake_side": {
+      "textures": "textures/blocks/kb_birthday_cake_side"
+    },
+    "kb_mint_chocolate_cake_top": {
+      "textures": "textures/blocks/kb_mint_chocolate_cake_top"
+    },
+    "kb_mint_chocolate_cake_side": {
+      "textures": "textures/blocks/kb_mint_chocolate_cake_side"
+    },
+    "kb_cheesecake_top": {
+      "textures": "textures/blocks/kb_cheesecake_top"
+    },
+    "kb_cheesecake_side": {
+      "textures": "textures/blocks/kb_cheesecake_side"
+    },
+    "kb_matcha_chiffon_top": {
+      "textures": "textures/blocks/kb_matcha_chiffon_top"
+    },
+    "kb_matcha_chiffon_side": {
+      "textures": "textures/blocks/kb_matcha_chiffon_side"
+    },
+    "kb_apple_pie_top": {
+      "textures": "textures/blocks/kb_apple_pie_top"
+    },
+    "kb_apple_pie_side": {
+      "textures": "textures/blocks/kb_apple_pie_side"
+    },
+    "kb_blueberry_pie_top": {
+      "textures": "textures/blocks/kb_blueberry_pie_top"
+    },
+    "kb_blueberry_pie_side": {
+      "textures": "textures/blocks/kb_blueberry_pie_side"
+    },
+    "kb_quiche_top": {
+      "textures": "textures/blocks/kb_quiche_top"
+    },
+    "kb_quiche_side": {
+      "textures": "textures/blocks/kb_quiche_side"
+    },
+    "kb_fish_pie_top": {
+      "textures": "textures/blocks/kb_fish_pie_top"
+    },
+    "kb_fish_pie_side": {
+      "textures": "textures/blocks/kb_fish_pie_side"
     }
   }
 }

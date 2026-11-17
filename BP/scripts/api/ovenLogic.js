@@ -93,11 +93,19 @@ export function slotYield(slot, recipe) {
   const out = [];
   if (!slot) return out;
   const p = phaseOf(slot, recipe);
-  if (p === "perfect") out.push({ id: recipe.result, count: recipe.count });
+  if (p === "perfect") out.push({ id: roastResult(slot, recipe), count: recipe.count });
   else if (p === "burnt") out.push({ id: recipe.burntResult, count: 1 });
   else out.push({ id: slot.input, count: 1 });
   if (slot.mold) out.push({ id: slot.mold, count: 1 });
   return out;
+}
+
+/** Roasting recipes split the perfect window into thirds: light, medium, dark. */
+export function roastResult(slot, recipe) {
+  if (!recipe.roast) return recipe.result;
+  const into = slot.progress - recipe.time;
+  const i = Math.max(0, Math.min(2, Math.floor((into / recipe.perfectWindow) * 3)));
+  return recipe.roast[i];
 }
 
 export function percent(slot, recipe) {

@@ -19,7 +19,10 @@ BP, RP = os.path.join(ROOT, "BP"), os.path.join(ROOT, "RP")
 NS = "kaleidoscope_baking"
 TAG_ONLY = {f"{NS}:whisk", f"{NS}:mold"}  # tag names (whisk is also an item)
 # Script-event ids and block-state names share the namespace but are not items.
-NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|oven_part|facing|lit)$")
+NON_ITEM = re.compile(rf"^{NS}:(api_[a-z_]+|register_[a-z_]+|bulk_[a-z_]+|oven_part|facing|lit|growth|bites|plant|stripped|"
+                      rf"whisk|frother|mold|cup|caffeine|auto_convert|[a-z_]+_settings|guidebook|open_[a-z_]+|sweet|ice|settings_changed|"
+                      rf"(oven|bowl|proof|stand|espresso|pour|shaker|planter|dessert|plant|tree|bark|herb_planter|mixing_bowl|"
+                      rf"proofing_basket|decorating_stand|espresso_machine|pour_over_stand|drink_shaker)(\b.*)?)$")
 errors = []
 
 
@@ -120,7 +123,7 @@ for p in scripts:
     src = open(p, encoding="utf-8").read()
     m = re.search(r'const MSG = "([^"]+)"', src)
     if m:
-        for suffix in set(re.findall(r"\$\{MSG\}([a-z_]+)", src)):
+        for suffix in set(re.findall(r"\$\{MSG\}([a-z_.]*[a-z_])", src)):
             for lang, keys in lang_keys.items():
                 if m.group(1) + suffix not in keys:
                     err(f"{rel(p)}: message {m.group(1) + suffix} missing in {lang}")
@@ -130,11 +133,23 @@ for p in scripts:
     r = subprocess.run(["node", "--check", p], capture_output=True, text=True)
     if r.returncode:
         err(f"{rel(p)}: syntax error\n{r.stderr}")
-# ids built from `${KB}:name` in data/recipes.js
-recipes_src = open(f"{BP}/scripts/data/recipes.js", encoding="utf-8").read()
-for name in set(re.findall(r"\$\{KB\}:([a-z0-9_]+)`", recipes_src)):
-    if f"{NS}:{name}" not in known_ids:
-        err(f"data/recipes.js: unknown id {NS}:{name}")
+# Every kaleidoscope_baking id referenced by built-in recipes / effects / Cookery data
+r = subprocess.run(["node", os.path.join(ROOT, "tools", "dump_refs.mjs")], capture_output=True, text=True)
+if r.returncode:
+    err(f"tools/dump_refs.mjs failed:\n{r.stderr}")
+else:
+    for ref in json.loads(r.stdout):
+        if ref.startswith(NS + ":") and ref not in known_ids:
+            err(f"built-in data references unknown id {ref}")
+
+# Every custom component used by a block JSON must be registered in main.js
+main_src = open(f"{BP}/scripts/main.js", encoding="utf-8").read()
+for p in glob.glob(f"{BP}/blocks/**/*.json", recursive=True):
+    b = (load(p) or {}).get("minecraft:block", {})
+    comps = set(b.get("components", {})) | {k for x in b.get("permutations", []) for k in x.get("components", {})}
+    for c in comps:
+        if c.startswith(NS + ":") and f'"{c}"' not in main_src:
+            err(f"{rel(p)}: custom component {c} is not registered in main.js")
 
 # 5. Crafting recipes produce known items
 for p in glob.glob(f"{BP}/recipes/**/*.json", recursive=True):

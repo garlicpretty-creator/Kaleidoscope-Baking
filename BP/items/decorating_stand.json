@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:decorating_stand",
+      "menu_category": {
+        "category": "equipment",
+        "group": "kaleidoscope_baking:itemGroup.name.stations"
+      }
+    },
+    "components": {
+      "minecraft:icon": "kb_decorating_stand",
+      "minecraft:max_stack_size": 64,
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:decorating_stand",
+        "replace_block_item": true
+      }
+    }
+  }
+}

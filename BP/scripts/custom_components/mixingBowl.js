@@ -2,30 +2,35 @@
 // ============================================================================
 // Interaction:
 //   ingredient      -> add one (max 9). Liquids hand their container straight back.
-//   whisk           -> one stroke; enough strokes on a valid mix produces the result
+//   whisk / frother -> one stroke; enough strokes on a valid mix produces the result.
+//                      The recipe's `tool` decides which one (milk + whisk = butter,
+//                      milk + frother = frothed milk).
 //   empty hand      -> take the last ingredient back (sneak: take everything)
-// Any item tagged `kaleidoscope_baking:whisk` works as a whisk, so other packs can ship
-// their own whisks without Baking knowing their ids.
+// Tools are recognised by item TAG (`kaleidoscope_baking:whisk` / `:frother`), so other packs
+// can ship their own tools without Baking knowing their ids.
 // ============================================================================
 import { world } from "@minecraft/server";
 import { addToBowl, currentRecipe, normalizeBowl, takeFromBowl, whiskBowl } from "../api/mixingLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import {
   actionBar, consumeHeld, giveItems, heldItem, isCreative, itemName, locKey, particle, readJson, sound,
-  spawnItems, t, writeJson
+  spawnItems, stackHasTag, t, writeJson
 } from "../utils/runtime.js";
 
 export const BOWL_ID = "kaleidoscope_baking:mixing_bowl";
-export const WHISK_TAG = "kaleidoscope_baking:whisk";
+const TOOL_TAGS = ["kaleidoscope_baking:whisk", "kaleidoscope_baking:frother"];
+// How to name a tool spec in hints.
+const TOOL_NAMES = {
+  "#kaleidoscope_baking:whisk": "kaleidoscope_baking:whisk",
+  "#kaleidoscope_baking:frother": "kaleidoscope_baking:milk_frother"
+};
 const PREFIX = "kb_bowl";
 const MSG = "kaleidoscope_baking.msg.bowl.";
 
 const keyOf = block => locKey(PREFIX, block.dimension.id, block);
 const top = block => ({ x: block.x + 0.5, y: block.y + 0.6, z: block.z + 0.5 });
-
-function isWhisk(stack) {
-  try { return stack.hasTag(WHISK_TAG); } catch { return false; }
-}
+const isTool = stack => TOOL_TAGS.some(tag => stackHasTag(stack, tag));
+const toolName = spec => (TOOL_NAMES[spec] ? itemName(TOOL_NAMES[spec]) : { text: spec });
 
 function contentsMessage(s) {
   if (!s.items.length) return [t(`${MSG}empty`)];
@@ -33,7 +38,7 @@ function contentsMessage(s) {
   s.items.forEach((it, i) => { parts.push({ text: i ? "§7, §r" : " " }, itemName(it.id)); });
   const recipe = currentRecipe(s);
   parts.push({ text: "\n" });
-  parts.push(recipe ? t(`${MSG}ready`, itemName(recipe.result), recipe.whisks) : t(`${MSG}no_recipe`));
+  parts.push(recipe ? t(`${MSG}ready`, itemName(recipe.result), toolName(recipe.tool), recipe.whisks) : t(`${MSG}no_recipe`));
   return parts;
 }
 
@@ -44,10 +49,12 @@ function interact(block, player) {
   const at = top(block);
   let changed = false;
 
-  if (held && isWhisk(held)) {
-    const r = whiskBowl(s);
+  if (held && isTool(held)) {
+    const r = whiskBowl(s, held.typeId);
     if (r.result === "none") {
-      actionBar(player, ...contentsMessage(s));
+      const any = currentRecipe(s);
+      if (any) actionBar(player, t(`${MSG}wrong_tool`, toolName(any.tool)));
+      else actionBar(player, ...contentsMessage(s));
     } else if (r.result === "progress") {
       changed = true;
       sound(block.dimension, "block.composter.fill", at, 0.7, 1.4);

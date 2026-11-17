@@ -36,16 +36,17 @@ export function takeFromBowl(state, all = false) {
   return removed.filter(i => !i.spilled).map(i => i.id);
 }
 
+/** Best recipe for the current contents, ignoring which tool will be used (for hints). */
 export function currentRecipe(state) {
   return getMixingRecipe(state.items.map(i => i.id));
 }
 
 /**
- * One whisk stroke.
+ * One stroke with `toolId` (a whisk, a milk frother, ... — the recipe's tool spec decides).
  * {result:"none"} no matching recipe | {result:"progress", done, need} | {result:"done", recipe}
  */
-export function whiskBowl(state) {
-  const recipe = currentRecipe(state);
+export function whiskBowl(state, toolId) {
+  const recipe = getMixingRecipe(state.items.map(i => i.id), toolId);
   if (!recipe) return { result: "none" };
   state.whisks += 1;
   if (state.whisks < recipe.whisks) return { result: "progress", done: state.whisks, need: recipe.whisks, recipe };

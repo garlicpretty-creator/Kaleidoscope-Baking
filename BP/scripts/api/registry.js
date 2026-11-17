@@ -6,159 +6,237 @@
 // - Built-in arrays are never mutated; extension entries live in Maps layered on top.
 // - Registration is idempotent by (kind + source + recipe.id).
 // - Extension entries are ordered by registration key, never by script load order.
+// - Built-in recipes are checked first, so they win for the same input.
 // - Nothing is persisted; addons re-register on every world load.
 // - Invalid payloads are rejected with a reason; they never touch built-in data.
 // ============================================================================
 import { cleanId, cleanSpec, nonnegativeInt, orderedValues, positiveInt, sourceName } from "../utils/ids.js";
 import { matchesSpec, matchesSlot } from "./ingredients.js";
 import { matchShapeless } from "./matcher.js";
-import { BUILTIN_FUELS, BUILTIN_MIXING_RECIPES, BUILTIN_OVEN_RECIPES, DEFAULT_BURNT_RESULT } from "../data/recipes.js";
+import { BUILTIN_FUELS, BUILTIN_RECIPES, DEFAULT_BURNT_RESULT } from "../data/recipes.js";
 
 export const KB_API_VERSION = 1;
 export const MAX_MIXING_INGREDIENTS = 9;
+export const MAX_SHAKER_INGREDIENTS = 6;
+export const DEFAULT_WHISK = "#kaleidoscope_baking:whisk";
 
-export const KB_CAPABILITIES = Object.freeze([
-  "oven", "mixing_bowl", "ingredient_tags", "fuels", "whisk_tag", "mold_tag"
-]);
-
-const extensionOven = new Map();
-const extensionMixing = new Map();
-const extensionFuels = new Map();
-
-function normalizeSlot(raw) {
+// ---------------------------------------------------------------------------
+// Normalizers. Each returns a frozen recipe or undefined (= reject).
+// ---------------------------------------------------------------------------
+function slot(raw) {
   const options = (Array.isArray(raw) ? raw : [raw]).map(cleanSpec).filter(Boolean);
   return options.length ? Object.freeze([...new Set(options)]) : undefined;
 }
-
-export function normalizeMixing(raw, extension = true) {
-  const id = cleanId(raw?.id), result = cleanId(raw?.result);
-  if (!id || !result || !Array.isArray(raw?.ingredients)) return undefined;
-  if (!raw.ingredients.length || raw.ingredients.length > MAX_MIXING_INGREDIENTS) return undefined;
-  const slots = [];
-  for (const s of raw.ingredients) {
-    const slot = normalizeSlot(s);
-    if (!slot) return undefined;
-    slots.push(slot);
-  }
-  return Object.freeze({
-    id, result, slots: Object.freeze(slots),
-    count: positiveInt(raw?.count, 1, 64),
-    whisks: positiveInt(raw?.whisks, 4, 64),
-    extension
-  });
+function slots(raw, max) {
+  if (!Array.isArray(raw) || !raw.length || raw.length > max) return undefined;
+  const out = [];
+  for (const s of raw) { const n = slot(s); if (!n) return undefined; out.push(n); }
+  return Object.freeze(out);
 }
+/** Optional spec/id: missing or "" -> "", invalid -> undefined (reject the recipe). */
+function optional(raw, clean) {
+  if (raw === undefined || raw === null || raw === "") return "";
+  const v = clean(raw);
+  return v || undefined;
+}
+const base = (raw, extension) => {
+  const id = cleanId(raw?.id), result = cleanId(raw?.result);
+  return id && result ? { id, result, count: positiveInt(raw?.count, 1, 64), extension } : undefined;
+};
 
-export function normalizeOven(raw, extension = true) {
-  const id = cleanId(raw?.id), input = cleanSpec(raw?.input), result = cleanId(raw?.result);
-  if (!id || !input || !result) return undefined;
-  // mold: optional. "" / missing = no mold. Invalid non-empty mold rejects the recipe so
-  // a typo never silently turns a mold recipe into a mold-free one.
-  let mold = "";
-  if (raw?.mold !== undefined && raw?.mold !== "") {
-    mold = cleanSpec(raw.mold);
-    if (!mold) return undefined;
+const NORMALIZE = {
+  mixing_bowl(raw, ext) {
+    const b = base(raw, ext); const s = slots(raw?.ingredients, MAX_MIXING_INGREDIENTS);
+    const tool = optional(raw?.tool, cleanSpec);
+    if (!b || !s || tool === undefined) return undefined;
+    return { ...b, slots: s, whisks: positiveInt(raw?.whisks, 4, 64), tool: tool || DEFAULT_WHISK };
+  },
+  oven(raw, ext) {
+    const b = base(raw, ext); const input = cleanSpec(raw?.input);
+    const mold = optional(raw?.mold, cleanSpec);
+    const burnt = optional(raw?.burntResult, cleanId);
+    if (!b || !input || mold === undefined || burnt === undefined) return undefined;
+    // roast: [light, medium, dark] — the perfect window is split in thirds (coffee beans).
+    let roast;
+    if (raw?.roast !== undefined) {
+      roast = Array.isArray(raw.roast) && raw.roast.length === 3 ? raw.roast.map(cleanId) : [];
+      if (roast.length !== 3 || roast.some(x => !x)) return undefined;
+      roast = Object.freeze(roast);
+    }
+    return {
+      ...b, input, mold, burntResult: burnt || DEFAULT_BURNT_RESULT, roast,
+      time: Math.max(20, nonnegativeInt(raw?.time, 400)),
+      perfectWindow: Math.max(20, nonnegativeInt(raw?.perfectWindow, 200))
+    };
+  },
+  proofing(raw, ext) {
+    const b = base(raw, ext); const input = cleanSpec(raw?.input);
+    if (!b || !input) return undefined;
+    return { ...b, input, time: Math.max(20, nonnegativeInt(raw?.time, 1200)) };
+  },
+  decorating(raw, ext) {
+    const b = base(raw, ext); const baseItem = cleanSpec(raw?.base); const layers = slots(raw?.layers, 6);
+    if (!b || !baseItem || !layers) return undefined;
+    return { ...b, base: baseItem, layers };
+  },
+  espresso(raw, ext) {
+    const b = base(raw, ext); const input = cleanSpec(raw?.input);
+    const additive = optional(raw?.additive, cleanSpec); const carrier = optional(raw?.carrier, cleanId);
+    if (!b || !input || additive === undefined || carrier === undefined) return undefined;
+    return { ...b, input, additive, carrier, time: Math.max(20, nonnegativeInt(raw?.time, 200)) };
+  },
+  pour_over(raw, ext) {
+    const b = base(raw, ext); const input = cleanSpec(raw?.input); const carrier = optional(raw?.carrier, cleanId);
+    if (!b || !input || carrier === undefined) return undefined;
+    return { ...b, input, carrier };
+  },
+  shaker(raw, ext) {
+    const b = base(raw, ext); const s = slots(raw?.ingredients, MAX_SHAKER_INGREDIENTS);
+    const carrier = optional(raw?.carrier, cleanId);
+    const temperature = ["cold", "hot", "any"].includes(raw?.temperature) ? raw.temperature : "cold";
+    if (!b || !s || carrier === undefined) return undefined;
+    return {
+      ...b, slots: s, carrier, temperature,
+      shakes: positiveInt(raw?.shakes, 5, 64),
+      sweetness: raw?.allowSweetness !== false, ice: raw?.allowIce !== false && temperature !== "hot"
+    };
   }
-  let burntResult = DEFAULT_BURNT_RESULT;
-  if (raw?.burntResult !== undefined && raw?.burntResult !== "") {
-    burntResult = cleanId(raw.burntResult);
-    if (!burntResult) return undefined;
-  }
-  return Object.freeze({
-    id, input, mold, result, burntResult,
-    count: positiveInt(raw?.count, 1, 64),
-    time: Math.max(20, nonnegativeInt(raw?.time, 400, 72000)),
-    perfectWindow: Math.max(20, nonnegativeInt(raw?.perfectWindow, 200, 72000)),
-    extension
-  });
+};
+export const RECIPE_KINDS = Object.freeze(Object.keys(NORMALIZE));
+
+export const KB_CAPABILITIES = Object.freeze([
+  ...RECIPE_KINDS, "ingredient_tags", "fuels", "food_effects", "bulk", "whisk_tag", "frother_tag", "mold_tag"
+]);
+
+export function normalizeRecipe(kind, raw, extension = true) {
+  const fn = NORMALIZE[kind];
+  const r = fn ? fn(raw, extension) : undefined;
+  return r ? Object.freeze(r) : undefined;
 }
 
 export function normalizeFuel(raw, extension = true) {
   const id = cleanSpec(raw?.id);
-  if (!id) return undefined;
-  const ticks = nonnegativeInt(raw?.ticks, 0, 72000);
-  if (ticks < 20) return undefined;
-  const returns = raw?.returns ? cleanId(raw.returns) : "";
-  if (raw?.returns && !returns) return undefined;
+  const ticks = nonnegativeInt(raw?.ticks, 0);
+  const returns = optional(raw?.returns, cleanId);
+  if (!id || ticks < 20 || returns === undefined) return undefined;
   return Object.freeze({ id, ticks, returns, extension });
 }
 
-const BUILTIN_MIXING = BUILTIN_MIXING_RECIPES.map(r => normalizeMixing(r, false));
-const BUILTIN_OVEN = BUILTIN_OVEN_RECIPES.map(r => normalizeOven(r, false));
-const BUILTIN_FUEL = BUILTIN_FUELS.map(r => normalizeFuel(r, false));
-if (BUILTIN_MIXING.some(r => !r) || BUILTIN_OVEN.some(r => !r) || BUILTIN_FUEL.some(r => !r)) {
-  throw new Error("[Kaleidoscope Baking] Built-in recipe data failed validation.");
+// ---------------------------------------------------------------------------
+// Storage
+// ---------------------------------------------------------------------------
+const builtin = {};
+const extension = {};
+for (const kind of RECIPE_KINDS) {
+  extension[kind] = new Map();
+  builtin[kind] = (BUILTIN_RECIPES[kind] ?? []).map(r => {
+    const n = normalizeRecipe(kind, r, false);
+    if (!n) throw new Error(`[Kaleidoscope Baking] Built-in ${kind} recipe failed validation: ${r?.id}`);
+    return n;
+  });
+}
+const builtinFuels = BUILTIN_FUELS.map(f => {
+  const n = normalizeFuel(f, false);
+  if (!n) throw new Error(`[Kaleidoscope Baking] Built-in fuel failed validation: ${f?.id}`);
+  return n;
+});
+const extensionFuels = new Map();
+// Bumped on every change so runtime caches (guidebook, lookups) know when to rebuild.
+let revision = 0;
+export function registryRevision() { return revision; }
+
+export function all(kind) {
+  return builtin[kind] ? [...builtin[kind], ...orderedValues(extension[kind])] : [];
 }
 
-/**
- * payload: {api:1, kind:"oven"|"mixing_bowl", source:"my_addon", recipe:{...}}
- */
+/** payload: {api:1, kind, source, recipe} */
 export function registerRecipe(payload) {
   if (!payload || Number(payload.api) !== KB_API_VERSION) return { ok: false, reason: "api_version" };
   const kind = String(payload.kind ?? "");
-  const source = sourceName(payload.source);
-  let recipe, map;
-  if (kind === "oven") { recipe = normalizeOven(payload.recipe); map = extensionOven; }
-  else if (kind === "mixing_bowl") { recipe = normalizeMixing(payload.recipe); map = extensionMixing; }
-  else return { ok: false, reason: "kind" };
+  if (!NORMALIZE[kind]) return { ok: false, reason: "kind" };
+  const recipe = normalizeRecipe(kind, payload.recipe);
   if (!recipe) return { ok: false, reason: "schema" };
-  map.set(`${kind}|${source}|${recipe.id}`, recipe);
+  const source = sourceName(payload.source);
+  extension[kind].set(`${kind}|${source}|${recipe.id}`, recipe);
+  revision++;
   return { ok: true, kind, source, id: recipe.id };
 }
 
-/** payload: {api:1, source:"my_addon", fuel:{id:"my_addon:peat", ticks:1200, returns?}} */
+/** payload: {api:1, source, fuel:{id, ticks, returns?}} */
 export function registerFuel(payload) {
   if (!payload || Number(payload.api) !== KB_API_VERSION) return { ok: false, reason: "api_version" };
   const fuel = normalizeFuel(payload.fuel ?? payload);
   if (!fuel) return { ok: false, reason: "schema" };
-  const source = sourceName(payload.source);
-  extensionFuels.set(`${source}|${fuel.id}`, fuel);
+  extensionFuels.set(`${sourceName(payload.source)}|${fuel.id}`, fuel);
+  revision++;
   return { ok: true, id: fuel.id, ticks: fuel.ticks };
 }
 
-function allOven() { return [...BUILTIN_OVEN, ...orderedValues(extensionOven)]; }
-function allMixing() { return [...BUILTIN_MIXING, ...orderedValues(extensionMixing)]; }
+// ---------------------------------------------------------------------------
+// Lookups
+// ---------------------------------------------------------------------------
+export function getRecipeById(kind, id) { return all(kind).find(r => r.id === id); }
+const byInput = (kind, itemId) => (itemId ? all(kind).find(r => matchesSpec(itemId, r.input)) : undefined);
+
+export const getOvenRecipe = itemId => byInput("oven", itemId);
+export const getOvenRecipeById = id => getRecipeById("oven", id);
+export const getProofingRecipe = itemId => byInput("proofing", itemId);
+export const getPourOverRecipe = itemId => byInput("pour_over", itemId);
+
+/** Any espresso recipe for this coffee (ignoring additive)? */
+export const isEspressoInput = itemId => !!byInput("espresso", itemId);
+export function isEspressoAdditive(itemId) {
+  return !!itemId && all("espresso").some(r => r.additive && matchesSpec(itemId, r.additive));
+}
+export function getEspressoRecipe(inputId, additiveId = "") {
+  return all("espresso").find(r =>
+    matchesSpec(inputId, r.input) && (additiveId ? (r.additive && matchesSpec(additiveId, r.additive)) : !r.additive));
+}
+
+/** Mixing: contents must match exactly; `toolId` must satisfy the recipe's tool spec. */
+export function getMixingRecipe(contents, toolId) {
+  if (!Array.isArray(contents) || !contents.length) return undefined;
+  return all("mixing_bowl").find(r =>
+    (toolId === undefined || matchesSpec(toolId, r.tool)) && matchShapeless(contents, r.slots));
+}
+export function isMixingIngredient(itemId) {
+  return !!itemId && all("mixing_bowl").some(r => r.slots.some(s => matchesSlot(itemId, s)));
+}
+
+export function getShakerRecipe(contents) {
+  if (!Array.isArray(contents) || !contents.length) return undefined;
+  return all("shaker").find(r => matchShapeless(contents, r.slots));
+}
+export function isShakerIngredient(itemId) {
+  return !!itemId && all("shaker").some(r => r.slots.some(s => matchesSlot(itemId, s)));
+}
+
+/** Decorating: recipes whose base matches and whose first layers match `layers` so far. */
+export function decoratingCandidates(baseId, layers) {
+  return all("decorating").filter(r =>
+    matchesSpec(baseId, r.base) && layers.length <= r.layers.length &&
+    layers.every((id, i) => matchesSlot(id, r.layers[i])));
+}
+export const isDecoratingBase = itemId => !!itemId && all("decorating").some(r => matchesSpec(itemId, r.base));
+
 function allFuels() {
   // Exact ids before tags so a specific registration beats a broad tag.
-  const list = [...BUILTIN_FUEL, ...orderedValues(extensionFuels)];
+  const list = [...builtinFuels, ...orderedValues(extensionFuels)];
   return [...list.filter(f => !f.id.startsWith("#")), ...list.filter(f => f.id.startsWith("#"))];
 }
-
-export function getOvenRecipe(itemId) {
-  if (!itemId) return undefined;
-  for (const r of allOven()) if (matchesSpec(itemId, r.input)) return r;
-  return undefined;
-}
-
-export function getOvenRecipeById(id) {
-  return allOven().find(r => r.id === id);
-}
-
-export function getMixingRecipe(contents) {
-  if (!Array.isArray(contents) || !contents.length) return undefined;
-  for (const r of allMixing()) if (matchShapeless(contents, r.slots)) return r;
-  return undefined;
-}
-
-/** Can this item go into the mixing bowl at all (does any recipe use it)? */
-export function isMixingIngredient(itemId) {
-  if (!itemId) return false;
-  for (const r of allMixing()) for (const slot of r.slots) if (matchesSlot(itemId, slot)) return true;
-  return false;
-}
-
 export function getFuel(itemId) {
-  if (!itemId) return undefined;
-  for (const f of allFuels()) if (matchesSpec(itemId, f.id)) return f;
-  return undefined;
+  return itemId ? allFuels().find(f => matchesSpec(itemId, f.id)) : undefined;
 }
 
 /** Read-only snapshot for the guidebook / debugging. */
 export function listRecipes() {
-  return { oven: allOven(), mixing_bowl: allMixing(), fuels: allFuels() };
+  const out = { fuels: allFuels() };
+  for (const kind of RECIPE_KINDS) out[kind] = all(kind);
+  return out;
 }
 
 export function _resetRegistryForTests() {
-  extensionOven.clear();
-  extensionMixing.clear();
+  for (const kind of RECIPE_KINDS) extension[kind].clear();
   extensionFuels.clear();
+  revision++;
 }

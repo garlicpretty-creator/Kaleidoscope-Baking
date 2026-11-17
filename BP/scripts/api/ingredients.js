@@ -21,6 +21,15 @@ const registrations = new Map();
 let byId = null;
 
 let itemTagResolver = () => false;
+// Series compat: another pack's item that stands in for a Baking item
+// (e.g. Herbal's mint for Baking's mint). primaryId -> bakingId
+const aliases = new Map();
+
+/** Install the active equivalents (compat layer). Replaces previous aliases. */
+export function setIngredientAliases(map) {
+  aliases.clear();
+  for (const [primary, baking] of map instanceof Map ? map : Object.entries(map ?? {})) aliases.set(primary, baking);
+}
 
 /** Runtime installs the real resolver (ItemStack#hasTag). Tests may install a fake. */
 export function setItemTagResolver(fn) {
@@ -62,18 +71,24 @@ export function registeredTagsFor(id) {
   return [...(byId.get(id) ?? [])];
 }
 
+function hasOwnTag(id, tag) {
+  if (byId.get(id)?.has(tag)) return true;
+  try { return !!itemTagResolver(id, tag); } catch { return false; }
+}
+
 export function hasIngredientTag(id, tag) {
   if (!id || !tag) return false;
   if (!byId) rebuild();
-  if (byId.get(id)?.has(tag)) return true;
-  try { return !!itemTagResolver(id, tag); } catch { return false; }
+  if (hasOwnTag(id, tag)) return true;
+  const alias = aliases.get(id);
+  return !!alias && hasOwnTag(alias, tag);
 }
 
 /** Does item `id` satisfy one ingredient spec ("ns:id" or "#ns:tag")? */
 export function matchesSpec(id, spec) {
   if (!id || !spec) return false;
   if (isTagSpec(spec)) return hasIngredientTag(id, spec.slice(1));
-  return id === spec;
+  return id === spec || aliases.get(id) === spec;
 }
 
 /** A slot is a list of alternative specs; any one match satisfies it. */
@@ -85,6 +100,7 @@ export function matchesSlot(id, slot) {
 /** Test helper: forget runtime registrations. */
 export function _resetIngredientsForTests() {
   registrations.clear();
+  aliases.clear();
   byId = null;
   itemTagResolver = () => false;
 }

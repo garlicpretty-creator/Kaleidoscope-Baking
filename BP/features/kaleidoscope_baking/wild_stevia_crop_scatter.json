@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:scatter_feature": {
+    "description": {
+      "identifier": "kaleidoscope_baking:wild_stevia_crop_scatter"
+    },
+    "places_feature": "kaleidoscope_baking:wild_stevia_crop",
+    "distribution": {
+      "iterations": 4,
+      "x": {
+        "distribution": "gaussian",
+        "extent": [
+          -3,
+          3
+        ]
+      },
+      "y": 0,
+      "z": {
+        "distribution": "gaussian",
+        "extent": [
+          -3,
+          3
+        ]
+      }
+    }
+  }
+}

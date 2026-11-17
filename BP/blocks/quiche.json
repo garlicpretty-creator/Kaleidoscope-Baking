@@ -1,0 +1,96 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:quiche",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:bites": {
+          "values": {
+            "min": 0,
+            "max": 3
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.dessert_h4_q4",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_quiche_side",
+          "render_method": "alpha_test"
+        },
+        "top": {
+          "texture": "kb_quiche_top",
+          "render_method": "alpha_test"
+        }
+      },
+      "minecraft:collision_box": {
+        "origin": [
+          -7,
+          0,
+          -7
+        ],
+        "size": [
+          14,
+          4,
+          14
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -7,
+          0,
+          -7
+        ],
+        "size": [
+          14,
+          4,
+          14
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.3
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/desserts/quiche.json",
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ]
+          }
+        ]
+      },
+      "kaleidoscope_baking:dessert": {
+        "slices": 4
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:bites') == 1",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.dessert_h4_q3",
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:bites') == 2",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.dessert_h4_q2",
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:bites') == 3",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.dessert_h4_q1",
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json"
+        }
+      }
+    ]
+  }
+}

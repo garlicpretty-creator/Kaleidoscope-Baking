@@ -20,12 +20,20 @@ const VANILLA = {
   "kaleidoscope_cookery:flour": [], "kaleidoscope_cookery:raw_dough": []
 };
 for (const [id, tags] of Object.entries(VANILLA)) ITEM_META.set(id, { stack: id.endsWith("bucket") ? 1 : 64, tags });
+// Any other vanilla / Cookery id is accepted with default metadata; tests may add more.
+export const EXTRA_ITEMS = new Set();
+function metaFor(id) {
+  if (ITEM_META.has(id)) return ITEM_META.get(id);
+  if (id.startsWith("minecraft:") || id.startsWith("kaleidoscope_cookery:") || EXTRA_ITEMS.has(id))
+    return { stack: id.endsWith("bucket") ? 1 : 64, tags: id === "minecraft:iron_axe" ? ["minecraft:is_axe"] : [] };
+  return undefined;
+}
 
 const BLOCK_DEFAULTS = new Map();
 for (const f of readdirSync(BP + "blocks")) {
   const d = json(BP + "blocks/" + f)["minecraft:block"];
   const states = {};
-  for (const [k, v] of Object.entries(d.description.states ?? {})) states[k] = v[0];
+  for (const [k, v] of Object.entries(d.description.states ?? {})) states[k] = Array.isArray(v) ? v[0] : v?.values?.min ?? 0;
   BLOCK_DEFAULTS.set(d.description.identifier, states);
 }
 
@@ -34,12 +42,18 @@ export const GameMode = { Creative: "Creative", Survival: "Survival" };
 
 export class ItemStack {
   constructor(id, amount = 1) {
-    const meta = ITEM_META.get(id);
+    const meta = metaFor(id);
     if (!meta) throw new Error(`unknown item ${id}`);
     this.typeId = id; this.amount = amount; this.maxAmount = meta.stack; this._tags = meta.tags;
     this.localizationKey = `item.${id}.name`;
+    this._props = new Map(); this.lore = [];
   }
   hasTag(t) { return this._tags.includes(t); }
+  getTags() { return [...this._tags]; }
+  setDynamicProperty(k, v) { if (this.maxAmount > 1) throw new Error("stackable items cannot hold dynamic properties"); this._props.set(k, v); }
+  getDynamicProperty(k) { return this._props.get(k); }
+  setLore(l) { this.lore = l; }
+  getComponent() { return undefined; }
   clone() { const s = new ItemStack(this.typeId, this.amount); return s; }
 }
 
@@ -58,12 +72,16 @@ class Block {
   get isAir() { return this.typeId === "minecraft:air"; }
   get location() { return { x: this.x, y: this.y, z: this.z }; }
   _k() { return `${this.x},${this.y},${this.z}`; }
+  getRedstonePower() { return this.dimension._power.get(this._k()) ?? 0; }
+  getLightLevel() { return 15; }
+  above() { return this.dimension.getBlock({ x: this.x, y: this.y + 1, z: this.z }); }
+  hasTag() { return false; }
   setPermutation(p) { this.dimension._blocks.set(this._k(), p); }
   setType(id) { if (id === "minecraft:air") this.dimension._blocks.delete(this._k()); else this.setPermutation(BlockPermutation.resolve(id)); }
 }
 
 class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this.spawned = []; this.sounds = []; }
+  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; }
   getBlock(loc) { return new Block(this, { x: Math.floor(loc.x), y: Math.floor(loc.y), z: Math.floor(loc.z) }); }
   spawnItem(stack, location) { this.spawned.push({ id: stack.typeId, amount: stack.amount, location }); }
   playSound(id) { this.sounds.push(id); }
@@ -78,11 +96,18 @@ export const world = {
   getDynamicProperty: k => dynamic.get(k),
   setDynamicProperty: (k, v) => (v === undefined ? dynamic.delete(k) : dynamic.set(k, v)),
   getDimension: () => overworld,
-  afterEvents: { worldLoad: subs(), blockExplode: subs() }
+  afterEvents: { worldLoad: subs(), blockExplode: subs(), itemCompleteUse: subs(), playerBreakBlock: subs() },
+  getAllPlayers: () => players
 };
+const players = [];
+
+export const ItemTypes = { get: id => (metaFor(id) ? { id } : undefined) };
+export const BlockTypes = { get: id => (BLOCK_DEFAULTS.has(id) || EXTRA_BLOCKS.has(id) || id.startsWith("minecraft:") ? { id } : undefined) };
+export const EXTRA_BLOCKS = new Set();
 
 let runs = [], intervals = new Map(), nextId = 1;
 export const system = {
+  currentTick: 0,
   beforeEvents: { startup: subs() },
   afterEvents: { scriptEventReceive: subs() },
   run(fn) { runs.push(fn); return nextId++; },
@@ -110,14 +135,24 @@ class Container {
   count(id) { return this.slots.reduce((n, s) => n + (s?.typeId === id ? s.amount : 0), 0); }
 }
 
+let playerIds = 0;
 export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) {
   const inv = new Container();
+  const props = new Map();
+  const hunger = { currentValue: 10, effectiveMax: 20, setCurrentValue(v) { this.currentValue = v; } };
+  const saturation = { currentValue: 0, effectiveMax: 20, setCurrentValue(v) { this.currentValue = v; } };
   const p = {
+    id: `p${++playerIds}`, typeId: "minecraft:player", effects: new Map(), hunger, saturation,
     location: { x, y, z }, dimension: overworld, isSneaking: false, messages: [], inv,
+    addEffect(id, duration, opts) { p.effects.set(id, { duration, amplifier: opts?.amplifier ?? 0 }); },
+    removeEffect(id) { p.effects.delete(id); },
+    getDynamicProperty: k => props.get(k), setDynamicProperty: (k, v) => (v === undefined ? props.delete(k) : props.set(k, v)),
     getGameMode: () => (creative ? GameMode.Creative : GameMode.Survival),
     onScreenDisplay: { setActionBar: m => p.messages.push(m) },
     getComponent(name) {
       if (name === "minecraft:inventory") return { container: inv };
+      if (name === "minecraft:player.hunger") return hunger;
+      if (name === "minecraft:player.saturation") return saturation;
       if (name === "minecraft:equippable") return {
         getEquipmentSlot: () => ({
           hasItem: () => !!inv.slots[0], getItem: () => inv.slots[0], setItem: s => { inv.slots[0] = s; }
@@ -126,6 +161,7 @@ export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) 
     },
     hold(id, n = 1) { inv.slots[0] = id ? new ItemStack(id, n) : undefined; }
   };
+  players.push(p);
   return p;
 }
 
@@ -133,7 +169,16 @@ export function makePlayer({ x = 0.5, y = 64, z = 5.5, creative = false } = {}) 
 export const __mock = {
   overworld, dynamic, sent,
   flush() { for (let i = 0; i < 20 && runs.length; i++) { const r = runs; runs = []; r.forEach(f => f()); } },
-  tick(nTimes = 1) { for (let i = 0; i < nTimes; i++) for (const { fn } of [...intervals.values()]) fn(); this.flush(); },
+  /** Advance n * `ticks` game ticks; each interval fires when its period divides the tick. */
+  advance(ticks) {
+    for (let i = 0; i < ticks; i++) {
+      system.currentTick++;
+      for (const it of [...intervals.values()]) if (system.currentTick % it.ticks === 0) it.fn();
+      this.flush();
+    }
+  },
+  tick(nTimes = 1) { this.advance(nTimes * 20); },
+  eat(player, stack) { world.afterEvents.itemCompleteUse._fire({ source: player, itemStack: stack }); },
   startup() {
     const registry = new Map();
     system.beforeEvents.startup._fire({ blockComponentRegistry: { registerCustomComponent: (n, c) => registry.set(n, c) } });

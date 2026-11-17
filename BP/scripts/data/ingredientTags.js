@@ -24,6 +24,9 @@ export const BUILTIN_INGREDIENT_TAGS = Object.freeze({
   "minecraft:honey_bottle": ["kaleidoscope:honey", "kaleidoscope:sweetener"],
   "minecraft:water_bucket": ["kaleidoscope:water"],
   "minecraft:cocoa_beans": ["kaleidoscope:cocoa"],
+  "minecraft:sugar_cane": ["kaleidoscope:sugar_cane"],
+  "minecraft:ice": ["kaleidoscope:ice"],
+  "minecraft:packed_ice": ["kaleidoscope:ice"],
 
   // Grains / flour (Cookery owns flour and dough; we only classify them)
   "minecraft:wheat": ["kaleidoscope:grain"],
@@ -42,6 +45,9 @@ export const BUILTIN_INGREDIENT_TAGS = Object.freeze({
   "minecraft:beetroot": [...VEG, "kaleidoscope:root_vegetable"],
   "kaleidoscope_cookery:tomato": VEG,
   "kaleidoscope_cookery:lettuce": VEG,
+  "kaleidoscope_cookery:fresh_tea_leaves": ["kaleidoscope:tea_leaf"],
+  "kaleidoscope_cookery:dried_tea_leaves": ["kaleidoscope:tea_leaf"],
+  "kaleidoscope_cookery:oil": ["kaleidoscope:oil"],
 
   // Fish / seafood
   "minecraft:cod": FISH_RAW,
@@ -80,5 +86,14 @@ export const CONTAINER_RETURNS = Object.freeze({
   "minecraft:milk_bucket": "minecraft:bucket",
   "minecraft:water_bucket": "minecraft:bucket",
   "minecraft:lava_bucket": "minecraft:bucket",
-  "minecraft:honey_bottle": "minecraft:glass_bottle"
+  "minecraft:honey_bottle": "minecraft:glass_bottle",
+  // Baking's own bottled / cupped ingredients
+  "kaleidoscope_baking:brown_sugar_syrup": "minecraft:glass_bottle",
+  "kaleidoscope_baking:vanilla_extract": "minecraft:glass_bottle",
+  "kaleidoscope_baking:strawberry_jam": "minecraft:glass_bottle",
+  "kaleidoscope_baking:blueberry_jam": "minecraft:glass_bottle",
+  "kaleidoscope_baking:black_tea_base": "minecraft:glass_bottle",
+  "kaleidoscope_baking:green_tea_base": "minecraft:glass_bottle",
+  "kaleidoscope_baking:oolong_tea_base": "minecraft:glass_bottle",
+  "kaleidoscope_baking:espresso": "kaleidoscope_baking:coffee_mug"
 });

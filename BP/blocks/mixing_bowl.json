@@ -2,7 +2,10 @@
   "format_version": "1.26.1",
   "minecraft:block": {
     "description": {
-      "identifier": "kaleidoscope_baking:mixing_bowl"
+      "identifier": "kaleidoscope_baking:mixing_bowl",
+      "menu_category": {
+        "category": "none"
+      }
     },
     "components": {
       "minecraft:geometry": "geometry.kaleidoscope_baking.mixing_bowl",
@@ -37,7 +40,7 @@
         ]
       },
       "minecraft:destructible_by_mining": {
-        "seconds_to_destroy": 0.8
+        "seconds_to_destroy": 1.0
       },
       "minecraft:light_dampening": 0,
       "minecraft:map_color": "#B8BCC2",

@@ -66,7 +66,13 @@ export function consumeHeld(player, n = 1) {
   } catch {}
 }
 
-function stacksOf(id, count) {
+// Series compat may redirect what Baking hands out (e.g. Harvest's strawberry instead of
+// ours when Harvest leads fruit). Installed by compat/index.js; identity by default.
+let outputMapper = id => id;
+export function setOutputMapper(fn) { outputMapper = typeof fn === "function" ? fn : id => id; }
+
+function stacksOf(rawId, count) {
+  const id = outputMapper(rawId) || rawId;
   const out = [];
   let left = Math.max(0, Math.floor(count));
   while (left > 0) {
@@ -93,6 +99,33 @@ export function giveItems(player, id, count = 1) {
     try { rest = inv ? inv.addItem(s) : s; } catch {}
     if (rest) try { player.dimension.spawnItem(rest, player.location); } catch {}
   }
+}
+
+/** Give a prepared ItemStack (keeps lore / dynamic properties). Drops it if the inventory is full. */
+export function giveStack(player, stack) {
+  let rest = stack;
+  try { rest = player.getComponent("minecraft:inventory")?.container?.addItem(stack); } catch {}
+  if (rest) try { player.dimension.spawnItem(rest, player.location); } catch {}
+}
+
+/** Does the inventory hold an item matching `pred(stack)`? */
+export function hasInInventory(player, pred) {
+  const inv = player.getComponent("minecraft:inventory")?.container;
+  if (!inv) return false;
+  for (let i = 0; i < inv.size; i++) {
+    try { const s = inv.getItem(i); if (s && pred(s)) return true; } catch {}
+  }
+  return false;
+}
+
+export function stackHasTag(stack, tag) {
+  try { return !!stack?.hasTag(tag); } catch { return false; }
+}
+
+/** Takes a carrier (cup, mold...) from the inventory unless Creative. Returns false if missing. */
+export function takeCarrier(player, id) {
+  if (!id || isCreative(player)) return true;
+  return !!takeOneFromInventory(player, s => s.typeId === id);
 }
 
 /** Find and remove one item matching `pred(stack)` from the inventory. Returns its id. */

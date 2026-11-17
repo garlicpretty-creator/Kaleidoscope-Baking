@@ -31,14 +31,17 @@ test("components are registered and Baking answers api_ping", () => {
   assert.deepEqual(JSON.parse(ready.message).api, 1);
 });
 
-test("Cookery handshake registers the toast chopping-board recipe once", () => {
+test("Cookery handshake: registrations are queued once and filtered by capability", () => {
   assert.ok(__mock.sent.some(s => s.id === "kaleidoscope_cookery:api_ping"));
   const cap = JSON.stringify({ api: 1, capabilities: ["chopping_board", "display_rules"] });
   system.sendScriptEvent("kaleidoscope_cookery:api_ready", cap);
   system.sendScriptEvent("kaleidoscope_cookery:api_ready", cap);
-  const regs = __mock.sent.filter(s => s.id === "kaleidoscope_cookery:register_recipe");
-  assert.equal(regs.length, 1);
-  assert.equal(JSON.parse(regs[0].message).recipe.input, "kaleidoscope_baking:toast_loaf");
+  __mock.advance(40);
+  const regs = __mock.sent.filter(s => s.id === "kaleidoscope_cookery:register_recipe").map(s => JSON.parse(s.message));
+  assert.ok(regs.length > 0);
+  assert.ok(regs.every(r => r.kind === "chopping_board"), "only advertised capabilities");
+  assert.equal(regs.filter(r => r.recipe.input === "kaleidoscope_baking:toast_loaf").length, 1, "sent once");
+  assert.ok(__mock.sent.some(s => s.id === "kaleidoscope_cookery:register_display_rule"));
 });
 
 test("oven: placing grows a 3x3x3 structure facing the player", () => {
