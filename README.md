@@ -14,7 +14,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 - [美術資源清單（給美術，自動產生）](docs/ART_ASSETS.md)
 - [腳本架構](BP/scripts/ARCHITECTURE.md)
 
-## 內容（v1.1.0）
+## 內容（v1.1.1）
 
 | 類別 | 數量 | 內容 |
 |------|------|------|
@@ -30,8 +30,6 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 - 咖啡因與心悸、下午茶加成（點心架 60 秒）、手搖飲甜度 / 冰塊、副產品
 - 開放 API v1（1.1 新增：副產品、查詢食材、調整咖啡因、展示規則、公開甜點元件）
 - 系列互通：主導規則與反向註冊已實作（等待正式物品 ID 與 API 事件名稱）
-
-1.1 新增的物品圖示、展示家具與手搖杯模型目前是暫代圖，之後由美術補上。
 
 方塊模型與方塊貼圖由 `tools/art/` 以程式繪製（含 z-fight 稽核、單面材質），物品圖示由 Retro Diffusion 產生；說明見 [tools/art/README.md](tools/art/README.md)，預覽在 `art/previews/`。
 
