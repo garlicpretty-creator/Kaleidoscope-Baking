@@ -760,6 +760,222 @@
     "herb_planter": {
       "zh": "香草盆栽",
       "prompt": "terracotta rectangular planter box with small green herb plants growing in dark soil"
+    },
+    "piping_bag": {
+      "zh": "擠花袋",
+      "prompt": "cone shaped white cloth piping bag with a metal star tip, filled with cream"
+    },
+    "madeleine_mold": {
+      "zh": "瑪德蓮模",
+      "prompt": "metal baking tray with six shell shaped scalloped cavities"
+    },
+    "pineapple_cake_mold": {
+      "zh": "鳳梨酥模",
+      "prompt": "small square metal pastry ring mold, empty square frame"
+    },
+    "cookie_cutter": {
+      "zh": "餅乾切模",
+      "prompt": "metal star shaped cookie cutter outline"
+    },
+    "empty_jar": {
+      "zh": "空罐子",
+      "prompt": "empty small glass jar with a cork lid, clear glass"
+    },
+    "butter_jar": {
+      "zh": "奶油罐",
+      "prompt": "small glass jar with a cork lid filled with pale yellow butter"
+    },
+    "puff_pastry_dough": {
+      "zh": "千層麵團",
+      "prompt": "square block of pale white dough wrapped around a visible bright yellow butter slab, raw"
+    },
+    "laminated_dough_1": {
+      "zh": "千層麵團（一擀）",
+      "prompt": "pale raw dough folded into three thick layers, side view showing yellow butter stripes between"
+    },
+    "laminated_dough_2": {
+      "zh": "千層麵團（二擀）",
+      "prompt": "thin flat pale dough sheet showing many fine stacked layers"
+    },
+    "puff_pastry": {
+      "zh": "千層酥皮",
+      "prompt": "square sheet of raw puff pastry with many thin layered edges, pale cream color"
+    },
+    "puff_pastry_sheet": {
+      "zh": "烤酥皮",
+      "prompt": "square sheet of baked golden brown flaky puff pastry, puffed layers"
+    },
+    "madeleine_batter": {
+      "zh": "瑪德蓮麵糊",
+      "prompt": "small bowl of smooth pale yellow batter with a lemon zest fleck"
+    },
+    "ma_lai_go_batter": {
+      "zh": "馬拉糕粉漿",
+      "prompt": "small bowl of smooth light brown batter"
+    },
+    "palmier_dough": {
+      "zh": "蝴蝶酥生胚",
+      "prompt": "raw pale heart shaped palmier pastry with sugar, uncooked dough color"
+    },
+    "raw_portuguese_tart": {
+      "zh": "葡式蛋塔生胚",
+      "prompt": "raw unbaked egg tart, pale pastry shell with liquid yellow custard"
+    },
+    "raw_pastry_soup": {
+      "zh": "酥皮濃湯生胚",
+      "prompt": "white soup bowl covered with a pale raw dough lid"
+    },
+    "raw_egg_yolk_pastry": {
+      "zh": "蛋黃酥生胚",
+      "prompt": "round raw pale white pastry ball, unbaked"
+    },
+    "raw_pineapple_cake": {
+      "zh": "鳳梨酥生胚",
+      "prompt": "raw pale square pastry cube, unbaked dough"
+    },
+    "shaped_cookie_dough": {
+      "zh": "造型餅乾麵團",
+      "prompt": "raw pale unbaked star shaped cookie dough piece, matte light beige, flour dusted"
+    },
+    "icing_white": {
+      "zh": "白色糖霜",
+      "prompt": "small bowl of thick white icing"
+    },
+    "icing_pink": {
+      "zh": "粉紅色糖霜",
+      "prompt": "small bowl of thick bright pink icing"
+    },
+    "icing_blue": {
+      "zh": "藍色糖霜",
+      "prompt": "small bowl of thick bright blue icing"
+    },
+    "icing_green": {
+      "zh": "綠色糖霜",
+      "prompt": "small bowl of thick bright green icing"
+    },
+    "icing_yellow": {
+      "zh": "黃色糖霜",
+      "prompt": "small bowl of thick bright yellow icing"
+    },
+    "icing_cocoa": {
+      "zh": "可可色糖霜",
+      "prompt": "small bowl of thick dark brown chocolate icing"
+    },
+    "salted_egg": {
+      "zh": "鹹蛋",
+      "prompt": "duck egg with a pale blue-green shell"
+    },
+    "salted_egg_yolk": {
+      "zh": "鹹蛋黃",
+      "prompt": "round bright orange salted egg yolk"
+    },
+    "pineapple_jam": {
+      "zh": "鳳梨醬",
+      "prompt": "small glass jar with a cork lid filled with golden yellow pineapple jam"
+    },
+    "bread_crumbs": {
+      "zh": "麵包屑",
+      "prompt": "scattered small golden brown bread crumbs, loose crumbly pieces"
+    },
+    "coffee_grounds": {
+      "zh": "咖啡渣",
+      "prompt": "small pile of dark brown wet coffee grounds"
+    },
+    "fruit_pulp": {
+      "zh": "果渣",
+      "prompt": "small pile of mashed orange and red fruit pulp"
+    },
+    "napoleon": {
+      "zh": "拿破崙派",
+      "prompt": "rectangular napoleon pastry slice, flaky layers with cream and white icing top with chocolate stripes"
+    },
+    "palmier": {
+      "zh": "蝴蝶酥",
+      "prompt": "golden brown caramelized heart shaped palmier cookie"
+    },
+    "portuguese_egg_tart": {
+      "zh": "葡式蛋塔",
+      "prompt": "portuguese egg tart with flaky crust and caramelized dark burnt spots on yellow custard"
+    },
+    "pastry_soup": {
+      "zh": "酥皮濃湯",
+      "prompt": "white soup bowl topped with a domed golden brown puff pastry lid"
+    },
+    "cream_soup": {
+      "zh": "奶油濃湯",
+      "prompt": "white bowl of creamy white soup with a green herb"
+    },
+    "madeleine": {
+      "zh": "瑪德蓮",
+      "prompt": "golden shell shaped madeleine cake with ridges"
+    },
+    "egg_yolk_pastry": {
+      "zh": "蛋黃酥",
+      "prompt": "round flaky pastry with shiny brown top and black sesame seeds"
+    },
+    "ma_lai_go": {
+      "zh": "馬拉糕",
+      "prompt": "square fluffy light brown steamed sponge cake"
+    },
+    "shaped_cookie": {
+      "zh": "造型餅乾",
+      "prompt": "plain golden star shaped cookie"
+    },
+    "iced_cookie_white": {
+      "zh": "白色糖霜餅乾",
+      "prompt": "star shaped cookie covered in white icing"
+    },
+    "iced_cookie_pink": {
+      "zh": "粉紅色糖霜餅乾",
+      "prompt": "star shaped cookie covered in bright pink icing"
+    },
+    "iced_cookie_blue": {
+      "zh": "藍色糖霜餅乾",
+      "prompt": "star shaped cookie covered in bright blue icing"
+    },
+    "iced_cookie_green": {
+      "zh": "綠色糖霜餅乾",
+      "prompt": "star shaped cookie covered in bright green icing"
+    },
+    "iced_cookie_yellow": {
+      "zh": "黃色糖霜餅乾",
+      "prompt": "star shaped cookie covered in bright yellow icing"
+    },
+    "iced_cookie_cocoa": {
+      "zh": "可可色糖霜餅乾",
+      "prompt": "star shaped cookie covered in dark brown chocolate icing"
+    },
+    "fried_fish": {
+      "zh": "炸魚排",
+      "prompt": "golden breaded fried fish fillet"
+    },
+    "cake_stand": {
+      "zh": "蛋糕架",
+      "prompt": "white porcelain cake stand, round plate on a pedestal"
+    },
+    "tea_tray": {
+      "zh": "三層點心架",
+      "prompt": "three tier afternoon tea stand with gold pole and white plates"
+    },
+    "bread_display": {
+      "zh": "麵包展示櫃",
+      "prompt": "wooden bakery display cabinet with glass front and bread inside"
+    },
+    "pastry_case": {
+      "zh": "甜點櫥窗",
+      "prompt": "glass dessert display case with cakes inside"
+    },
+    "pineapple": {
+      "zh": "鳳梨",
+      "from_harvest": true
+    },
+    "pineapple_cake": {
+      "zh": "鳳梨酥",
+      "from_harvest": true
+    },
+    "pineapple_crown": {
+      "zh": "鳳梨冠芽",
+      "from_harvest": true
     }
   }
 }

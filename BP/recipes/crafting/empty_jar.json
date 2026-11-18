@@ -8,10 +8,13 @@
       "crafting_table"
     ],
     "pattern": [
-      "G G",
-      " G "
+      "S",
+      "G"
     ],
     "key": {
+      "S": {
+        "item": "minecraft:oak_slab"
+      },
       "G": {
         "item": "minecraft:glass"
       }
@@ -21,6 +24,9 @@
       "count": 2
     },
     "unlock": [
+      {
+        "item": "minecraft:oak_slab"
+      },
       {
         "item": "minecraft:glass"
       }
