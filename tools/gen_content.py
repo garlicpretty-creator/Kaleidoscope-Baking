@@ -907,11 +907,14 @@ for st in getattr(C, "FURNITURE", []):
     it = next(i for i in C.ITEMS if i["id"] == sid)
     name(f"tile.{kb(sid)}.name", it["zh"], it["en"])
     gid = f"geometry.{NS}.{sid}"
-    w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": [cube(o, sz) for o, sz in st["cubes"]]}]))
-    xs = [o[0] for o, s_ in st["cubes"]] + [o[0] + s_[0] for o, s_ in st["cubes"]]
-    ys = [o[1] + s_[1] for o, s_ in st["cubes"]]
-    zs = [o[2] for o, s_ in st["cubes"]] + [o[2] + s_[2] for o, s_ in st["cubes"]]
-    box = {"origin": [max(-8, min(xs)), 0, max(-8, min(zs))], "size": [min(16, max(xs) - min(xs)), min(16, max(ys)), min(16, max(zs) - min(zs))]}
+    if sid in ART_OUT["bounds"]:
+        box = ART_OUT["bounds"][sid]  # model and texture drawn by tools/art/furniture.py
+    else:  # placeholder until tools/art draws it
+        w(f"RP/models/blocks/{sid}.geo.json", geo(gid, [{"name": "root", "pivot": [0, 0, 0], "cubes": [cube(o, sz) for o, sz in st["cubes"]]}]))
+        xs = [o[0] for o, s_ in st["cubes"]] + [o[0] + s_[0] for o, s_ in st["cubes"]]
+        ys = [o[1] + s_[1] for o, s_ in st["cubes"]]
+        zs = [o[2] for o, s_ in st["cubes"]] + [o[2] + s_[2] for o, s_ in st["cubes"]]
+        box = {"origin": [max(-8, min(xs)), 0, max(-8, min(zs))], "size": [min(16, max(xs) - min(xs)), min(16, max(ys)), min(16, max(zs) - min(zs))]}
     block(sid, {
         "minecraft:geometry": gid,
         "minecraft:material_instances": {"*": {"texture": f"kb_{sid}", "render_method": MAT}},
@@ -933,8 +936,9 @@ def takeaway_geo(n):
         cubes.append(cube([x, 0, z], [4, 7, 4], top="lid", material="cup"))
         cubes.append(cube([x + 1.5, 7, z + 1.5], [1, 3, 1], material="straw"))
     gid = f"geometry.{NS}.takeaway_{n}"
-    w(f"RP/models/blocks/takeaway_{n}.geo.json", geo(gid, [{"name": "takeaway", "pivot": [0, 0, 0], "cubes": cubes}]))
-    return gid
+    if os.path.normcase(os.path.join("RP", "models", "blocks", f"takeaway_{n}.geo.json")) not in {os.path.normcase(x) for x in ART.WRITTEN}:
+        w(f"RP/models/blocks/takeaway_{n}.geo.json", geo(gid, [{"name": "takeaway", "pivot": [0, 0, 0], "cubes": cubes}]))
+    return gid  # otherwise drawn by tools/art/furniture.py (cup body = `cup` instance, lid and straw in kb_takeaway_cup)
 
 
 TAKEAWAY_GEOS = {n: takeaway_geo(n) for n in range(1, 5)}
@@ -1145,6 +1149,16 @@ lines += ["", "## 放在地上的馬克杯飲品（`tools/art/drinks.py`；一�
 for did in C.DRINK_BLOCKS:
     it = next(i for i in C.ITEMS if i["id"] == did)
     lines.append(f"| {it['zh']} | `textures/blocks/kb_drink_{did}.png` |")
+lines += ["", "## 展示家具與手搖杯（`tools/art/furniture.py`；1.1）", "",
+          "展示物品是展示實體疊在模型上的（`BP/scripts/custom_components/furniture.js` 的 TRAY_SPOTS / CASE_SPOTS）。",
+          "模型保留 1.1 暫代模型的檯面高度：蛋糕架盤面 y=7、點心架三層 y=3 / 8 / 13、麵包櫃層板 y=8、甜點櫥窗玻璃層板 y=8.5；",
+          "玻璃面朝北（-z），背板在南。", "",
+          "| 方塊 | 貼圖 | 模型 |", "|------|------|------|",
+          "| 蛋糕架 | `textures/blocks/kb_cake_stand.png` | `RP/models/blocks/cake_stand.geo.json` |",
+          "| 三層點心架 | `textures/blocks/kb_tea_tray.png` | `RP/models/blocks/tea_tray.geo.json` |",
+          "| 麵包展示櫃 | `textures/blocks/kb_bread_display.png` | `RP/models/blocks/bread_display.geo.json` |",
+          "| 甜點櫥窗 | `textures/blocks/kb_pastry_case.png` | `RP/models/blocks/pastry_case.geo.json` |",
+          "| 手搖杯（1–4 杯） | `textures/blocks/kb_takeaway_cup.png`（杯蓋、吸管）＋ `kb_fill_shaken.png`（杯身，`cup` 材質實例） | `RP/models/blocks/takeaway_1..4.geo.json` |"]
 lines += ["", "## 物品圖示 `RP/textures/items/`", ""]
 for g, title in GROUP_TITLES.items():
     lines += [f"### {title}", "", "| 檔名 | 物品 |", "|------|------|"]

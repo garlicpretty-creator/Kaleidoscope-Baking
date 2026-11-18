@@ -451,7 +451,7 @@ CRAFTING += [
     ("madeleine_mold", ["NNN", "NNN"], {"N": "minecraft:iron_nugget"}, 1),
     ("pineapple_cake_mold", ["NIN"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
     ("cookie_cutter", [" N ", "N N", " N "], {"N": "minecraft:iron_nugget"}, 1),
-    ("empty_jar", ["G G", " G "], {"G": "minecraft:glass"}, 2),
+    ("empty_jar", ["S", "G"], {"S": "minecraft:oak_slab", "G": "minecraft:glass"}, 2),  # lid on a jar; "G G / G" is the glass bottle
 ]
 CRAFTING_SHAPELESS = [
     ("butter_jar", [f"{NS}:empty_jar", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter"], 1),

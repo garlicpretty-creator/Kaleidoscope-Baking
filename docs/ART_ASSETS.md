@@ -105,6 +105,20 @@
 | 手沖咖啡（中焙） | `textures/blocks/kb_drink_pour_over_medium.png` |
 | 手沖咖啡（深焙） | `textures/blocks/kb_drink_pour_over_dark.png` |
 
+## 展示家具與手搖杯（`tools/art/furniture.py`；1.1）
+
+展示物品是展示實體疊在模型上的（`BP/scripts/custom_components/furniture.js` 的 TRAY_SPOTS / CASE_SPOTS）。
+模型保留 1.1 暫代模型的檯面高度：蛋糕架盤面 y=7、點心架三層 y=3 / 8 / 13、麵包櫃層板 y=8、甜點櫥窗玻璃層板 y=8.5；
+玻璃面朝北（-z），背板在南。
+
+| 方塊 | 貼圖 | 模型 |
+|------|------|------|
+| 蛋糕架 | `textures/blocks/kb_cake_stand.png` | `RP/models/blocks/cake_stand.geo.json` |
+| 三層點心架 | `textures/blocks/kb_tea_tray.png` | `RP/models/blocks/tea_tray.geo.json` |
+| 麵包展示櫃 | `textures/blocks/kb_bread_display.png` | `RP/models/blocks/bread_display.geo.json` |
+| 甜點櫥窗 | `textures/blocks/kb_pastry_case.png` | `RP/models/blocks/pastry_case.geo.json` |
+| 手搖杯（1–4 杯） | `textures/blocks/kb_takeaway_cup.png`（杯蓋、吸管）＋ `kb_fill_shaken.png`（杯身，`cup` 材質實例） | `RP/models/blocks/takeaway_1..4.geo.json` |
+
 ## 物品圖示 `RP/textures/items/`
 
 ### 烘焙廚具

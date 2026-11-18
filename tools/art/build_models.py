@@ -15,6 +15,7 @@ RP = os.path.join(ROOT, "RP")
 import kit  # noqa: E402
 import desserts  # noqa: E402
 import drinks  # noqa: E402
+import furniture  # noqa: E402
 import oven  # noqa: E402
 import plants  # noqa: E402
 import stations  # noqa: E402
@@ -188,12 +189,37 @@ def write_particles():
         {"flipbook_texture": "textures/blocks/kb_oven_firebox_lit", "atlas_tile": "kb_oven_firebox_lit", "ticks_per_frame": 3}])
 
 
+def build_furniture():
+    """1.1 display furniture and the placed takeaway cups (tools/art/furniture.py)."""
+    problems, bounds = [], {}
+    for fid, fn in furniture.FURNITURE.items():
+        boxes, painters = fn()
+        problems += kit.audit(boxes, fid)
+        tex = kit.Painted(boxes)
+        write_json(f"RP/models/blocks/{fid}.geo.json", tex.geometry(f"geometry.{NS}.{fid}", boxes))
+        tex.image(painters).save(os.path.join(RP, "textures", "blocks", f"kb_{fid}.png"))
+        bounds[fid] = kit.bounds_of(boxes)
+        STATS[fid] = kit.count_faces(boxes)
+    per_n = {n: furniture.takeaway(n) for n in range(1, 5)}
+    tex = kit.Painted(list(per_n.values()))  # one texture for 1..4 cups
+    for n, boxes in per_n.items():
+        problems += kit.audit(boxes, f"takeaway_{n}")
+        write_json(f"RP/models/blocks/takeaway_{n}.geo.json", tex.geometry(f"geometry.{NS}.takeaway_{n}", boxes))
+    tex.image(furniture.TAKEAWAY_PAINTERS).save(os.path.join(RP, "textures", "blocks", "kb_takeaway_cup.png"))
+    furniture.fill_texture().save(os.path.join(RP, "textures", "blocks", "kb_fill_shaken.png"))
+    STATS["takeaway_4"] = kit.count_faces(per_n[4])
+    return problems, bounds
+
+
 def build_all():
     problems, bounds = build_stations()
     p2, dessert_info = build_desserts()
     ov = dict(oven.build(os.path.join(RP, "textures", "blocks")))
     oven_preview(ov, os.path.join(ROOT, "art", "previews", "oven.png"))
     p3, mugs = build_drinks()
+    p4, furniture_bounds = build_furniture()
+    p3 += p4
+    bounds.update(furniture_bounds)
     p3 += visuals.build(write_json, RP, os.path.join(ROOT, "BP"))
     write_particles()
     made = build_plants()
