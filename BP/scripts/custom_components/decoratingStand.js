@@ -6,14 +6,13 @@
 // A recipe that is the prefix of a longer one (strawberry cream cake < birthday cake) is
 // finished with an empty hand; otherwise the last layer completes it automatically.
 import { world } from "@minecraft/server";
-import { addToStand, normalizeStand, popStand, standNextOptions, standRecipe } from "../api/stationLogic.js";
-import { refuse, consumeHeld, giveItems, heldItem, itemName, particle, sound, spawnItems, t } from "../utils/runtime.js";
+import { addToStand, normalizeStand, popStand, standRecipe } from "../api/stationLogic.js";
+import { refuse, consumeHeld, giveItems, heldItem, particle, sound, spawnItems } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
 import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 
 export const STAND_ID = "kaleidoscope_baking:decorating_stand";
 const PREFIX = "kb_stand";
-const MSG = "kaleidoscope_baking.msg.stand.";
 const isEmpty = s => !s.base;
 const top = b => ({ x: b.x + 0.5, y: b.y + 0.9, z: b.z + 0.5 });
 

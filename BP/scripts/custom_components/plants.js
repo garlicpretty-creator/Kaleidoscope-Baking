@@ -16,13 +16,12 @@ import { BlockPermutation } from "@minecraft/server";
 import { CONTENT } from "../data/generated/content.js";
 import { maybeConvertPlant } from "../compat/index.js";
 import {
-  refuse, consumeHeld, heldItem, isCreative, itemName, mainhand, particle, safeBlock, sound, spawnItems, stackHasTag, t
+  refuse, consumeHeld, heldItem, isCreative, mainhand, particle, safeBlock, sound, spawnItems, stackHasTag
 } from "../utils/runtime.js";
 
 const GROWTH = "kaleidoscope_baking:growth";
 const STRIPPED = "kaleidoscope_baking:stripped";
 const PLANT = "kaleidoscope_baking:plant";
-const MSG = "kaleidoscope_baking.msg.planter.";
 const centre = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });
 const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 const stageOf = b => { try { return Number(b.permutation.getState(GROWTH)) || 0; } catch { return 0; } };

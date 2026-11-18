@@ -12,8 +12,7 @@ import { addToShaker, normalizeShaker, shake, shakerRecipe, takeFromShaker, ICE,
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import { ICE_PROP, SWEET_PROP } from "../events/consumption.js";
 import {
-  refuse, consumeHeld, giveItems, giveStack, hasInInventory, heldItem, isCreative, itemName, particle, sound, spawnItems,
-  t, takeCarrier
+  refuse, consumeHeld, giveItems, giveStack, hasInInventory, heldItem, isCreative, particle, sound, spawnItems, takeCarrier
 } from "../utils/runtime.js";
 import { loadStation, saveStation } from "../utils/stations.js";
 import { ensureVisual, KIND, playMotion, removeVisual } from "../utils/visuals.js";

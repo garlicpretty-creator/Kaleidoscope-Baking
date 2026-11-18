@@ -10,20 +10,17 @@
 // ## getRedstonePower() is read on the machine and its neighbours, because a lever or
 // redstone block next to it powers the neighbour cell, not always the custom block itself.
 import { world } from "@minecraft/server";
-import {
-  ESPRESSO_WATER_MAX, espressoRecipe, loadEspressoAdditive, loadEspressoCoffee, normalizeEspresso, tickEspresso
-} from "../api/stationLogic.js";
+import { ESPRESSO_WATER_MAX, loadEspressoAdditive, loadEspressoCoffee, normalizeEspresso, tickEspresso } from "../api/stationLogic.js";
 import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
 import { all } from "../api/registry.js";
 import {
-  refuse, consumeHeld, giveItems, heldItem, isCreative, itemName, particle, safeBlock, sound, spawnItems, t, takeCarrier
+  refuse, consumeHeld, giveItems, heldItem, isCreative, particle, safeBlock, sound, spawnItems, takeCarrier
 } from "../utils/runtime.js";
 import { KIND, removeVisual, setMotion, showContents, steam } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
 
 export const ESPRESSO_ID = "kaleidoscope_baking:espresso_machine";
 const PREFIX = "kb_espresso";
-const MSG = "kaleidoscope_baking.msg.espresso.";
 const TICK = 10;
 const isEmpty = s => !s.water && !s.coffee && !s.additive && !s.ready;
 const spout = b => ({ x: b.x + 0.5, y: b.y + 0.5, z: b.z + 0.5 });

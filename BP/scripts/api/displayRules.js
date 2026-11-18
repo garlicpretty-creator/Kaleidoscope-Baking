@@ -22,4 +22,3 @@ export function displayMode(id) {
   return mode;
 }
 
-export function _resetDisplayRulesForTests() { rules.clear(); }
