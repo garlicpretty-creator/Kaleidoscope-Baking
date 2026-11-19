@@ -342,7 +342,8 @@ CRAFTING = [
     ("bread_knife", ["  I", " I ", "S  "], {"I": "minecraft:iron_ingot", "S": "minecraft:stick"}, 1),
     ("cake_mold", ["IPI", "III"], {"I": "minecraft:iron_ingot", "P": "minecraft:paper"}, 1),  # not the minecart shape
     ("loaf_pan", ["N N", "N N", "NNN"], {"N": "minecraft:iron_nugget"}, 1),
-    ("baking_tray", ["III"], {"I": "minecraft:iron_ingot"}, 1),
+    # nugget rims: three ingots in a row is Kaleidoscope Deco's test tube rack
+    ("baking_tray", ["N N", "III"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
     ("pie_tin", ["N N", " N "], {"N": "minecraft:iron_nugget"}, 1),  # nuggets: the ingot shape is the bucket
     ("muffin_tin", ["NNN", "III"], {"N": "minecraft:iron_nugget", "I": "minecraft:iron_ingot"}, 1),
     ("taiyaki_mold", ["INI", "INI"], {"I": "minecraft:iron_ingot", "N": "minecraft:iron_nugget"}, 1),  # not iron boots
