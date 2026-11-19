@@ -14,7 +14,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 - [美術資源清單（給美術，自動產生）](docs/ART_ASSETS.md)
 - [腳本架構](BP/scripts/ARCHITECTURE.md)
 
-## 內容（v1.2.0）
+## 內容（v1.1.1）
 
 | 類別 | 數量 | 內容 |
 |------|------|------|
