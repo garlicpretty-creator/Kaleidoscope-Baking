@@ -77,7 +77,7 @@ function publishGuidebook(force = false) {
   guidebookSent = true;
   publishedRevision = registryRevision();
   const revision = `r${system.currentTick}`;
-  const chunks = toChunks(buildGuidebook("1.1.1"));
+  const chunks = toChunks(buildGuidebook("1.2.0"));
   enqueueEvent(KC.gbBegin, JSON.stringify({ api: 1, source: SOURCE, id: GUIDEBOOK_ID, revision, chunks: chunks.length }));
   chunks.forEach((data, i) => enqueueEvent(KC.gbChunk, `${SOURCE}\n${GUIDEBOOK_ID}\n${revision}\n${i}\n${data}`));
   enqueueEvent(KC.gbEnd, JSON.stringify({ api: 1, source: SOURCE, id: GUIDEBOOK_ID, revision }));
