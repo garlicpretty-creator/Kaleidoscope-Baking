@@ -55,11 +55,11 @@
     },
     "loaf_pan": {
       "zh": "吐司模",
-      "prompt": "empty deep rectangular dark grey metal loaf tin, open top, seen from above at an angle, nothing inside"
+      "prompt": "tall deep narrow rectangular shiny silver aluminium bread loaf tin, high straight sides, empty, seen from the side at an angle"
     },
     "baking_tray": {
       "zh": "烤盤",
-      "prompt": "flat rectangular dark steel baking sheet tray with raised rim"
+      "prompt": "wide flat thin rectangular black steel baking sheet, very low rim, seen at an angle, much wider than tall"
     },
     "pie_tin": {
       "zh": "派盤",
@@ -71,7 +71,7 @@
     },
     "taiyaki_mold": {
       "zh": "鯛魚燒模",
-      "prompt": "cast iron fish shaped taiyaki mold with long handle, opened"
+      "prompt": "black cast iron taiyaki mold opened flat showing two fish shaped cavities with scale pattern, two long wooden handles"
     },
     "coffee_mug": {
       "zh": "馬克杯",
@@ -83,7 +83,7 @@
     },
     "birthday_candle": {
       "zh": "生日蠟燭",
-      "prompt": "single pink and white striped birthday candle with a small yellow flame"
+      "prompt": "one thin long pink and white spiral striped birthday candle standing upright with a small orange yellow flame on top"
     },
     "butter": {
       "zh": "奶油",
@@ -111,11 +111,11 @@
     },
     "cocoa_powder": {
       "zh": "可可粉",
-      "prompt": "small pile of dark brown cocoa powder in a wooden scoop"
+      "prompt": "small open round tin can full of dark brown cocoa powder, seen from above at an angle"
     },
     "brown_sugar": {
       "zh": "黑糖",
-      "prompt": "small pile of dark brown sugar crystals"
+      "prompt": "small open brown paper bag of dark brown sugar, sticky crystals at the top"
     },
     "brown_sugar_syrup": {
       "zh": "黑糖糖漿",
@@ -123,11 +123,11 @@
     },
     "caramel": {
       "zh": "焦糖",
-      "prompt": "small white bowl filled with glossy golden amber caramel sauce"
+      "prompt": "small copper saucepan with glossy golden amber caramel sauce inside"
     },
     "custard": {
       "zh": "卡士達",
-      "prompt": "small white bowl filled with thick smooth pale yellow vanilla custard cream"
+      "prompt": "small glass ramekin filled with thick pale yellow custard with tiny black vanilla specks"
     },
     "chocolate_sauce": {
       "zh": "巧克力醬",
@@ -167,7 +167,7 @@
     },
     "poppy_seeds": {
       "zh": "罌粟籽",
-      "prompt": "small round pile of many tiny dark grey round seeds"
+      "prompt": "small wooden spoon heaped with tiny round dark blue grey poppy seeds"
     },
     "crushed_ice": {
       "zh": "碎冰",
@@ -211,7 +211,7 @@
     },
     "ground_coffee_light": {
       "zh": "淺焙咖啡粉",
-      "prompt": "small mound of light brown ground coffee in a scoop"
+      "prompt": "metal espresso portafilter basket seen from above, filled with light tan brown ground coffee"
     },
     "roasted_coffee_beans_medium": {
       "zh": "中焙咖啡豆",
@@ -219,7 +219,7 @@
     },
     "ground_coffee_medium": {
       "zh": "中焙咖啡粉",
-      "prompt": "small mound of medium brown ground coffee in a scoop"
+      "prompt": "metal espresso portafilter basket seen from above, filled with medium brown ground coffee"
     },
     "roasted_coffee_beans_dark": {
       "zh": "深焙咖啡豆",
@@ -227,7 +227,7 @@
     },
     "ground_coffee_dark": {
       "zh": "深焙咖啡粉",
-      "prompt": "small mound of very dark nearly black ground coffee in a scoop"
+      "prompt": "metal espresso portafilter basket seen from above, filled with very dark nearly black ground coffee"
     },
     "cake_batter": {
       "zh": "蛋糕麵糊",
@@ -299,7 +299,7 @@
     },
     "proofed_baguette_dough": {
       "zh": "發酵法棍麵團",
-      "prompt": "long puffy risen raw pale baguette with slashes, unbaked"
+      "prompt": "long fat risen raw pale baguette on floured linen cloth, three deep diagonal slashes, unbaked"
     },
     "focaccia_dough": {
       "zh": "迷迭香佛卡夏麵團",
@@ -315,7 +315,7 @@
     },
     "proofed_donut_dough": {
       "zh": "發酵甜甜圈麵團",
-      "prompt": "puffy risen raw pale dough ring, unbaked"
+      "prompt": "puffy risen raw pale dough ring sitting on a small square of white parchment paper, unbaked"
     },
     "pineapple_bun_dough": {
       "zh": "菠蘿麵包麵團",
@@ -323,7 +323,7 @@
     },
     "bagel_dough": {
       "zh": "罌粟籽貝果麵團",
-      "prompt": "raw pale dough ring sprinkled with black poppy seeds, unbaked"
+      "prompt": "raw pale dough ring with a big hole in the center, top thickly coated with black poppy seeds, unbaked"
     },
     "cookie_dough": {
       "zh": "餅乾麵團",
@@ -339,7 +339,7 @@
     },
     "scone_dough": {
       "zh": "司康麵團",
-      "prompt": "raw pale crumbly dough wedge, unbaked scone"
+      "prompt": "raw pale flour dusted triangle wedge of scone dough, unbaked"
     },
     "pie_dough": {
       "zh": "派皮麵團",
@@ -439,19 +439,19 @@
     },
     "cinnamon_stick": {
       "zh": "肉桂棒",
-      "prompt": "two rolled cinnamon quill sticks, reddish brown"
+      "prompt": "one single long reddish brown cinnamon stick lying diagonally, a tightly rolled bark quill with a spiral at the end"
     },
     "sesame_seeds": {
       "zh": "白芝麻",
-      "prompt": "small pile of white sesame seeds"
+      "prompt": "small white saucer holding many tiny teardrop shaped cream white sesame seeds"
     },
     "black_sesame_seeds": {
       "zh": "黑芝麻",
-      "prompt": "small pile of black sesame seeds"
+      "prompt": "small white saucer holding many tiny teardrop shaped black sesame seeds"
     },
     "stevia_seeds": {
       "zh": "甜菊種子",
-      "prompt": "small pile of tiny dark brown seeds with fluffy tufts"
+      "prompt": "three tiny thin dark seeds each with a white fluffy feathery tuft, like dandelion seeds"
     },
     "stevia_leaf": {
       "zh": "甜菊葉",
@@ -479,7 +479,7 @@
     },
     "raspberry": {
       "zh": "覆盆子",
-      "prompt": "single red raspberry made of small round bumpy drupelets, hollow cap end, tiny green leaf"
+      "prompt": "single small round dark pink raspberry, rounded thimble shape covered in tiny round bumps, top view"
     },
     "dried_blueberry": {
       "zh": "藍莓乾",
@@ -519,7 +519,7 @@
     },
     "cheesecake": {
       "zh": "起司蛋糕",
-      "prompt": "square block of cheesecake, golden brown top, pale yellow sides"
+      "prompt": "square block of cheesecake, creamy pale ivory sides, golden brown top, thin dark graham crust at the bottom"
     },
     "matcha_chiffon": {
       "zh": "抹茶戚風蛋糕",
@@ -563,11 +563,11 @@
     },
     "savory_taiyaki": {
       "zh": "鹹味鯛魚燒",
-      "prompt": "darker brown fish shaped taiyaki pastry with green scallion bits"
+      "prompt": "fish shaped taiyaki with a darker toasted crust, green scallion and melted cheese peeking out of the mouth"
     },
     "toast_loaf": {
       "zh": "吐司",
-      "prompt": "whole square bread loaf with golden brown crust"
+      "prompt": "tall rectangular white sandwich bread loaf seen from the side, rounded golden brown domed top"
     },
     "toast_slice": {
       "zh": "吐司片",
@@ -599,7 +599,7 @@
     },
     "poppy_seed_bagel": {
       "zh": "罌粟籽貝果",
-      "prompt": "golden bagel covered in black poppy seeds"
+      "prompt": "golden bagel seen from above with a clear round hole in the center, top covered in black poppy seeds"
     },
     "donut": {
       "zh": "甜甜圈",
@@ -619,15 +619,15 @@
     },
     "lemon_tart": {
       "zh": "檸檬塔",
-      "prompt": "round tart with bright yellow lemon curd filling"
+      "prompt": "round lemon tart with pale yellow lemon curd, topped with a thin lemon slice and a white meringue swirl"
     },
     "egg_tart": {
       "zh": "蛋塔",
-      "prompt": "small round egg tart with flaky crust and glossy yellow custard with brown spots"
+      "prompt": "small egg tart in a fluted silver foil cup, smooth glossy bright yellow custard, no burnt spots"
     },
     "butter_cookie": {
       "zh": "奶油餅乾",
-      "prompt": "round golden butter cookie with a ridged edge"
+      "prompt": "flat thin round pale golden butter cookie seen from above, wavy scalloped edge, small hole pattern"
     },
     "chocolate_cookie": {
       "zh": "巧克力餅乾",
@@ -639,7 +639,7 @@
     },
     "scone": {
       "zh": "司康",
-      "prompt": "golden brown crumbly scone"
+      "prompt": "triangular golden brown scone wedge with a crumbly cracked top"
     },
     "fa_gao": {
       "zh": "發糕",
@@ -647,11 +647,11 @@
     },
     "sesame_ball": {
       "zh": "芝麻球",
-      "prompt": "round golden deep fried sesame ball covered in white sesame seeds"
+      "prompt": "round golden ball fully covered with many white sesame seeds, deep fried"
     },
     "sesame_mooncake": {
       "zh": "芝麻月餅",
-      "prompt": "round golden brown mooncake with an embossed flower pattern"
+      "prompt": "round mooncake seen at an angle, glossy dark brown top with an embossed flower pattern, thick tan side"
     },
     "burnt_food": {
       "zh": "焦黑的烘焙物",
@@ -767,7 +767,7 @@
     },
     "madeleine_mold": {
       "zh": "瑪德蓮模",
-      "prompt": "metal baking tray with six shell shaped scalloped cavities"
+      "prompt": "flat grey metal baking pan seen from directly above, with a grid of six small empty shell shaped hollows, each hollow has radiating ridges like a scallop shell"
     },
     "pineapple_cake_mold": {
       "zh": "鳳梨酥模",
@@ -863,7 +863,7 @@
     },
     "salted_egg": {
       "zh": "鹹蛋",
-      "prompt": "duck egg with a pale blue-green shell"
+      "prompt": "oval duck egg, egg shaped not round, pale blue green shell"
     },
     "salted_egg_yolk": {
       "zh": "鹹蛋黃",
@@ -883,7 +883,7 @@
     },
     "fruit_pulp": {
       "zh": "果渣",
-      "prompt": "small pile of mashed orange and red fruit pulp"
+      "prompt": "small wooden bowl of mashed orange and red fruit pulp with seeds"
     },
     "napoleon": {
       "zh": "拿破崙派",
@@ -907,11 +907,11 @@
     },
     "madeleine": {
       "zh": "瑪德蓮",
-      "prompt": "golden shell shaped madeleine cake with ridges"
+      "prompt": "single small golden madeleine cake lying flat, oval shell shape with parallel ridges fanning out, browned edges"
     },
     "egg_yolk_pastry": {
       "zh": "蛋黃酥",
-      "prompt": "round flaky pastry with shiny brown top and black sesame seeds"
+      "prompt": "round flaky white pastry with a shiny dark brown egg washed top sprinkled with black sesame seeds"
     },
     "ma_lai_go": {
       "zh": "馬拉糕",
@@ -947,7 +947,7 @@
     },
     "fried_fish": {
       "zh": "炸魚排",
-      "prompt": "golden breaded fried fish fillet"
+      "prompt": "golden breaded fried fish fillet on white paper with a lemon wedge"
     },
     "cake_stand": {
       "zh": "蛋糕架",
