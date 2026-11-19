@@ -23,15 +23,15 @@
     },
     "espresso_machine": {
       "zh": "咖啡機",
-      "prompt": "small silver espresso machine with a black portafilter handle and a tiny cup under the spout"
+      "prompt": "boxy silver espresso machine seen from the front at an angle, flat top, black portafilter handle sticking out, small white cup under the spout"
     },
     "pour_over_stand": {
       "zh": "手沖架",
-      "prompt": "wooden pour over coffee stand with a white cone dripper above a glass carafe"
+      "prompt": "wooden pour over coffee stand, a white cone dripper held above a round clear glass carafe with brown coffee"
     },
     "drink_shaker": {
       "zh": "雪克杯",
-      "prompt": "tall silver cocktail shaker with a rounded cap"
+      "prompt": "three piece silver cobbler cocktail shaker, tall body, narrower top and a small round cap"
     },
     "whisk": {
       "zh": "打蛋器",
@@ -91,11 +91,11 @@
     },
     "whipped_cream": {
       "zh": "鮮奶油",
-      "prompt": "small white bowl filled with fluffy swirled white whipped cream peak"
+      "prompt": "white whipped cream piped in a tall swirled rosette with ridges, on a small plate"
     },
     "cream_cheese": {
       "zh": "奶油起司",
-      "prompt": "block of soft white cream cheese in an open foil wrapper"
+      "prompt": "rectangular block of pure white cream cheese on unfolded silver foil, white not yellow"
     },
     "frothed_milk": {
       "zh": "奶泡",
@@ -103,7 +103,7 @@
     },
     "milk_foam_cap": {
       "zh": "奶蓋",
-      "prompt": "small white bowl filled with thick smooth off-white salted milk foam, glossy"
+      "prompt": "short clear glass cup half filled with amber tea, a thick smooth white milk foam layer on top"
     },
     "yeast": {
       "zh": "酵母",
@@ -143,7 +143,7 @@
     },
     "vanilla_extract": {
       "zh": "香草精",
-      "prompt": "small brown glass bottle of vanilla extract with a vanilla pod beside it"
+      "prompt": "tiny tall clear glass bottle of dark brown vanilla extract with a black cap and a white label"
     },
     "cinnamon_powder": {
       "zh": "肉桂粉",
@@ -159,7 +159,7 @@
     },
     "stevia_sugar": {
       "zh": "甜菊糖",
-      "prompt": "small pile of white sweetener powder with a tiny green leaf on top"
+      "prompt": "small white sugar cubes stacked with a fresh green stevia leaf beside them"
     },
     "matcha_powder": {
       "zh": "抹茶粉",
@@ -171,7 +171,7 @@
     },
     "crushed_ice": {
       "zh": "碎冰",
-      "prompt": "pile of pale blue crushed ice chunks"
+      "prompt": "small clear glass bowl full of crushed ice chunks, white and pale blue"
     },
     "tapioca_starch": {
       "zh": "樹薯粉",
@@ -179,7 +179,7 @@
     },
     "raw_tapioca_pearls": {
       "zh": "生粉圓",
-      "prompt": "pile of small separate round beige balls, uncooked tapioca pearls, like beads"
+      "prompt": "handful of many small separate round pale beige balls, uncooked tapioca pearls, loose beads"
     },
     "tapioca_pearls": {
       "zh": "珍珠",
@@ -259,15 +259,15 @@
     },
     "taiyaki_batter": {
       "zh": "鯛魚燒麵糊",
-      "prompt": "small white bowl filled with smooth light tan pancake batter"
+      "prompt": "small steel pouring jug with a spout, filled with smooth light tan pancake batter"
     },
     "savory_taiyaki_batter": {
       "zh": "鹹味鯛魚燒麵糊",
-      "prompt": "small white bowl filled with tan batter with small green scallion bits"
+      "prompt": "small steel pouring jug with a spout, filled with tan batter with green scallion bits"
     },
     "fa_gao_batter": {
       "zh": "發糕粉漿",
-      "prompt": "small white bowl filled with smooth light brown sugar rice batter"
+      "prompt": "small paper cupcake liner filled with smooth light brown batter, unbaked"
     },
     "bread_dough": {
       "zh": "吐司麵團",
@@ -287,7 +287,7 @@
     },
     "cinnamon_roll_dough": {
       "zh": "肉桂捲麵團",
-      "prompt": "raw pale dough log rolled up with a brown cinnamon swirl"
+      "prompt": "raw pale dough log seen from the end showing a brown cinnamon spiral, unbaked"
     },
     "proofed_cinnamon_roll_dough": {
       "zh": "發酵肉桂捲麵團",
@@ -327,7 +327,7 @@
     },
     "cookie_dough": {
       "zh": "餅乾麵團",
-      "prompt": "lump of raw pale cookie dough"
+      "prompt": "two scooped round balls of raw pale cookie dough on parchment paper"
     },
     "chocolate_cookie_dough": {
       "zh": "巧克力餅乾麵團",
@@ -399,7 +399,7 @@
     },
     "lavender_cutting": {
       "zh": "薰衣草插枝",
-      "prompt": "short woody brown stem cutting with narrow silver grey green leaves, no flowers"
+      "prompt": "single short upright woody lavender stem cutting with narrow silver green leaves, vertical, no flowers"
     },
     "mint_leaves": {
       "zh": "薄荷葉",
@@ -499,7 +499,7 @@
     },
     "sponge_cake": {
       "zh": "海綿蛋糕",
-      "prompt": "square block of golden sponge cake dusted with white sugar"
+      "prompt": "square block of golden yellow sponge cake with airy crumb sides and a light golden top dusted with white sugar"
     },
     "chocolate_cake": {
       "zh": "巧克力蛋糕",
@@ -527,7 +527,7 @@
     },
     "apple_pie": {
       "zh": "蘋果派",
-      "prompt": "whole golden baked apple pie with lattice crust"
+      "prompt": "whole golden apple pie with a solid top crust, leaf shaped vent slits and crimped edge, apple filling peeking through the slits"
     },
     "blueberry_pie": {
       "zh": "藍莓派",
@@ -539,7 +539,7 @@
     },
     "fish_pie": {
       "zh": "魚肉鹹派",
-      "prompt": "whole baked golden pie with fish shaped crust decoration"
+      "prompt": "whole golden baked pie with a pale pastry fish shape decoration on the top crust"
     },
     "cake_slice": {
       "zh": "蛋糕切片",
@@ -591,7 +591,7 @@
     },
     "rosemary_focaccia": {
       "zh": "迷迭香佛卡夏",
-      "prompt": "square slab of golden focaccia bread with dimples and rosemary"
+      "prompt": "flat rectangular slab of golden focaccia bread with deep finger dimples, green rosemary sprigs and coarse salt on top"
     },
     "pineapple_bun": {
       "zh": "菠蘿麵包",
@@ -611,7 +611,7 @@
     },
     "tart_shell": {
       "zh": "塔殼",
-      "prompt": "empty golden baked round tart shell with fluted edge"
+      "prompt": "empty golden baked tart shell with fluted edge seen at an angle, hollow inside"
     },
     "strawberry_tart": {
       "zh": "草莓塔",
@@ -831,7 +831,7 @@
     },
     "raw_pineapple_cake": {
       "zh": "鳳梨酥生胚",
-      "prompt": "raw pale square pastry cube, unbaked dough"
+      "prompt": "pale raw square pastry inside a small square metal mold, unbaked"
     },
     "shaped_cookie_dough": {
       "zh": "造型餅乾麵團",
@@ -875,7 +875,7 @@
     },
     "bread_crumbs": {
       "zh": "麵包屑",
-      "prompt": "scattered small golden brown bread crumbs, loose crumbly pieces"
+      "prompt": "small heap of fine golden brown bread crumbs"
     },
     "coffee_grounds": {
       "zh": "咖啡渣",
