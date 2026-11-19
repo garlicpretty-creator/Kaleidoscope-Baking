@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_quiche",
+    "normal": "kb_quiche_normal",
+    "metalness_emissive_roughness": "kb_quiche_mer"
+  }
+}

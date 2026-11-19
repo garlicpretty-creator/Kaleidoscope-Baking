@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:chocolate_cake_batter",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.ingredients"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:chocolate_cake_batter.name"
+      },
+      "minecraft:icon": "kb_chocolate_cake_batter",
+      "minecraft:max_stack_size": 16,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:batter"
+        ]
+      }
+    }
+  }
+}

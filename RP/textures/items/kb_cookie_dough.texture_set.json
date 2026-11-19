@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cookie_dough",
+    "normal": "kb_cookie_dough_normal",
+    "metalness_emissive_roughness": "kb_cookie_dough_mer"
+  }
+}

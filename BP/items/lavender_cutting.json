@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:lavender_cutting",
+      "menu_category": {
+        "category": "nature",
+        "group": "kaleidoscope_baking:itemGroup.name.plants"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:lavender_cutting.name"
+      },
+      "minecraft:icon": "kb_lavender_cutting",
+      "minecraft:max_stack_size": 64,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:seed"
+        ]
+      },
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:lavender_bush",
+        "use_on": [
+          "minecraft:grass_block",
+          "minecraft:dirt",
+          "minecraft:podzol",
+          "minecraft:coarse_dirt",
+          "minecraft:farmland",
+          "minecraft:moss_block",
+          "minecraft:dirt_with_roots"
+        ]
+      }
+    }
+  }
+}

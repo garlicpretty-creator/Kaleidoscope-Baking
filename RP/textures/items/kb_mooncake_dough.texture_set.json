@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_mooncake_dough",
+    "normal": "kb_mooncake_dough_normal",
+    "metalness_emissive_roughness": "kb_mooncake_dough_mer"
+  }
+}

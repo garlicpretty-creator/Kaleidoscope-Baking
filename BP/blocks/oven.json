@@ -1,0 +1,310 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:oven",
+      "states": {
+        "kaleidoscope_baking:oven_layer": [
+          0,
+          1,
+          2
+        ],
+        "kaleidoscope_baking:oven_cell": [
+          4,
+          0,
+          1,
+          2,
+          3,
+          5,
+          6,
+          7,
+          8
+        ],
+        "kaleidoscope_baking:facing": [
+          "south",
+          "north",
+          "east",
+          "west"
+        ],
+        "kaleidoscope_baking:lit": [
+          false,
+          true
+        ]
+      }
+    },
+    "components": {
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_oven_brick",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 3
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 30
+      },
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/empty.json",
+      "minecraft:movable": {
+        "movement_type": "immovable",
+        "sticky": "none"
+      },
+      "minecraft:map_color": "#9C5A3C",
+      "kaleidoscope_baking:oven": {}
+    },
+    "permutations": [
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 0) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 1) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 2) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 3) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 5) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 6) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 7) || (q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 8)",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "up": {
+              "texture": "kb_oven_top",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 2 && q.block_state('kaleidoscope_baking:oven_cell') == 4)",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "up": {
+              "texture": "kb_oven_chimney",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 1 && q.block_state('kaleidoscope_baking:oven_cell') == 1) && q.block_state('kaleidoscope_baking:facing') == 'north'",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "inside": {
+              "texture": "kb_oven_door",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              180,
+              0
+            ]
+          },
+          "minecraft:light_dampening": 0
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 1) && q.block_state('kaleidoscope_baking:facing') == 'north' && q.block_state('kaleidoscope_baking:lit') == false",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "north": {
+              "texture": "kb_oven_firebox",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 1) && q.block_state('kaleidoscope_baking:facing') == 'north' && q.block_state('kaleidoscope_baking:lit') == true",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "north": {
+              "texture": "kb_oven_firebox_lit",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:light_emission": 13
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 1 && q.block_state('kaleidoscope_baking:oven_cell') == 7) && q.block_state('kaleidoscope_baking:facing') == 'south'",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "inside": {
+              "texture": "kb_oven_door",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              0,
+              0
+            ]
+          },
+          "minecraft:light_dampening": 0
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 7) && q.block_state('kaleidoscope_baking:facing') == 'south' && q.block_state('kaleidoscope_baking:lit') == false",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "south": {
+              "texture": "kb_oven_firebox",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 7) && q.block_state('kaleidoscope_baking:facing') == 'south' && q.block_state('kaleidoscope_baking:lit') == true",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "south": {
+              "texture": "kb_oven_firebox_lit",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:light_emission": 13
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 1 && q.block_state('kaleidoscope_baking:oven_cell') == 5) && q.block_state('kaleidoscope_baking:facing') == 'east'",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "inside": {
+              "texture": "kb_oven_door",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              90,
+              0
+            ]
+          },
+          "minecraft:light_dampening": 0
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 5) && q.block_state('kaleidoscope_baking:facing') == 'east' && q.block_state('kaleidoscope_baking:lit') == false",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "east": {
+              "texture": "kb_oven_firebox",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 5) && q.block_state('kaleidoscope_baking:facing') == 'east' && q.block_state('kaleidoscope_baking:lit') == true",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "east": {
+              "texture": "kb_oven_firebox_lit",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:light_emission": 13
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 1 && q.block_state('kaleidoscope_baking:oven_cell') == 3) && q.block_state('kaleidoscope_baking:facing') == 'west'",
+        "components": {
+          "minecraft:geometry": "geometry.kaleidoscope_baking.oven_mouth",
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "inside": {
+              "texture": "kb_oven_door",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:transformation": {
+            "rotation": [
+              0,
+              270,
+              0
+            ]
+          },
+          "minecraft:light_dampening": 0
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 3) && q.block_state('kaleidoscope_baking:facing') == 'west' && q.block_state('kaleidoscope_baking:lit') == false",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "west": {
+              "texture": "kb_oven_firebox",
+              "render_method": "opaque"
+            }
+          }
+        }
+      },
+      {
+        "condition": "(q.block_state('kaleidoscope_baking:oven_layer') == 0 && q.block_state('kaleidoscope_baking:oven_cell') == 3) && q.block_state('kaleidoscope_baking:facing') == 'west' && q.block_state('kaleidoscope_baking:lit') == true",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_oven_brick",
+              "render_method": "opaque"
+            },
+            "west": {
+              "texture": "kb_oven_firebox_lit",
+              "render_method": "opaque"
+            }
+          },
+          "minecraft:light_emission": 13
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "kaleidoscope_baking:station_visual",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "bowl": "textures/entity/kb_visual_bowl",
+        "espresso": "textures/entity/kb_visual_espresso",
+        "pour": "textures/entity/kb_visual_pour",
+        "shaker": "textures/entity/kb_visual_shaker",
+        "oven": "textures/entity/kb_visual_oven",
+        "tint0": "textures/entity/kb_tint_0",
+        "tint1": "textures/entity/kb_tint_1",
+        "tint2": "textures/entity/kb_tint_2",
+        "tint3": "textures/entity/kb_tint_3",
+        "tint4": "textures/entity/kb_tint_4",
+        "tint5": "textures/entity/kb_tint_5",
+        "tint6": "textures/entity/kb_tint_6",
+        "tint7": "textures/entity/kb_tint_7"
+      },
+      "geometry": {
+        "bowl": "geometry.kaleidoscope_baking.visual_bowl",
+        "bowl_c": "geometry.kaleidoscope_baking.visual_bowl_contents",
+        "proof_c": "geometry.kaleidoscope_baking.visual_proof_contents",
+        "stand_c": "geometry.kaleidoscope_baking.visual_stand_contents",
+        "espresso": "geometry.kaleidoscope_baking.visual_espresso",
+        "espresso_c": "geometry.kaleidoscope_baking.visual_espresso_contents",
+        "pour": "geometry.kaleidoscope_baking.visual_pour",
+        "pour_c": "geometry.kaleidoscope_baking.visual_pour_contents",
+        "shaker": "geometry.kaleidoscope_baking.visual_shaker",
+        "shaker_c": "geometry.kaleidoscope_baking.visual_shaker_contents",
+        "oven": "geometry.kaleidoscope_baking.visual_oven",
+        "oven_c": "geometry.kaleidoscope_baking.visual_oven_contents"
+      },
+      "animations": {
+        "bowl": "animation.kaleidoscope_baking.visual.bowl",
+        "proof": "animation.kaleidoscope_baking.visual.proof",
+        "stand": "animation.kaleidoscope_baking.visual.stand",
+        "espresso": "animation.kaleidoscope_baking.visual.espresso",
+        "pour": "animation.kaleidoscope_baking.visual.pour",
+        "oven": "animation.kaleidoscope_baking.visual.oven",
+        "shaker": "animation.kaleidoscope_baking.visual.shaker"
+      },
+      "scripts": {
+        "initialize": [
+          "v.kb_level = q.property('kaleidoscope_baking:fill'); v.kb_prog = q.property('kaleidoscope_baking:progress'); v.kb_door = 0; v.kb_pop = 0;"
+        ],
+        "pre_animation": [
+          "v.kb_level = v.kb_level + (q.property('kaleidoscope_baking:fill') - v.kb_level) * math.min(1.0, q.delta_time * 3.0); v.kb_prog = v.kb_prog + (q.property('kaleidoscope_baking:progress') - v.kb_prog) * math.min(1.0, q.delta_time * 2.0); v.kb_door = v.kb_door + ((q.property('kaleidoscope_baking:kind') == 7 && q.property('kaleidoscope_baking:active')) - v.kb_door) * math.min(1.0, q.delta_time * 6.0); v.kb_pop = q.property('kaleidoscope_baking:pop') ? 1.0 : v.kb_pop * math.max(0.0, 1.0 - q.delta_time * 5.0);"
+        ],
+        "animate": [
+          {
+            "bowl": "q.property('kaleidoscope_baking:kind') == 1"
+          },
+          {
+            "proof": "q.property('kaleidoscope_baking:kind') == 2"
+          },
+          {
+            "stand": "q.property('kaleidoscope_baking:kind') == 3"
+          },
+          {
+            "espresso": "q.property('kaleidoscope_baking:kind') == 4"
+          },
+          {
+            "pour": "q.property('kaleidoscope_baking:kind') == 5"
+          },
+          {
+            "shaker": "q.property('kaleidoscope_baking:kind') == 6"
+          },
+          {
+            "oven": "q.property('kaleidoscope_baking:kind') == 7"
+          }
+        ]
+      },
+      "render_controllers": [
+        {
+          "controller.render.kaleidoscope_baking.visual": "q.property('kaleidoscope_baking:kind') == 1 || q.property('kaleidoscope_baking:kind') == 4 || q.property('kaleidoscope_baking:kind') == 5 || q.property('kaleidoscope_baking:kind') == 6 || q.property('kaleidoscope_baking:kind') == 7"
+        },
+        {
+          "controller.render.kaleidoscope_baking.contents": "q.property('kaleidoscope_baking:fill') > 0"
+        }
+      ],
+      "enable_attachables": false
+    }
+  }
+}

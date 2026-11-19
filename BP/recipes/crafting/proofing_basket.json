@@ -1,0 +1,29 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:proofing_basket"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "S S",
+      "SSS"
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:wheat"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:proofing_basket",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:wheat"
+      }
+    ]
+  }
+}

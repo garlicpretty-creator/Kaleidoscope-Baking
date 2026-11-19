@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cinnamon_powder",
+    "normal": "kb_cinnamon_powder_normal",
+    "metalness_emissive_roughness": "kb_cinnamon_powder_mer"
+  }
+}

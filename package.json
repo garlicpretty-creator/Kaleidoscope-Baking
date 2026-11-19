@@ -1,0 +1,10 @@
+{
+  "name": "kaleidoscope-baking",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import ./tests/mock/register.mjs --test tests/*.test.js",
+    "validate": "python3 tools/validate.py",
+    "build": "python3 tools/build.py"
+  }
+}

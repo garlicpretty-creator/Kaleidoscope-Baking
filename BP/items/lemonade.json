@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:lemonade",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.drinks"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:lemonade.name"
+      },
+      "minecraft:icon": "kb_lemonade",
+      "minecraft:max_stack_size": 1,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:drink",
+          "kaleidoscope:cold_drink"
+        ]
+      },
+      "minecraft:food": {
+        "nutrition": 3,
+        "saturation_modifier": 0.4,
+        "can_always_eat": true,
+        "using_converts_to": "kaleidoscope_baking:takeaway_cup"
+      },
+      "minecraft:use_animation": "drink",
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.33
+      }
+    }
+  }
+}

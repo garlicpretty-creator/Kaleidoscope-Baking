@@ -1,0 +1,372 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:herb_planter",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:plant": [
+          "none",
+          "rosemary",
+          "thyme",
+          "lavender",
+          "mint",
+          "strawberry"
+        ],
+        "kaleidoscope_baking:growth": {
+          "values": {
+            "min": 0,
+            "max": 3
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.herb_planter",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_herb_planter",
+          "render_method": "alpha_test_single_sided"
+        },
+        "cross": {
+          "texture": "kb_empty",
+          "render_method": "alpha_test_single_sided"
+        }
+      },
+      "minecraft:collision_box": {
+        "origin": [
+          -6,
+          0,
+          -6
+        ],
+        "size": [
+          12,
+          6.5,
+          12
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -6,
+          0,
+          -6
+        ],
+        "size": [
+          12,
+          12,
+          12
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.6
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:map_color": "#B4644A",
+      "kaleidoscope_baking:herb_planter": {}
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'rosemary' && q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_rosemary_bush_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'rosemary' && q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_rosemary_bush_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'rosemary' && q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_rosemary_bush_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'rosemary' && q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_rosemary_bush_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'thyme' && q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_thyme_bush_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'thyme' && q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_thyme_bush_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'thyme' && q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_thyme_bush_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'thyme' && q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_thyme_bush_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'lavender' && q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_lavender_bush_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'lavender' && q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_lavender_bush_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'lavender' && q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_lavender_bush_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'lavender' && q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_lavender_bush_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'mint' && q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_mint_bush_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'mint' && q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_mint_bush_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'mint' && q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_mint_bush_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'mint' && q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_mint_bush_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'strawberry' && q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_strawberry_bush_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'strawberry' && q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_strawberry_bush_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'strawberry' && q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_strawberry_bush_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:plant') == 'strawberry' && q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_herb_planter",
+              "render_method": "alpha_test_single_sided"
+            },
+            "cross": {
+              "texture": "kb_strawberry_bush_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

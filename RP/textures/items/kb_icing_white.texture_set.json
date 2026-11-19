@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_icing_white",
+    "normal": "kb_icing_white_normal",
+    "metalness_emissive_roughness": "kb_icing_white_mer"
+  }
+}

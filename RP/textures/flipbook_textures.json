@@ -1,0 +1,7 @@
+[
+  {
+    "flipbook_texture": "textures/blocks/kb_oven_firebox_lit",
+    "atlas_tile": "kb_oven_firebox_lit",
+    "ticks_per_frame": 3
+  }
+]

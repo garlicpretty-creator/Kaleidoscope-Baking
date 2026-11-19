@@ -1,0 +1,41 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:cappuccino",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.drinks"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:cappuccino.name"
+      },
+      "minecraft:icon": "kb_cappuccino",
+      "minecraft:max_stack_size": 16,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:drink",
+          "kaleidoscope:hot_drink",
+          "kaleidoscope:coffee"
+        ]
+      },
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:cappuccino",
+        "replace_block_item": true
+      },
+      "minecraft:food": {
+        "nutrition": 2,
+        "saturation_modifier": 0.3,
+        "can_always_eat": true,
+        "using_converts_to": "kaleidoscope_baking:coffee_mug"
+      },
+      "minecraft:use_animation": "drink",
+      "minecraft:use_modifiers": {
+        "use_duration": 1.6,
+        "movement_modifier": 0.33
+      }
+    }
+  }
+}

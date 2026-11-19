@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:proofed_cinnamon_roll_dough",
+      "menu_category": {
+        "category": "items",
+        "group": "kaleidoscope_baking:itemGroup.name.ingredients"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:proofed_cinnamon_roll_dough.name"
+      },
+      "minecraft:icon": "kb_proofed_cinnamon_roll_dough",
+      "minecraft:max_stack_size": 16,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope:dough"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:baking_tray"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "N N",
+      "III"
+    ],
+    "key": {
+      "N": {
+        "item": "minecraft:iron_nugget"
+      },
+      "I": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:baking_tray",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:iron_nugget"
+      },
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ]
+  }
+}

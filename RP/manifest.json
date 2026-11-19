@@ -1,0 +1,48 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "pack.name",
+    "description": "pack.description",
+    "uuid": "5384f8e8-5c4b-4bc5-9907-ba3324d47f24",
+    "version": [
+      1,
+      1,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      1
+    ]
+  },
+  "capabilities": [
+    "pbr"
+  ],
+  "metadata": {
+    "product_type": "addon",
+    "authors": [
+      "Kaleidoscope Baking Team"
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "a65a8cc1-96ab-4c85-b779-5b4c8bd5d584",
+      "version": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "1bf09f60-7e0f-450c-9e09-81850b40db4d",
+      "version": [
+        1,
+        6,
+        6
+      ]
+    }
+  ]
+}

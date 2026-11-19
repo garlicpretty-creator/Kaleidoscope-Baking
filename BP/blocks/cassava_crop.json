@@ -1,0 +1,264 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:cassava_crop",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:growth": {
+          "values": {
+            "min": 0,
+            "max": 7
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:collision_box": false,
+      "minecraft:light_dampening": 0,
+      "minecraft:geometry": "geometry.kaleidoscope_baking.crop",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_cassava_crop_stage_0",
+          "render_method": "alpha_test_single_sided"
+        }
+      },
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ],
+            "block_filter": [
+              "minecraft:farmland"
+            ]
+          }
+        ]
+      },
+      "minecraft:liquid_detection": {
+        "detection_rules": [
+          {
+            "liquid_type": "water",
+            "on_liquid_touches": "popped"
+          }
+        ]
+      },
+      "minecraft:movable": {
+        "movement_type": "popped"
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.0
+      },
+      "minecraft:map_color": "#326E32",
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json",
+      "kaleidoscope_baking:plant": {
+        "max": 7,
+        "chance": 12,
+        "min_light": 9,
+        "kind": "annual",
+        "harvest": "kaleidoscope_baking:cassava",
+        "harvest_min": 1,
+        "harvest_max": 3,
+        "reset": 1,
+        "spread": false
+      },
+      "tag:kaleidoscope:crop": {}
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              4,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              4,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              6,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 3",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_3",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              8,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 4",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_4",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              10,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 5",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_5",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              12,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 6",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_6",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              14,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_immature.json"
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 7",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cassava_crop_stage_7",
+              "render_method": "alpha_test_single_sided"
+            }
+          },
+          "minecraft:selection_box": {
+            "origin": [
+              -6,
+              0,
+              -6
+            ],
+            "size": [
+              12,
+              16,
+              12
+            ]
+          },
+          "minecraft:loot": "loot_tables/kaleidoscope_baking/crops/cassava_crop_mature.json"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_strawberry_bush_stage_3",
+    "normal": "kb_strawberry_bush_stage_3_normal",
+    "metalness_emissive_roughness": "kb_strawberry_bush_stage_3_mer"
+  }
+}

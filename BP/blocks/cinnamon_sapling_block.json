@@ -1,0 +1,90 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:cinnamon_sapling_block",
+      "menu_category": {
+        "category": "none"
+      },
+      "states": {
+        "kaleidoscope_baking:growth": {
+          "values": {
+            "min": 0,
+            "max": 2
+          }
+        }
+      }
+    },
+    "components": {
+      "minecraft:collision_box": false,
+      "minecraft:light_dampening": 0,
+      "minecraft:geometry": "geometry.kaleidoscope_baking.cross",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_cinnamon_sapling_block_stage_0",
+          "render_method": "alpha_test_single_sided"
+        }
+      },
+      "minecraft:placement_filter": {
+        "conditions": [
+          {
+            "allowed_faces": [
+              "up"
+            ],
+            "block_filter": [
+              "minecraft:grass_block",
+              "minecraft:dirt",
+              "minecraft:podzol",
+              "minecraft:coarse_dirt",
+              "minecraft:farmland",
+              "minecraft:moss_block",
+              "minecraft:dirt_with_roots"
+            ]
+          }
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 0.0
+      },
+      "minecraft:loot": "loot_tables/kaleidoscope_baking/trees/cinnamon_sapling_block.json",
+      "kaleidoscope_baking:tree": {
+        "tree": "cinnamon"
+      }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 0",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cinnamon_sapling_block_stage_0",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 1",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cinnamon_sapling_block_stage_1",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      },
+      {
+        "condition": "q.block_state('kaleidoscope_baking:growth') == 2",
+        "components": {
+          "minecraft:material_instances": {
+            "*": {
+              "texture": "kb_cinnamon_sapling_block_stage_2",
+              "render_method": "alpha_test_single_sided"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

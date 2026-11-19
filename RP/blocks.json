@@ -1,0 +1,159 @@
+{
+  "format_version": "1.21.40",
+  "kaleidoscope_baking:oven": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:mixing_bowl": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:proofing_basket": {
+    "sound": "wood"
+  },
+  "kaleidoscope_baking:decorating_stand": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:espresso_machine": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:pour_over_stand": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:drink_shaker": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:herb_planter": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:rosemary_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:thyme_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:lavender_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:mint_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:vanilla_vine": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:sesame_crop": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:stevia_crop": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:cassava_crop": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:coffee_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:strawberry_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:blueberry_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:raspberry_bush": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:pineapple_crop": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:cinnamon_sapling_block": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:cinnamon_log": {
+    "sound": "wood"
+  },
+  "kaleidoscope_baking:cinnamon_leaves": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:lemon_sapling_block": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:lemon_leaves": {
+    "sound": "grass"
+  },
+  "kaleidoscope_baking:sponge_cake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:chocolate_cake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:strawberry_cream_cake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:birthday_cake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:mint_chocolate_cake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:cheesecake": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:matcha_chiffon": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:apple_pie": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:blueberry_pie": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:quiche": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:fish_pie": {
+    "sound": "cloth"
+  },
+  "kaleidoscope_baking:espresso": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:americano": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cappuccino": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:mocha": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:caramel_macchiato": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cinnamon_latte": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_light": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_medium": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:pour_over_dark": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:cake_stand": {
+    "sound": "stone"
+  },
+  "kaleidoscope_baking:tea_tray": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:bread_display": {
+    "sound": "wood"
+  },
+  "kaleidoscope_baking:pastry_case": {
+    "sound": "glass"
+  },
+  "kaleidoscope_baking:drink_cups": {
+    "sound": "glass"
+  }
+}

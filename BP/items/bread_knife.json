@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:bread_knife",
+      "menu_category": {
+        "category": "equipment",
+        "group": "kaleidoscope_baking:itemGroup.name.tools"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:bread_knife.name"
+      },
+      "minecraft:icon": "kb_bread_knife",
+      "minecraft:max_stack_size": 1,
+      "minecraft:tags": {
+        "tags": [
+          "kaleidoscope_cookery:kitchen_knife"
+        ]
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:durability": {
+        "max_durability": 250
+      }
+    }
+  }
+}

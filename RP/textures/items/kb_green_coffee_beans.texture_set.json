@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_green_coffee_beans",
+    "normal": "kb_green_coffee_beans_normal",
+    "metalness_emissive_roughness": "kb_green_coffee_beans_mer"
+  }
+}

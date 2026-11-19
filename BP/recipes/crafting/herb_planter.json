@@ -1,0 +1,35 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:herb_planter"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "T T",
+      "TDT"
+    ],
+    "key": {
+      "T": {
+        "item": "minecraft:hardened_clay"
+      },
+      "D": {
+        "item": "minecraft:dirt"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:herb_planter",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:hardened_clay"
+      },
+      {
+        "item": "minecraft:dirt"
+      }
+    ]
+  }
+}
