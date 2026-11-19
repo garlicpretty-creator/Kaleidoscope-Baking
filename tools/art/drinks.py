@@ -43,40 +43,44 @@ def saucer(t):
     return SAUCER[3]
 
 
-def surface(base, art):
-    """Top of the mug: ceramic lip around a 2 x 2 drink, `art` = {(u, v): colour} inside the drink."""
+def surface(base, rows, colours):
+    """Top of the mug: the whole 4 x 4 face is the drink (the glazed lip is on the sides), drawn from `rows`,
+    four strings of four keys into `colours`; "." is the drink itself with a little noise."""
     @painter
     def p(t):
-        if t.u in (0, t.w - 1) or t.v in (0, t.h - 1):
-            return CERAMIC[4]
-        key = (t.u - 1, t.v - 1)
-        if key in art:
-            return art[key]
+        k = rows[min(t.v, 3)][min(t.u, 3)]
+        if k != ".":
+            return colours[k]
         return base[3] if noise(t.u, t.v, 7) > 0.8 else base[2]
     p.shade = False
     return p
 
 
-COFFEE = ramp((70, 40, 22))
-CREMA = (196, 134, 70)
-FOAM = (244, 236, 222)
+COFFEE = ramp((52, 30, 18))
+CREMA = ramp((190, 124, 62))
+FOAM = (246, 240, 228)
 LATTE = ramp((196, 150, 104))
-MOCHA = ramp((104, 62, 40))
+MOCHA = ramp((92, 54, 34))
 CARAMEL = (214, 140, 50)
-CINNAMON = (150, 84, 44)
+CINNAMON = (122, 64, 32)
+DUST = (150, 98, 64)
 FOAMY = ramp(FOAM, lo=0.9, hi=1.02)
+C = {"W": FOAM, "c": CARAMEL, "k": CINNAMON, "d": DUST, "m": MOCHA[2], "s": (92, 52, 30), "h": (226, 160, 100)}
 
+# every drink reads differently from above: espresso is all crema, americano plain black, latte a white heart,
+# cappuccino a foam dome dusted with cocoa, mocha whipped cream with chocolate drizzle, caramel macchiato a
+# caramel crosshatch on foam, cinnamon latte a cinnamon stick; pour-overs are clear coffee of three roasts.
 DRINKS = {
-    "espresso": surface(COFFEE, {(0, 0): CREMA, (1, 1): CREMA}),
-    "americano": surface(COFFEE, {(0, 0): (110, 70, 40)}),
-    "latte": surface(LATTE, {(0, 0): FOAM, (1, 1): FOAM}),
-    "cappuccino": surface(FOAMY, {(1, 0): CINNAMON}),
-    "mocha": surface(MOCHA, {(0, 0): FOAM}),
-    "caramel_macchiato": surface(FOAMY, {(0, 0): CARAMEL, (1, 1): CARAMEL}),
-    "cinnamon_latte": surface(LATTE, {(1, 0): CINNAMON, (0, 1): CINNAMON}),
-    "pour_over_light": surface(ramp((150, 86, 40)), {(0, 0): (200, 140, 90)}),
-    "pour_over_medium": surface(ramp((104, 58, 30)), {(0, 0): (160, 104, 64)}),
-    "pour_over_dark": surface(ramp((56, 32, 20)), {(0, 0): (110, 70, 44)}),
+    "espresso": surface(CREMA, ["s...", "....", "..s.", "...."], C),
+    "americano": surface(COFFEE, ["h...", "....", "....", "...."], {"h": (96, 62, 40)}),
+    "latte": surface(LATTE, ["W.W.", "WWW.", ".W..", "...."], C),
+    "cappuccino": surface(FOAMY, ["....", ".d..", "..d.", "...."], C),
+    "mocha": surface(MOCHA, [".WW.", "WmWW", "WWmW", ".WW."], C),
+    "caramel_macchiato": surface(FOAMY, ["c.c.", ".c.c", "c.c.", ".c.c"], C),
+    "cinnamon_latte": surface(LATTE, ["k...", ".k.d", "d.k.", "...k"], C),
+    "pour_over_light": surface(ramp((168, 92, 40)), ["h...", "....", "....", "...."], {"h": (224, 164, 104)}),
+    "pour_over_medium": surface(ramp((108, 58, 28)), ["h...", "....", "....", "...."], {"h": (168, 110, 66)}),
+    "pour_over_dark": surface(ramp((40, 24, 16)), ["h...", "....", "....", "...."], {"h": (92, 62, 44)}),
 }
 
 
