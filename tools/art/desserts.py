@@ -115,7 +115,7 @@ def plain_top(r, dots=(), seed=5):
 @painter
 def berry(t):
     if not t.side:
-        return (70, 140, 54) if (t.u + t.v) % 3 else (44, 104, 40)  # calyx
+        return (70, 140, 54) if t.u == 0 and t.v == 0 else STRAW[3]  # red berry seen from above, a speck of calyx
     k = nz(t, 11)
     return (250, 226, 120) if k > 0.8 else STRAW[2 if k > 0.3 else 3]
 
@@ -204,7 +204,7 @@ def dessert(did, h, painters, deco=None, round=False):
 
 # --------------------------------------------------------------------------------------------- the eleven desserts
 dessert("sponge_cake", 8, {
-    "side": frosted_side(8, CRUST_C, SPONGE, 1), "top": plain_top(CRUST_C, [((250, 250, 244), 0.2)]),
+    "side": frosted_side(8, CRUST_C, SPONGE, 1), "top": plain_top(CRUST_C, [((250, 250, 244), 0.07)]),
     "cut": layers([(0, 1, CRUST_C), (1, 7, SPONGE), (7, 8, CRUST_C)]), "base": base_under(CRUST_C)})
 
 dessert("chocolate_cake", 8, {
@@ -295,9 +295,23 @@ def fish_lid(t):
     x, z = t.x, t.z
     if (abs(x - 4) < 0.5 or abs(x + 4) < 0.5) and abs(z) < 1.5:
         return (120, 70, 30)  # steam vents
-    if (abs(z) < 0.6 and -2.5 < x < 2.5) or (abs(abs(x) - 2.5) < 0.6 and abs(z) < 1.4):
-        return (240, 196, 120)  # pastry fish
+    if -1.0 < x < 0.0 and -0.5 < z < 0.5:
+        return (96, 60, 30)  # the fish's eye
+    if (x / 3.2) ** 2 + (z / 1.7) ** 2 < 1 or (2.6 < x < 4.6 and abs(z) < (x - 2.6) * 0.9 + 0.4):
+        return (244, 204, 130) if abs(z) > 0.6 or x > 2.6 else (232, 186, 110)  # pastry fish: body and tail
     return g(CRUST, t, 9)
+
+
+def apple_lid(t):
+    """Double-crust apple pie: a solid golden lid with four leaf-shaped vents showing the apple filling."""
+    x, z = t.x, t.z
+    for cx, cz in ((-3, -3), (3, -3), (-3, 3), (3, 3)):
+        dx, dz = x - cx, z - cz
+        if abs(dx) < 1.6 and abs(dx - dz * (1 if cx * cz > 0 else -1)) < 0.6:
+            return (96, 52, 16) if abs(dx) > 0.6 else (236, 186, 104)  # slit: dark edges, pale apple in the middle
+    if abs(x) < 0.6 and abs(z) < 0.6:
+        return APPLE[2]       # centre steam hole
+    return g(CRUST, t, 11)
 
 
 @painter
@@ -311,7 +325,7 @@ def pie(did, inner, filling):
             round=True)
 
 
-pie("apple_pie", lattice(APPLE), APPLE)
+pie("apple_pie", apple_lid, APPLE)
 pie("blueberry_pie", lattice(BLUE), BLUE)
 pie("quiche", quiche_fill, CUSTARD)
 pie("fish_pie", fish_lid, FISHPIE)
