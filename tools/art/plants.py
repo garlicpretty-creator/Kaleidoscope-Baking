@@ -21,48 +21,66 @@ RASP = [(110, 14, 40), (160, 24, 56), (206, 46, 78), (232, 92, 116), (248, 150, 
 CINN_BARK = [(70, 36, 24), (98, 52, 34), (126, 70, 44), (152, 92, 58), (178, 118, 78)]
 CINN_IN = [(150, 76, 36), (182, 100, 50), (206, 126, 66), (226, 152, 90), (240, 180, 122)]
 CHERRY_UNRIPE = UNRIPE
+ROSE = [(34, 62, 50), (50, 84, 64), (70, 108, 80), (96, 134, 100), (136, 166, 132)]
+ROSE_STEM = [(64, 50, 38), (88, 70, 52), (112, 92, 68), (138, 116, 88), (166, 146, 116)]
+ROSE_FLW = [(96, 116, 170), (128, 148, 200), (160, 178, 222), (192, 206, 238), (222, 230, 250)]
+THYME = [(52, 74, 54), (70, 96, 68), (92, 120, 84), (118, 144, 102), (150, 172, 128)]
+THYME_STEM = [(66, 52, 44), (86, 70, 58), (108, 90, 72), (130, 112, 90), (154, 136, 110)]
+MINT = [(26, 70, 34), (40, 98, 44), (58, 128, 56), (84, 158, 72), (124, 190, 104)]
+MINT_STEM = [(48, 74, 40), (64, 96, 50), (84, 120, 62), (108, 146, 78), (140, 172, 100)]
+CASSAVA = [(30, 64, 30), (44, 90, 40), (62, 118, 52), (88, 146, 66), (124, 176, 92)]
+CANE_C = [(78, 66, 56), (104, 90, 76), (132, 116, 98), (160, 144, 122), (188, 174, 150)]
+PETIOLE = [(96, 22, 30), (134, 36, 40), (170, 56, 52), (200, 86, 74), (226, 130, 110)]
 VINE = [(40, 84, 36), (58, 110, 46), (80, 138, 56), (104, 164, 70), (140, 192, 96)]
 
 
 # --------------------------------------------------------------------------------------------- herbs
 def rosemary(c, s):
+    """Upright woody stems clothed in short dark needles (one pixel each side), pale blue flowers when grown."""
     if s == 0:
-        return sprout(c, SAGE, 3.5, h=3, width=1.6, shape='lance')
-    stems = {1: [(90, 6), (70, 5), (112, 5)],
-             2: [(90, 10), (72, 9), (108, 9), (58, 7), (122, 7)],
-             3: [(90, 13), (74, 12), (106, 12), (60, 10), (120, 10), (48, 7), (132, 7)]}[s]
-    for a, l in stems:
-        ex, ey = leaf(c, *B, a, l, 1, BROWN, shape='tube', mat='stem')
-        # needles along the stem
-        r = math.radians(a)
-        for i in range(2, int(l), 1):
-            x = B[0] + math.cos(r) * i
-            y = B[1] - math.sin(r) * i
+        line(c, 7, 15, 7, 12, ROSE_STEM, 2, 'stem')
+        for y in (12, 13, 14):
+            c.put(6, y, ROSE, 2 + (y % 2), 'leaf', c.new())
+            c.put(8, y, ROSE, 2 + ((y + 1) % 2), 'leaf', c.new())
+        return
+    stems = {1: [(7, 7), (5, 9), (9, 9)],
+             2: [(7, 3), (4, 6), (10, 5), (2, 9), (12, 9)],
+             3: [(7, 1), (4, 3), (10, 2), (2, 6), (13, 5), (5, 8), (11, 8)]}[s]
+    for tx, ty in stems:
+        o = line(c, 7 + (tx > 7) - (tx < 7), 15, tx, ty, ROSE_STEM, 2, 'stem')
+        # needles: one pixel either side of each stem pixel, alternating shade, thinning to the tip
+        for (x, y), v in list(c.p.items()):
+            if v[3] != o or y < ty or y > 13:
+                continue
             for side in (-1, 1):
-                leaf(c, x, y, a + side * 55, 1.6, 0.8, SAGE, shape='strap', lvl=2 + (i % 2))
-        if s == 3 and l > 9:
-            for k in (0, 2):
-                c.put(ex + (k - 1), ey + k, LILAC, 3, 'flower', c.new(), True)
+                c.put(x + side, y, ROSE, 2 + ((x + y + side) % 3 == 0) + ((x + y) % 4 == 0), 'leaf', c.new())
+                if (y + tx) % 2 == side % 2:
+                    c.put(x + 2 * side, y - 1, ROSE, 3, 'leaf', c.new())
+        c.put(tx, ty - 1, ROSE, 3, 'leaf', c.new())
+        if s == 3 and ty < 7:
+            for dy in (1, 3):
+                c.put(tx + (1 if dy == 1 else -1), ty + dy, ROSE_FLW, 3, 'flower', c.new(), True)
 
 
 def thyme(c, s):
+    """A low grey-green mound of tiny leaves on wiry stems; pink flower heads on top when grown."""
     if s == 0:
-        return sprout(c, G, 2.2, h=2, width=1.8)
+        return sprout(c, THYME, 2.2, h=2, width=1.8)
     rng = random.Random(7 + s)
     top = {1: 10, 2: 7, 3: 5}[s]
     stems = {1: 4, 2: 6, 3: 8}[s]
     for i in range(stems):
         x = 2 + (12 * (i + 0.5) / stems)
-        line(c, B[0], 15, x, top + abs(x - 8) * 0.6 + 1, BROWN, 2, 'stem')
-    for i in range({1: 14, 2: 26, 3: 34}[s]):
-        x = rng.uniform(2, 14)
-        y = rng.uniform(top + abs(x - 8) * 0.6, 14)
-        leaf(c, x, y, rng.choice((30, 60, 120, 150)), 1.6, 1.4, G if i % 3 == 0 else GL, shape='oval', spine=False)
+        line(c, B[0], 15, x, top + abs(x - 8) * 0.6 + 1, THYME_STEM, 2, 'stem')
+    for i in range({1: 40, 2: 70, 3: 95}[s]):
+        x = rng.uniform(1.5, 14.5)
+        y = rng.uniform(top + abs(x - 8) * 0.6 - 0.5, 14.5)
+        c.put(x, y, THYME, rng.choice((1, 2, 2, 3, 3, 3, 4)), 'leaf', c.new())
     if s == 3:
-        for i in range(10):
-            x = rng.randrange(3, 13)
-            y = int(top + abs(x - 8) * 0.6) + rng.randrange(-1, 2)
-            c.put(x, y, PINK, 3, 'flower', c.new(), True)
+        for i in range(12):
+            x = rng.randrange(2, 14)
+            y = int(top + abs(x - 8) * 0.6) + rng.randrange(-1, 1)
+            c.put(x, y, PINK, rng.choice((2, 3, 4)), 'flower', c.new(), True)
 
 
 def lavender(c, s):
@@ -80,19 +98,28 @@ def lavender(c, s):
 
 
 def mint(c, s):
+    """Square upright stems with opposite pairs of broad, veined leaves; lilac flower spikes when grown."""
     if s == 0:
-        return sprout(c, GL, 2.6, h=2)
-    stems = {1: [(7, 9)], 2: [(7, 5), (4, 9), (11, 8)], 3: [(7, 2), (3, 6), (12, 5), (5, 9), (10, 10)]}[s]
+        line(c, 7, 15, 7, 13, MINT, 2, 'stem')
+        leaf(c, 7.5, 13.5, 160, 2.6, 2.4, MINT, shape='oval', rib=(MINT, 3))
+        leaf(c, 7.5, 13.5, 20, 2.6, 2.4, MINT, shape='oval', rib=(MINT, 3))
+        return
+    stems = {1: [(7, 8)], 2: [(7, 4), (3, 9), (12, 8)], 3: [(7, 2), (3, 6), (12, 5), (5, 10), (10, 10)]}[s]
     for x, top in stems:
-        line(c, B[0], 15, x, top, G, 2, 'stem')
-        for y in range(14, top - 1, -3):
-            t = (14 - y) / max(1, 14 - top)
-            xx = B[0] + (x - B[0]) * t
-            leaf(c, xx, y, 25, 2.8, 2.4, GL, shape='oval', rib=(GL, 3))
-            leaf(c, xx, y, 155, 2.8, 2.4, GL, shape='oval', rib=(GL, 3))
-        if s == 3:
-            for y in range(top - 2, top + 1):
-                c.put(x, y, LILAC if y % 2 else FLW, 3, 'flower', c.new(), True)
+        line(c, x, 15, x, top, MINT_STEM, 2, 'stem')
+        n = 0
+        for y in range(14, top, -4 if s < 3 else -3):
+            size = 2.8 if y > top + 5 else 2.2
+            leaf(c, x + .5, y, 38 + 8 * (n % 2), size, 2.2, MINT, shape='oval', rib=(MINT, 3), lvl=1 + (n % 2))
+            leaf(c, x + .5, y, 142 - 8 * (n % 2), size, 2.2, MINT, shape='oval', rib=(MINT, 3), lvl=2 - (n % 2))
+            n += 1
+        leaf(c, x + .5, top + .5, 90, 1.6, 1.6, MINT, lvl=3, shape='oval')
+        if s == 3 and top < 7:
+            for y in range(top - 3, top + 1):
+                c.put(x, y, LILAC, 2 + (y % 2), 'flower', c.new(), True)
+                if y % 2 == 0:
+                    c.put(x - 1, y, LILAC, 3, 'flower', c.new(), True)
+                    c.put(x + 1, y, LILAC, 1, 'flower', c.new(), True)
 
 
 def stevia(c, s):
@@ -109,18 +136,36 @@ def stevia(c, s):
             c.put(x, y, FLW, 4, 'flower', c.new(), True)
 
 
+def palmate(c, x, y, ang, lobe, n=5):
+    """A cassava leaf: n narrow lobes fanned around `ang` from one point."""
+    spread = {5: 40, 7: 34, 3: 44}[n]
+    for i in range(n):
+        a = ang + (i - (n - 1) / 2) * spread
+        l = lobe * (1 - abs(i - (n - 1) / 2) * 0.14)
+        leaf(c, x, y, a, l, 1.0, CASSAVA, droop=0.4, shape='lance', lvl=2 + (i % 2))
+
+
 def cassava(c, s):
+    """A knobbly grey-brown cane, bare below, crowned with long red petioles and hand-shaped leaves."""
     if s == 0:
-        return sprout(c, G, 2.6, h=2)
-    top = {1: 9, 2: 5, 3: 2}[s]
+        line(c, 7, 15, 7, 12, CANE_C, 2, 'stem')
+        palmate(c, 7.5, 12, 90, 2.6, 3)
+        return
+    top = {1: 9, 2: 6, 3: 4}[s]
     o = c.new()
     for y in range(top, 16):
-        c.put(7, y, TAN if y % 3 else BROWN, 2, 'stem', o)  # knobbly cane
-    heads = {1: [(7, top)], 2: [(7, top), (7, top + 5)], 3: [(7, top), (7, top + 4), (7, top + 8)]}[s]
-    for hx, hy in heads:
-        for a in (20, 55, 90, 125, 160):
-            line(c, hx, hy, hx + math.cos(math.radians(a)) * 1.5, hy - math.sin(math.radians(a)) * 1.5, RED, 2, 'stem')
-            leaf(c, hx + .5, hy + .5, a, 4 if s == 3 else 3.2, 1.3, G, shape='lance', droop=0.4)
+        knot = (y - top) % 3 == 2
+        c.put(7, y, CANE_C, 3 if knot else 2, 'stem', o, knot)
+        if knot:
+            c.put(8, y, CANE_C, 1, 'stem', o, True)  # leaf scar
+    crowns = {1: [(90, 1, 3.2, 5)],
+              2: [(80, 3, 3.6, 5), (20, 4, 3.4, 5), (160, 4, 3.4, 5)],
+              3: [(95, 3, 3.8, 7), (35, 5, 3.8, 7), (145, 5, 3.8, 7), (0, 3, 3.2, 5), (180, 3, 3.2, 5)]}[s]
+    for ang, pet, lobe, n in crowns:
+        r = math.radians(ang)
+        ex, ey = 7.5 + math.cos(r) * pet, top - math.sin(r) * pet + 0.5
+        line(c, 7, top, ex, ey, PETIOLE, 2, 'stem')
+        palmate(c, ex, ey, ang, lobe, n)
 
 
 # --------------------------------------------------------------------------------------------- shrubs
@@ -207,13 +252,27 @@ def sapling_stage(c, tree, s):
         return
     if s == 1:
         sub = Canvas()
-        P.sapling(sub, tree)
+        sapling(sub, tree)
         for (x, y), v in sub.p.items():  # the young sapling: lower 3/4 of the grown one, shifted down
             if y >= 4:
                 c.p[(x, min(15, y + 3))] = v
         c.obj = sub.obj
         return
-    P.sapling(c, tree)
+    sapling(c, tree)
+
+
+def sapling(c, tree):
+    """paint_lib's sapling, but the reddish young flush is just the top leaves instead of a five-leaf blob."""
+    l, w, ramp, droop, shape, stem, young = P.TREES[tree]['sap']
+    line(c, 7, 15, 7, 6, stem, 2, 'stem')
+    line(c, 7, 10, 5, 8, stem, 2, 'stem')
+    line(c, 7, 9, 9, 7, stem, 2, 'stem')
+    for x, y, a in P.SAP_LEAVES[:-3]:
+        leaf(c, x, y, a, l, w, ramp, droop=droop, shape=shape, rib=(ramp, 3) if w >= 2.4 else None)
+    tip = young or ramp
+    leaf(c, 7.5, 5.5, 125, l * .55, w * .7, tip, lvl=3, shape=shape)
+    leaf(c, 7.5, 5.5, 55, l * .55, w * .7, tip, lvl=3, shape=shape)
+    leaf(c, 7.5, 5.5, 90, l * .6, w * .6, tip, lvl=2, shape=shape)
 
 
 def log_side(c):
@@ -247,7 +306,7 @@ def log_top(c):
 BUSHES = {"rosemary_bush": rosemary, "thyme_bush": thyme, "lavender_bush": lavender, "mint_bush": mint,
           "vanilla_vine": vanilla_vine, "coffee_bush": coffee_bush, "strawberry_bush": P.strawberry,
           "blueberry_bush": P.blueberry, "raspberry_bush": raspberry}
-CROPS8 = {"sesame_crop": P.sesame, "stevia_crop": stevia, "cassava_crop": cassava}
+CROPS8 = {"sesame_crop": P.sesame, "stevia_crop": stevia, "cassava_crop": cassava, "pineapple_crop": P.pineapple}
 
 
 def render(fn, tile=False, seed=0):
