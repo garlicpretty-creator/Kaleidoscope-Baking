@@ -13,6 +13,7 @@ import {
 import { getFoodEffect, registerFoodEffect, _resetEffectsForTests } from "../BP/scripts/api/effects.js";
 import { bulkBegin, bulkChunk, bulkEnd, toChunks } from "../BP/scripts/api/chunks.js";
 import { resolveEquivalents, leaderOf, mapGrowth } from "../BP/scripts/api/compat.js";
+import { EQUIVALENTS } from "../BP/scripts/compat/series.data.js";
 import { getRecipeById } from "../BP/scripts/api/registry.js";
 
 const kb = n => `kaleidoscope_baking:${n}`;
@@ -152,17 +153,25 @@ test("series compat: lead pack per category, aliases make recipes accept the oth
   assert.equal(leaderOf("herb"), "herbal");
   assert.equal(leaderOf("fruit"), "harvest");
   assert.equal(leaderOf("material"), "ranch");
-  const existing = new Set(["kaleidoscope_harvest:strawberry", "kaleidoscope_harvest:strawberry_bush", "kaleidoscope_ranch:butter"]);
+  // Real ids: Harvest's strawberry item and crop block, Ranching's butter and cream.
+  const existing = new Set(["kaleidoscope_harvest:strawberry", "kaleidoscope_harvest:strawberry_crop", "kaleidoscope_harvest:blueberry",
+    "kaleidoscope_harvest:blueberry_crop", "kaleidoscope_ranching:butter", "kaleidoscope_ranching:cream"]);
   const res = resolveEquivalents(id => existing.has(id));
   assert.equal(res.items.get(kb("strawberry")), "kaleidoscope_harvest:strawberry");
-  assert.equal(res.items.get(kb("butter")), "kaleidoscope_ranch:butter");
   assert.ok(!res.items.has(kb("mint_leaves")), "absent pack = no mapping");
-  assert.equal(res.blocks.get(kb("strawberry_bush")).primary, "kaleidoscope_harvest:strawberry_bush");
+  assert.deepEqual(res.blocks.get(kb("strawberry_bush")), { primary: "kaleidoscope_harvest:strawberry_crop", bakingMax: 3, primaryState: "kaleidoscope_harvest:growth", primaryMax: 7 });
+  assert.ok(!res.blocks.has(kb("blueberry_bush")), "the blueberry bush is not mapped to Harvest's crop yet");
+  // Ranching's butter and cream exist but are on hold (series.data.js): nothing changes for them yet.
+  assert.ok(!res.items.has(kb("butter")) && !res.items.has(kb("whipped_cream")) && !res.leaders.has("ranch"), "held entries stay off");
 
-  setIngredientAliases(res.aliases);
+  // The material rule itself, with the hold lifted.
+  const lifted = resolveEquivalents(id => existing.has(id), EQUIVALENTS.map(e => ({ ...e, hold: false })));
+  assert.equal(lifted.items.get(kb("butter")), "kaleidoscope_ranching:butter");
+  assert.ok(lifted.leaders.has("ranch"));
+  setIngredientAliases(lifted.aliases);
   assert.ok(matchesSpec("kaleidoscope_harvest:strawberry", kb("strawberry")));
   setItemTagResolver((id, tag) => id === kb("butter") && tag === "kaleidoscope:butter");
-  assert.ok(matchesSpec("kaleidoscope_ranch:butter", "#kaleidoscope:butter"), "alias inherits Baking's tags");
+  assert.ok(matchesSpec("kaleidoscope_ranching:butter", "#kaleidoscope:butter"), "alias inherits Baking's tags");
   assert.equal(mapGrowth(3, 3, 7), 7);
   assert.equal(mapGrowth(1, 3, 7), 2);
 });

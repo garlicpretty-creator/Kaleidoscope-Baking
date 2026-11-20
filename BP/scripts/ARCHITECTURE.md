@@ -17,8 +17,10 @@ identifiers; addons register into hosts through Script Events and item tags.
 - `data/` — Built-in recipes, fuels, effects, ingredient tag aliases.
   `data/generated/content.js` is produced by `tools/gen_content.py` — do not edit by hand.
 - `integrations/` — Cookery host (public events only): station recipes, guidebook tab.
-- `compat/` — Series packs (漁歌 / 豐收 / 草本 / 樂牧). `series.data.js` holds the (placeholder)
-  ids; `index.js` applies the lead-pack rules at runtime.
+- `compat/` — Series packs (漁歌 / 豐收 / 草本 / 樂牧). `series.data.js` holds the lead-pack table
+  (its header says which ids are checked against the real packs); `reverse.data.js` holds what
+  Baking registers with Fishing (bait) and Ranching (feed); `index.js` applies the lead-pack rules
+  at runtime and sends those registrations.
 - `utils/` — Helpers. `ids.js` and `ovenGeometry.js` are pure; `runtime.js`, `stations.js`,
   `sendQueue.js` wrap Bedrock APIs.
 

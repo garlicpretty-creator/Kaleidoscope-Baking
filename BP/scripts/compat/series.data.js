@@ -7,17 +7,26 @@
 //   crafting materials              -> 樂牧 (Ranch)
 //   finished baked goods & drinks   -> 烘焙 (Baking itself)
 //
-// !! NAMESPACES BELOW ARE PLACEHOLDERS !!
-// The real namespaces / item ids of 漁歌、豐收、草本、樂牧 are not known yet. Entries only
-// activate when the listed item id actually exists in the world, so wrong guesses are
-// harmless: they simply never match. Replace them once the ids are confirmed.
+// The four namespaces are the packs' real ones (checked against Fishing Voyage 1.6.0,
+// Harvest 1.3.1, Herbal 1.3.1 and Ranching 1.3.0); compat/reverse.data.js builds its event
+// names from them.
+//
+// The item / block ids in EQUIVALENTS are a mix. An entry only activates when a listed id
+// actually exists in the world, so an id the lead pack does not have simply never matches:
+//   豐收 real:  strawberry, blueberry, lemon, pineapple, pineapple_crown (items), lemon_sapling
+//              (a block with an item form); blocks strawberry_crop, blueberry_crop, pineapple_crop, all with
+//              kaleidoscope_harvest:growth 0..7. Harvest has no raspberry. The blueberry bush is not mapped to
+//              blueberry_crop yet (that would newly switch on its in-world conversion: not decided).
+//   草本 none:  Herbal has no mint, lavender, thyme or rosemary, so the herb entries never match.
+//   樂牧 real:  butter and cream (both on hold, see below). Ranching has no cream cheese (its
+//              cheeses are other things), frothed milk, brown sugar or yeast.
 // ============================================================================
 
 export const SERIES = Object.freeze({
   fishing: { name: "漁歌", namespace: "kaleidoscope_fishing", leads: [] },
   harvest: { name: "豐收", namespace: "kaleidoscope_harvest", leads: ["fruit", "crop"] },
   herbal: { name: "草本", namespace: "kaleidoscope_herbal", leads: ["herb"] },
-  ranch: { name: "樂牧", namespace: "kaleidoscope_ranch", leads: ["material"] }
+  ranch: { name: "樂牧", namespace: "kaleidoscope_ranching", leads: ["material"] }
 });
 
 const H = SERIES.herbal.namespace, F = SERIES.harvest.namespace, R = SERIES.ranch.namespace;
@@ -29,6 +38,8 @@ const kb = n => `kaleidoscope_baking:${n}`;
  * primary:  candidate ids in the lead pack (first one that exists wins)
  * confirmed: set to true once the lead pack's id is verified — tools/gen_compat_recipes.mjs
  *           then generates 1:1 crafting-table swap recipes for it (unconfirmed guesses get none)
+ * hold:     true keeps the entry switched off even when the lead pack's item exists
+ *           (api/compat.js skips it)
  * block:    optional plant-block mapping for in-world auto-conversion:
  *           {baking, primary:[candidates], bakingMax, primaryState, primaryMax}
  */
@@ -49,7 +60,7 @@ export const EQUIVALENTS = Object.freeze([
 
   // Fruits -> 豐收
   { baking: kb("strawberry"), category: "fruit", primary: [`${F}:strawberry`],
-    block: { baking: kb("strawberry_bush"), primary: [`${F}:strawberry_bush`, `${F}:strawberry_crop`], bakingMax: 3, primaryState: `${F}:growth`, primaryMax: 3 } },
+    block: { baking: kb("strawberry_bush"), primary: [`${F}:strawberry_bush`, `${F}:strawberry_crop`], bakingMax: 3, primaryState: `${F}:growth`, primaryMax: 7 } },
   { baking: kb("blueberry"), category: "fruit", primary: [`${F}:blueberry`, `${F}:blueberries`],
     block: { baking: kb("blueberry_bush"), primary: [`${F}:blueberry_bush`], bakingMax: 3, primaryState: `${F}:growth`, primaryMax: 3 } },
   { baking: kb("raspberry"), category: "fruit", primary: [`${F}:raspberry`, `${F}:raspberries`],
@@ -62,8 +73,14 @@ export const EQUIVALENTS = Object.freeze([
 
 
   // Crafting materials -> 樂牧
-  { baking: kb("butter"), category: "material", primary: [`${R}:butter`] },
-  { baking: kb("whipped_cream"), category: "material", primary: [`${R}:whipped_cream`, `${R}:cream`] },
+  // Butter and cream are ON HOLD (`hold: true`). kaleidoscope_ranching:butter and :cream (鮮奶油)
+  // are real, but with the lead rule on Baking's mixing bowl would hand out Ranching's butter and
+  // cream from whisked milk (Ranching makes them in its cream separator and butter churn), and
+  // Baking would stop handing out its own butter, which its Cookery recipes (custard, caramel,
+  // chocolate sauce, French toast, pancakes, cream soup), the butter jar's crafting recipe and the
+  // jar's oil-container registration all name. Remove `hold` once that is decided and handled.
+  { baking: kb("butter"), category: "material", primary: [`${R}:butter`], hold: true },
+  { baking: kb("whipped_cream"), category: "material", primary: [`${R}:whipped_cream`, `${R}:cream`], hold: true },
   { baking: kb("cream_cheese"), category: "material", primary: [`${R}:cream_cheese`, `${R}:cheese`] },
   { baking: kb("frothed_milk"), category: "material", primary: [`${R}:frothed_milk`, `${R}:milk_foam`] },
   { baking: kb("brown_sugar"), category: "material", primary: [`${R}:brown_sugar`] },

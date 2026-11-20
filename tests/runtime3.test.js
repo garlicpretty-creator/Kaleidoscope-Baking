@@ -163,14 +163,45 @@ test("guidebook republishes after another pack registers recipes later", () => {
   assert.equal(__mock.sent.filter(s => s.id === "kaleidoscope_cookery:guidebook_begin").length, before + 1);
 });
 
-test("reverse registrations go out only when a series pack announces itself", () => {
-  const sentBefore = __mock.sent.length;
+test("reverse registrations go out once, only after a series pack's api_ready names the capability", () => {
+  const sentTo = id => __mock.sent.filter(s => s.id === id).map(s => JSON.parse(s.message));
+  const BAIT = "kaleidoscope_fishing:register_bait", FEED = "kaleidoscope_ranching:register_feed";
+  assert.ok(__mock.sent.some(s => s.id === "kaleidoscope_fishing:api_ping" && s.message === "kaleidoscope_baking"), "asks once when no api_ready was heard");
+  assert.ok(__mock.sent.some(s => s.id === "kaleidoscope_ranching:api_ping"));
+  assert.equal(sentTo(BAIT).length + sentTo(FEED).length, 0, "nothing is sent before the pack answers");
+
   system.sendScriptEvent("kaleidoscope_fishing:api_ready", "{}");
-  const out = __mock.sent.slice(sentBefore).filter(s => s.id === "kaleidoscope_fishing:register_bait");
-  assert.equal(out.length, 1);
-  assert.equal(JSON.parse(out[0].message).item, kb("bread_crumbs"));
-  system.sendScriptEvent("kaleidoscope_fishing:api_ready", "{}");
-  assert.equal(__mock.sent.filter(s => s.id === "kaleidoscope_fishing:register_bait").length, 1, "once");
+  system.sendScriptEvent("kaleidoscope_fishing:api_ready", JSON.stringify({ api: 1, source: "kaleidoscope_fishing", capabilities: ["catch"] }));
+  assert.equal(sentTo(BAIT).length, 0, "not without api 1 and the bait capability");
+  const fishingReady = JSON.stringify({ api: 1, source: "kaleidoscope_fishing", version: "1.6.0", capabilities: ["bait", "catch"] });
+  system.sendScriptEvent("kaleidoscope_fishing:api_ready", fishingReady);
+  assert.deepEqual(sentTo(BAIT), [{ api: 1, source: "kaleidoscope_baking", baits: [{ id: kb("bread_crumbs"), biteFactor: 0.8 }] }]);
+  system.sendScriptEvent("kaleidoscope_fishing:api_ready", fishingReady);
+  assert.equal(sentTo(BAIT).length, 1, "once");
+
+  // The placeholder namespace never was Ranching's.
+  system.sendScriptEvent("kaleidoscope_ranch:api_ready", JSON.stringify({ api: 1, capabilities: ["register_feed"] }));
+  assert.equal(sentTo(FEED).length, 0);
+  system.sendScriptEvent("kaleidoscope_ranching:api_ready", JSON.stringify({ api: 1, version: "1.3.0", capabilities: ["register_animal", "register_feed"] }));
+  assert.deepEqual(sentTo(FEED), [{ item: kb("fruit_pulp"), kind: "veg", units: 1 }]);
+
+  // Harvest and Herbal take no registrations: nothing is sent to them.
+  system.sendScriptEvent("kaleidoscope_harvest:api_ready", JSON.stringify({ api: 1, source: "kaleidoscope_harvest", version: "1.3.1", capabilities: ["catalog", "catalog_foods"] }));
+  system.sendScriptEvent("kaleidoscope_herbal:api_ready", JSON.stringify({ api: 1, source: "kaleidoscope_herbal", capabilities: ["external_heat"] }));
+  assert.deepEqual(__mock.sent.filter(s => /^kaleidoscope_(harvest|herbal):register/.test(s.id)), []);
+  assert.deepEqual([...new Set(__mock.sent.map(s => s.id).filter(id => /:(register_|[a-z]+_register)/.test(id) && !/^kaleidoscope_(cookery|baking):/.test(id)))].sort(), [BAIT, FEED]);
+
+  // A refusal by Ranching of one of Baking's ids is logged (never shown on screen); other packs' results are ignored.
+  const warned = [], warn = console.warn;
+  console.warn = (...a) => warned.push(a.join(" "));
+  try {
+    system.sendScriptEvent("kaleidoscope_ranching:api_result", JSON.stringify({ event: "register_feed", id: "kaleidoscope_harvest:corn", ok: false, error: "x" }));
+    system.sendScriptEvent("kaleidoscope_ranching:api_result", JSON.stringify({ event: "register_feed", id: kb("fruit_pulp"), ok: true }));
+    assert.equal(warned.length, 0);
+    system.sendScriptEvent("kaleidoscope_ranching:api_result", JSON.stringify({ event: "register_feed", id: kb("fruit_pulp"), ok: false, error: "too many feed registrations (limit 256)" }));
+    assert.equal(warned.length, 1);
+    assert.match(warned[0], /register_feed kaleidoscope_baking:fruit_pulp was refused: too many/);
+  } finally { console.warn = warn; }
 });
 
 void __ui;

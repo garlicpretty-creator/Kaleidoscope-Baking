@@ -19,7 +19,7 @@ export function resolveEquivalents(exists, table = EQUIVALENTS) {
   const items = new Map(), aliases = new Map(), blocks = new Map(), leaders = new Set();
   for (const e of table) {
     const lead = leaderOf(e.category);
-    if (!lead) continue;
+    if (!lead || e.hold) continue;
     const primary = (e.primary ?? []).find(id => safe(exists, id));
     if (!primary) continue;
     items.set(e.baking, primary);

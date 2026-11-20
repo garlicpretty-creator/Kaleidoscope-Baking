@@ -211,6 +211,13 @@ handles this itself from `BP/scripts/compat/series.data.js`; series packs only n
 real ids there (or tell the Baking team) and, ideally, tag their items with `kaleidoscope:*`.
 Marking an entry `confirmed: true` lets `node tools/gen_compat_recipes.mjs` generate 1:1 swap recipes.
 
-Since 1.1 Baking also sends its by-products into the series packs' own APIs when they announce
-themselves (`BP/scripts/compat/reverse.data.js`; event names are placeholders until confirmed):
-bread crumbs → 漁歌 bait, fruit pulp → 豐收 compost / 樂牧 feed, coffee grounds → 豐收 / 草本 fertilizer.
+Baking also sends two of its by-products into the series packs' own APIs when they announce
+themselves with `api_ready` (`BP/scripts/compat/reverse.data.js`, once per world session):
+
+| To | Event | Message | Effect |
+| --- | --- | --- | --- |
+| 漁歌 (capability `bait`) | `kaleidoscope_fishing:register_bait` | `{"api":1,"source":"kaleidoscope_baking","baits":[{"id":"kaleidoscope_baking:bread_crumbs","biteFactor":0.8}]}` | bread crumbs are a bait |
+| 樂牧 (capability `register_feed`) | `kaleidoscope_ranching:register_feed` | `{"item":"kaleidoscope_baking:fruit_pulp","kind":"veg","units":1}` | fruit pulp goes in the trough; pigs and rabbits eat it |
+
+豐收 and 草本 have no API for compost or fertiliser, so nothing is sent to them: fruit pulp, bread
+crumbs and coffee grounds go in the vanilla composter, and coffee grounds fertilise Baking's own plants.

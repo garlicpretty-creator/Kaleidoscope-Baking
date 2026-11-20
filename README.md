@@ -29,7 +29,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 - 廚房食譜書「烘焙」分頁（三語）；其他模組後來註冊的配方也會自動更新
 - 咖啡因與心悸、下午茶加成（點心架 60 秒）、手搖飲甜度 / 冰塊、副產品
 - 開放 API v1（1.1 新增：副產品、查詢食材、調整咖啡因、展示規則、公開甜點元件）
-- 系列互通：主導規則與反向註冊已實作（等待正式物品 ID 與 API 事件名稱）
+- 系列互通：裝了豐收時，草莓、藍莓、檸檬、鳳梨以豐收的版本為主；裝了漁歌時麵包屑可以當魚餌；裝了樂牧時果渣可以放進飼槽餵豬和兔子
 
 方塊模型與方塊貼圖由 `tools/art/` 以程式繪製（含 z-fight 稽核、單面材質），物品圖示由 Retro Diffusion 產生；說明見 [tools/art/README.md](tools/art/README.md)，預覽在 `art/previews/`。
 

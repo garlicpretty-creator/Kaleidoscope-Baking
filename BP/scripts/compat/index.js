@@ -7,11 +7,11 @@
 //   3. Baking plant blocks in the world turn into the lead pack's plant on random tick,
 //      keeping the growth stage — only while the world setting `auto_convert` is on
 //   4. items in inventories are never converted (nothing can be lost)
-// Activation is detected from which items exist (ItemTypes); unknown ids never match, so
-// the placeholder namespaces in series.data.js are harmless until real ids are filled in.
+// Activation is detected from which items exist (ItemTypes): a listed id that the lead pack
+// does not have never matches (series.data.js says which ids are checked against the real packs).
 // ============================================================================
 import { BlockPermutation, BlockTypes, ItemTypes, system, world } from "@minecraft/server";
-import { REVERSE_REGISTRATIONS } from "./reverse.data.js";
+import { REVERSE_REGISTRATIONS, SOURCE } from "./reverse.data.js";
 import { SERIES_TAGS } from "./series.data.js";
 import { resolveEquivalents, mapGrowth } from "../api/compat.js";
 import { setIngredientAliases, registerIngredient } from "../api/ingredients.js";
@@ -65,12 +65,49 @@ export function maybeConvertPlant(block, growthState) {
   } catch { return false; }
 }
 
-// 1.1: reverse registrations — send Baking's by-products into a series pack's API once that
-// pack announces itself (see reverse.data.js; event names are placeholders until confirmed).
+// 1.1: reverse registrations. Baking's by-products go into a series pack's own API once that
+// pack says it is there (the contracts are in reverse.data.js). Each registration is sent once
+// per world session: both receivers keep it for the session and a script reload restarts every
+// pack together.
 const reverseSent = new Set();
+
+/** Handles a series pack's api_ready; returns how many registrations went out (exported for tests). */
+export function onSeriesReady(id, message) {
+  const due = REVERSE_REGISTRATIONS.filter(r => r.readyEvent === id && !reverseSent.has(r.event));
+  if (!due.length) return 0;
+  let info;
+  try { info = JSON.parse(String(message ?? "")); } catch { return 0; }
+  if (Number(info?.api) !== 1) return 0;
+  const capabilities = Array.isArray(info.capabilities) ? info.capabilities : [];
+  let sent = 0;
+  for (const r of due) {
+    if (!capabilities.includes(r.needs)) continue;
+    reverseSent.add(r.event);
+    try { system.sendScriptEvent(r.event, JSON.stringify(r.payload)); sent++; } catch {}
+  }
+  return sent;
+}
+
+/** A pack's answer to a registration (Ranching's api_result): a refusal of one of ours is worth a log line. */
+function onSeriesResult(message) {
+  let result;
+  try { result = JSON.parse(String(message ?? "")); } catch { return; }
+  // The answer goes to every add-on: other packs' results are none of Baking's business.
+  if (result?.ok !== false || typeof result.id !== "string" || !result.id.startsWith(`${SOURCE}:`)) return;
+  console.warn(`[Kaleidoscope Baking] ${result.event} ${result.id} was refused: ${result.error}`);
+}
+
 system.afterEvents.scriptEventReceive.subscribe(ev => {
-  const due = REVERSE_REGISTRATIONS.filter(r => r.readyEvent === ev.id);
-  if (!due.length || reverseSent.has(ev.id)) return;
-  reverseSent.add(ev.id);
-  for (const r of due) try { system.sendScriptEvent(r.event, JSON.stringify(r.payload)); } catch {}
+  if (REVERSE_REGISTRATIONS.some(r => r.resultEvent === ev.id)) onSeriesResult(ev.message);
+  else onSeriesReady(ev.id, ev.message);
+}, { namespaces: [...new Set(REVERSE_REGISTRATIONS.map(r => r.readyEvent.split(":")[0]))] });
+
+// The packs announce api_ready by themselves shortly after load (Fishing after 10 ticks, Ranching
+// 20 ticks after world load). Should that have been missed, ask once; without the pack nobody answers.
+onWorldReady(() => {
+  system.runTimeout(() => {
+    for (const ping of new Set(REVERSE_REGISTRATIONS.filter(r => !reverseSent.has(r.event)).map(r => r.ping))) {
+      try { system.sendScriptEvent(ping, SOURCE); } catch {}
+    }
+  }, 60);
 });
