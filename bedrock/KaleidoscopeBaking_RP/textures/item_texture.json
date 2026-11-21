@@ -1,0 +1,93 @@
+{
+  "resource_pack_name": "kaleidoscope_baking",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "kb_flour": {
+      "textures": "textures/items/flour"
+    },
+    "kb_butter": {
+      "textures": "textures/items/butter"
+    },
+    "kb_dough": {
+      "textures": "textures/items/dough"
+    },
+    "kb_sweet_dough": {
+      "textures": "textures/items/sweet_dough"
+    },
+    "kb_whipped_cream": {
+      "textures": "textures/items/whipped_cream"
+    },
+    "kb_chocolate_bar": {
+      "textures": "textures/items/chocolate_bar"
+    },
+    "kb_strawberry": {
+      "textures": "textures/items/strawberry"
+    },
+    "kb_vanilla_pod": {
+      "textures": "textures/items/vanilla_pod"
+    },
+    "kb_cinnamon_stick": {
+      "textures": "textures/items/cinnamon_stick"
+    },
+    "kb_cinnamon_sapling": {
+      "textures": "textures/items/cinnamon_sapling"
+    },
+    "kb_raw_croissant": {
+      "textures": "textures/items/raw_croissant"
+    },
+    "kb_raw_cookies": {
+      "textures": "textures/items/raw_cookies"
+    },
+    "kb_raw_egg_tart": {
+      "textures": "textures/items/raw_egg_tart"
+    },
+    "kb_raw_macaron": {
+      "textures": "textures/items/raw_macaron"
+    },
+    "kb_raw_pudding": {
+      "textures": "textures/items/raw_pudding"
+    },
+    "kb_raw_cream_puff": {
+      "textures": "textures/items/raw_cream_puff"
+    },
+    "kb_raw_cinnamon_roll": {
+      "textures": "textures/items/raw_cinnamon_roll"
+    },
+    "kb_raw_berry_cake": {
+      "textures": "textures/items/raw_berry_cake"
+    },
+    "kb_raw_chocolate_cake": {
+      "textures": "textures/items/raw_chocolate_cake"
+    },
+    "kb_toast": {
+      "textures": "textures/items/toast"
+    },
+    "kb_butter_cookie": {
+      "textures": "textures/items/butter_cookie"
+    },
+    "kb_croissant": {
+      "textures": "textures/items/croissant"
+    },
+    "kb_egg_tart": {
+      "textures": "textures/items/egg_tart"
+    },
+    "kb_macaron": {
+      "textures": "textures/items/macaron"
+    },
+    "kb_pudding": {
+      "textures": "textures/items/pudding"
+    },
+    "kb_cream_puff": {
+      "textures": "textures/items/cream_puff"
+    },
+    "kb_cinnamon_roll": {
+      "textures": "textures/items/cinnamon_roll"
+    },
+    "kb_berry_cake_slice": {
+      "textures": "textures/items/berry_cake_slice"
+    },
+    "kb_chocolate_cake_slice": {
+      "textures": "textures/items/chocolate_cake_slice"
+    }
+  }
+}

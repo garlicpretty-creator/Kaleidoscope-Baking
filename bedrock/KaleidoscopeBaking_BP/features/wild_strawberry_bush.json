@@ -1,0 +1,26 @@
+{
+  "format_version": "1.13.0",
+  "minecraft:single_block_feature": {
+    "description": {
+      "identifier": "kb:wild_strawberry_bush"
+    },
+    "places_block": {
+      "name": "kb:strawberry_bush",
+      "states": {
+        "kb:growth": 3
+      }
+    },
+    "enforce_placement_rules": false,
+    "enforce_survivability_rules": false,
+    "may_replace": [
+      "minecraft:air"
+    ],
+    "may_attach_to": {
+      "bottom": [
+        "minecraft:grass_block",
+        "minecraft:podzol",
+        "minecraft:dirt"
+      ]
+    }
+  }
+}

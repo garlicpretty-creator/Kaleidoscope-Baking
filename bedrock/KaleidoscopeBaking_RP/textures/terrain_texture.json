@@ -1,0 +1,242 @@
+{
+  "resource_pack_name": "kaleidoscope_baking",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "kb_oven": {
+      "textures": "textures/blocks/oven"
+    },
+    "kb_oven_fire": {
+      "textures": "textures/blocks/oven_fire"
+    },
+    "kb_oven_food": {
+      "textures": "textures/blocks/oven_food"
+    },
+    "kb_oven_glass": {
+      "textures": "textures/blocks/oven_glass"
+    },
+    "kb_oven_fire_out": {
+      "textures": "textures/blocks/oven_fire/out"
+    },
+    "kb_oven_fire_lit": {
+      "textures": "textures/blocks/oven_fire/lit"
+    },
+    "kb_oven_food_empty": {
+      "textures": "textures/blocks/oven_food/empty"
+    },
+    "kb_oven_food_dough_raw": {
+      "textures": "textures/blocks/oven_food/dough_raw"
+    },
+    "kb_oven_food_dough_half": {
+      "textures": "textures/blocks/oven_food/dough_half"
+    },
+    "kb_oven_food_dough_done": {
+      "textures": "textures/blocks/oven_food/dough_done"
+    },
+    "kb_oven_food_dough_burnt": {
+      "textures": "textures/blocks/oven_food/dough_burnt"
+    },
+    "kb_oven_food_raw_croissant_raw": {
+      "textures": "textures/blocks/oven_food/raw_croissant_raw"
+    },
+    "kb_oven_food_raw_croissant_half": {
+      "textures": "textures/blocks/oven_food/raw_croissant_half"
+    },
+    "kb_oven_food_raw_croissant_done": {
+      "textures": "textures/blocks/oven_food/raw_croissant_done"
+    },
+    "kb_oven_food_raw_croissant_burnt": {
+      "textures": "textures/blocks/oven_food/raw_croissant_burnt"
+    },
+    "kb_oven_food_raw_cookies_raw": {
+      "textures": "textures/blocks/oven_food/raw_cookies_raw"
+    },
+    "kb_oven_food_raw_cookies_half": {
+      "textures": "textures/blocks/oven_food/raw_cookies_half"
+    },
+    "kb_oven_food_raw_cookies_done": {
+      "textures": "textures/blocks/oven_food/raw_cookies_done"
+    },
+    "kb_oven_food_raw_cookies_burnt": {
+      "textures": "textures/blocks/oven_food/raw_cookies_burnt"
+    },
+    "kb_oven_food_raw_egg_tart_raw": {
+      "textures": "textures/blocks/oven_food/raw_egg_tart_raw"
+    },
+    "kb_oven_food_raw_egg_tart_half": {
+      "textures": "textures/blocks/oven_food/raw_egg_tart_half"
+    },
+    "kb_oven_food_raw_egg_tart_done": {
+      "textures": "textures/blocks/oven_food/raw_egg_tart_done"
+    },
+    "kb_oven_food_raw_egg_tart_burnt": {
+      "textures": "textures/blocks/oven_food/raw_egg_tart_burnt"
+    },
+    "kb_oven_food_raw_macaron_raw": {
+      "textures": "textures/blocks/oven_food/raw_macaron_raw"
+    },
+    "kb_oven_food_raw_macaron_half": {
+      "textures": "textures/blocks/oven_food/raw_macaron_half"
+    },
+    "kb_oven_food_raw_macaron_done": {
+      "textures": "textures/blocks/oven_food/raw_macaron_done"
+    },
+    "kb_oven_food_raw_macaron_burnt": {
+      "textures": "textures/blocks/oven_food/raw_macaron_burnt"
+    },
+    "kb_oven_food_raw_pudding_raw": {
+      "textures": "textures/blocks/oven_food/raw_pudding_raw"
+    },
+    "kb_oven_food_raw_pudding_half": {
+      "textures": "textures/blocks/oven_food/raw_pudding_half"
+    },
+    "kb_oven_food_raw_pudding_done": {
+      "textures": "textures/blocks/oven_food/raw_pudding_done"
+    },
+    "kb_oven_food_raw_pudding_burnt": {
+      "textures": "textures/blocks/oven_food/raw_pudding_burnt"
+    },
+    "kb_oven_food_raw_cream_puff_raw": {
+      "textures": "textures/blocks/oven_food/raw_cream_puff_raw"
+    },
+    "kb_oven_food_raw_cream_puff_half": {
+      "textures": "textures/blocks/oven_food/raw_cream_puff_half"
+    },
+    "kb_oven_food_raw_cream_puff_done": {
+      "textures": "textures/blocks/oven_food/raw_cream_puff_done"
+    },
+    "kb_oven_food_raw_cream_puff_burnt": {
+      "textures": "textures/blocks/oven_food/raw_cream_puff_burnt"
+    },
+    "kb_oven_food_raw_cinnamon_roll_raw": {
+      "textures": "textures/blocks/oven_food/raw_cinnamon_roll_raw"
+    },
+    "kb_oven_food_raw_cinnamon_roll_half": {
+      "textures": "textures/blocks/oven_food/raw_cinnamon_roll_half"
+    },
+    "kb_oven_food_raw_cinnamon_roll_done": {
+      "textures": "textures/blocks/oven_food/raw_cinnamon_roll_done"
+    },
+    "kb_oven_food_raw_cinnamon_roll_burnt": {
+      "textures": "textures/blocks/oven_food/raw_cinnamon_roll_burnt"
+    },
+    "kb_oven_food_raw_berry_cake_raw": {
+      "textures": "textures/blocks/oven_food/raw_berry_cake_raw"
+    },
+    "kb_oven_food_raw_berry_cake_half": {
+      "textures": "textures/blocks/oven_food/raw_berry_cake_half"
+    },
+    "kb_oven_food_raw_berry_cake_done": {
+      "textures": "textures/blocks/oven_food/raw_berry_cake_done"
+    },
+    "kb_oven_food_raw_berry_cake_burnt": {
+      "textures": "textures/blocks/oven_food/raw_berry_cake_burnt"
+    },
+    "kb_oven_food_raw_chocolate_cake_raw": {
+      "textures": "textures/blocks/oven_food/raw_chocolate_cake_raw"
+    },
+    "kb_oven_food_raw_chocolate_cake_half": {
+      "textures": "textures/blocks/oven_food/raw_chocolate_cake_half"
+    },
+    "kb_oven_food_raw_chocolate_cake_done": {
+      "textures": "textures/blocks/oven_food/raw_chocolate_cake_done"
+    },
+    "kb_oven_food_raw_chocolate_cake_burnt": {
+      "textures": "textures/blocks/oven_food/raw_chocolate_cake_burnt"
+    },
+    "kb_mixing_bowl": {
+      "textures": "textures/blocks/mixing_bowl"
+    },
+    "kb_mixing_bowl_batter": {
+      "textures": "textures/blocks/mixing_bowl_batter"
+    },
+    "kb_bowl_batter_lumpy": {
+      "textures": "textures/blocks/bowl_batter/lumpy"
+    },
+    "kb_bowl_batter_dough": {
+      "textures": "textures/blocks/bowl_batter/dough"
+    },
+    "kb_bowl_batter_sweet_dough": {
+      "textures": "textures/blocks/bowl_batter/sweet_dough"
+    },
+    "kb_bowl_batter_whipped_cream": {
+      "textures": "textures/blocks/bowl_batter/whipped_cream"
+    },
+    "kb_bowl_batter_chocolate_bar": {
+      "textures": "textures/blocks/bowl_batter/chocolate_bar"
+    },
+    "kb_bowl_batter_raw_croissant": {
+      "textures": "textures/blocks/bowl_batter/raw_croissant"
+    },
+    "kb_bowl_batter_raw_cookies": {
+      "textures": "textures/blocks/bowl_batter/raw_cookies"
+    },
+    "kb_bowl_batter_raw_egg_tart": {
+      "textures": "textures/blocks/bowl_batter/raw_egg_tart"
+    },
+    "kb_bowl_batter_raw_macaron": {
+      "textures": "textures/blocks/bowl_batter/raw_macaron"
+    },
+    "kb_bowl_batter_raw_pudding": {
+      "textures": "textures/blocks/bowl_batter/raw_pudding"
+    },
+    "kb_bowl_batter_raw_cream_puff": {
+      "textures": "textures/blocks/bowl_batter/raw_cream_puff"
+    },
+    "kb_bowl_batter_raw_cinnamon_roll": {
+      "textures": "textures/blocks/bowl_batter/raw_cinnamon_roll"
+    },
+    "kb_bowl_batter_raw_berry_cake": {
+      "textures": "textures/blocks/bowl_batter/raw_berry_cake"
+    },
+    "kb_bowl_batter_raw_chocolate_cake": {
+      "textures": "textures/blocks/bowl_batter/raw_chocolate_cake"
+    },
+    "kb_baking_tray": {
+      "textures": "textures/blocks/baking_tray"
+    },
+    "kb_crop_cross": {
+      "textures": "textures/blocks/crop_cross"
+    },
+    "kb_crop_cross_plant": {
+      "textures": "textures/blocks/crop_cross_plant"
+    },
+    "kb_crops_strawberry_bush_0": {
+      "textures": "textures/blocks/crops/strawberry_bush_0"
+    },
+    "kb_crops_strawberry_bush_1": {
+      "textures": "textures/blocks/crops/strawberry_bush_1"
+    },
+    "kb_crops_strawberry_bush_2": {
+      "textures": "textures/blocks/crops/strawberry_bush_2"
+    },
+    "kb_crops_strawberry_bush_3": {
+      "textures": "textures/blocks/crops/strawberry_bush_3"
+    },
+    "kb_crops_vanilla_vine_0": {
+      "textures": "textures/blocks/crops/vanilla_vine_0"
+    },
+    "kb_crops_vanilla_vine_1": {
+      "textures": "textures/blocks/crops/vanilla_vine_1"
+    },
+    "kb_crops_vanilla_vine_2": {
+      "textures": "textures/blocks/crops/vanilla_vine_2"
+    },
+    "kb_crops_vanilla_vine_3": {
+      "textures": "textures/blocks/crops/vanilla_vine_3"
+    },
+    "kb_crops_cinnamon_shrub_0": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_0"
+    },
+    "kb_crops_cinnamon_shrub_1": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_1"
+    },
+    "kb_crops_cinnamon_shrub_2": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_2"
+    },
+    "kb_crops_cinnamon_shrub_3": {
+      "textures": "textures/blocks/crops/cinnamon_shrub_3"
+    }
+  }
+}

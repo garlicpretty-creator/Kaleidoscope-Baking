@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kb:baking_tray"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "unlock": {
+      "context": "AlwaysUnlocked"
+    },
+    "result": {
+      "item": "kb:baking_tray",
+      "count": 1
+    },
+    "pattern": [
+      "N N",
+      "NNN"
+    ],
+    "key": {
+      "N": {
+        "item": "minecraft:iron_nugget"
+      }
+    }
+  }
+}
