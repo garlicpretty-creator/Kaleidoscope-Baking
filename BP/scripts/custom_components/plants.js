@@ -39,7 +39,8 @@ function boneMeal(block, player, held, max, onMax) {
   if (!gain) return false;
   const s = stageOf(block);
   if (s >= max && !onMax) return false;
-  if (s >= max) onMax();
+  // A sapling at its last stage that cannot become a tree (no room) keeps the bone meal.
+  if (s >= max) { if (onMax() === false) return false; }
   else setStage(block, Math.min(max, s + (isCreative(player) ? max : gain())));
   consumeHeld(player, 1);
   sound(block.dimension, "item.bone_meal.use", centre(block));
