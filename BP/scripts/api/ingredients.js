@@ -11,7 +11,7 @@
 // the runtime installs a resolver backed by ItemStack#hasTag in api/runtimeTags.js.
 // ============================================================================
 import { cleanId, isTagSpec, orderedValues, sourceName } from "../utils/ids.js";
-import { BUILTIN_INGREDIENT_TAGS } from "../data/ingredientTags.js";
+import { BUILTIN_INGREDIENT_TAGS, CONTAINER_RETURNS } from "../data/ingredientTags.js";
 
 const TAG_NAME_RE = /^[a-z0-9_.-]+:[a-z0-9_./-]+$/;
 
@@ -29,6 +29,14 @@ const aliases = new Map();
 export function setIngredientAliases(map) {
   aliases.clear();
   for (const [primary, baking] of map instanceof Map ? map : Object.entries(map ?? {})) aliases.set(primary, baking);
+}
+
+/** The Baking item another pack's item stands in for (series compat), or undefined. */
+export function aliasOf(id) { return aliases.get(id); }
+
+/** The container a liquid / bottled ingredient hands back (also for a sister pack's stand-in, e.g. 豐收's jam). */
+export function containerReturnOf(id) {
+  return CONTAINER_RETURNS[id] ?? CONTAINER_RETURNS[aliases.get(id)];
 }
 
 /** Runtime installs the real resolver (ItemStack#hasTag). Tests may install a fake. */

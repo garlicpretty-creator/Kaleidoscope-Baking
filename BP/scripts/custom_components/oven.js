@@ -8,6 +8,7 @@
 // Interaction (any part, decided by the held item):
 //   fuel            -> add burn time            (coal, charcoal, logs, lava bucket, addon fuels)
 //   oven input      -> load into a free slot    (mold is taken from the inventory if needed)
+//   sneak + input   -> fill every free slot from the held stack (one mold each)
 //   empty hand      -> take out finished / burnt items (+ molds)
 //   sneak + empty   -> also pull out unfinished items (raw input + mold come back)
 //   empty hand on the door, nothing to take -> open / close the door (it stays as it is left)
@@ -15,6 +16,14 @@
 // The door block is hollow and the door has a window: the bake sits inside, rising as it cooks and turning
 // golden when done or dark when burnt, with embers glowing behind it while the oven is lit.
 //   anything else   -> show status
+//
+// Container below: a chest / barrel / hopper directly under the controller (the bottom
+// centre block, under the middle of the oven) receives each bake the moment it turns perfect,
+// mold included, so it never burns. All or nothing: when it would not all fit, the bake stays
+// in (and can burn). Roasting recipes therefore always give the light roast this way. Checked
+// only on the existing 1 s oven tick and only when a slot has just turned perfect (or is
+// still perfect): no scans. Bedrock hoppers cannot push into custom blocks, so loading stays
+// by hand.
 //
 // ## State lives in a world dynamic property per oven (Baking-owned; not shared across
 // packs). One shared 1-second interval advances every known oven whose chunk is loaded;
@@ -30,7 +39,7 @@ import {
 import { getFuel, getOvenRecipe, getOvenRecipeById } from "../api/registry.js";
 import { matchesSpec } from "../api/ingredients.js";
 import {
-  refuse, consumeHeld, giveItems, heldItem, isCreative, locKey, onWorldReady, parseLocKey, particle, readJson, safeBlock, sound, spawnItems, takeOneFromInventory, writeJson
+  refuse, consumeHeld, containerOf, giveItems, heldItem, insertAll, isCreative, locKey, onWorldReady, parseLocKey, particle, readJson, safeBlock, sound, spawnItems, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
 import { KIND, holdMotion, playMotion, removeVisual, showContents, steam, tintOf } from "../utils/visuals.js";
 
@@ -185,14 +194,14 @@ function addFuel(player, dimension, c, s, held, fuel) {
   sound(dimension, "fire.ignite", centre(c));
 }
 
-function loadInput(player, dimension, c, s, held, recipe) {
+function loadInput(player, dimension, c, s, held, recipe, quiet = false) {
   const i = freeSlot(s);
-  if (i < 0) { refuse(dimension, centre(c)); return false; }
+  if (i < 0) { if (!quiet) refuse(dimension, centre(c)); return false; }
   let mold = "";
   if (recipe.mold && !isCreative(player)) {
     mold = takeOneFromInventory(player, st => matchesSpec(st.typeId, recipe.mold)) ?? "";
     if (!mold) {
-      refuse(dimension, centre(c));
+      if (!quiet) refuse(dimension, centre(c));
       return false;
     }
   }
@@ -200,6 +209,36 @@ function loadInput(player, dimension, c, s, held, recipe) {
   consumeHeld(player, 1);
   sound(dimension, "random.click", centre(c), 0.8, 0.8);
   return true;
+}
+
+/** Sneak + stack: as many as there are free slots (and molds). Returns how many went in. */
+function loadAll(player, dimension, c, s, held, recipe) {
+  let n = 0;
+  while (freeSlot(s) >= 0) {
+    const h = heldItem(player);
+    if (!h || h.typeId !== held.typeId) break;
+    if (!loadInput(player, dimension, c, s, h, recipe, n > 0)) break;
+    n++;
+  }
+  return n;
+}
+
+/** Perfect bakes go straight into a container under the controller. Returns true if any did. */
+function ejectPerfect(dimension, c, s) {
+  const ready = s.slots.some(slot => slot && phaseOf(slot, getOvenRecipeById(slot.recipe)) === "perfect");
+  if (!ready) return false;
+  const container = containerOf(safeBlock(dimension, { x: c.x, y: c.y - 1, z: c.z }));
+  if (!container) return false;
+  let moved = false;
+  s.slots.forEach((slot, i) => {
+    if (!slot) return;
+    const recipe = getOvenRecipeById(slot.recipe);
+    if (phaseOf(slot, recipe) !== "perfect") return;
+    if (!insertAll(container, slotYield(slot, recipe))) return;
+    s.slots[i] = null;
+    moved = true;
+  });
+  return moved;
 }
 
 function takeOut(player, dimension, c, s) {
@@ -236,6 +275,7 @@ function interact(block, player) {
     const fuel = getFuel(held.typeId);
     const recipe = fuel ? undefined : getOvenRecipe(held.typeId);
     if (fuel) { addFuel(player, dimension, c, s, held, fuel); changed = true; }
+    else if (recipe && player.isSneaking) changed = loadAll(player, dimension, c, s, held, recipe) > 0 || (refuse(dimension, centre(c)), false);
     else if (recipe) changed = loadInput(player, dimension, c, s, held, recipe);
     else refuse(dimension, centre(c)); // neither fuel nor something that bakes
   } else if (takeOut(player, dimension, c, s)) {
@@ -275,7 +315,12 @@ function tickAll() {
     const s = loadState(key, facing);
     if (!s) continue;
     const res = tickOven(s, TICK_INTERVAL, getOvenRecipeById);
-    if (res.changed) saveState(key, s);
+    const ejected = ejectPerfect(dimension, o.loc, s);
+    if (res.changed || ejected) saveState(key, s);
+    if (ejected) {
+      res.lit = isLit(s, getOvenRecipeById);
+      sound(dimension, "random.pop", { x: o.loc.x + 0.5, y: o.loc.y, z: o.loc.z + 0.5 }, 0.6, 1.0);
+    }
     setLit(dimension, o.loc, facing, res.lit);
     showDoor(dimension, o.loc, facing, res.lit, s);
     if (res.lit) {

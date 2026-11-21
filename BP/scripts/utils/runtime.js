@@ -71,8 +71,8 @@ export function consumeHeld(player, n = 1) {
 let outputMapper = id => id;
 export function setOutputMapper(fn) { outputMapper = typeof fn === "function" ? fn : id => id; }
 
-function stacksOf(rawId, count) {
-  const id = outputMapper(rawId) || rawId;
+function stacksOf(rawId, count, mapped = true) {
+  const id = (mapped && outputMapper(rawId)) || rawId;
   const out = [];
   let left = Math.max(0, Math.floor(count));
   while (left > 0) {
@@ -91,14 +91,69 @@ export function spawnItems(dimension, loc, id, count = 1) {
   for (const s of stacksOf(id, count)) try { dimension.spawnItem(s, loc); } catch {}
 }
 
-/** Give to the player's inventory; whatever does not fit drops at their feet. Never lost. */
-export function giveItems(player, id, count = 1) {
-  const inv = player.getComponent("minecraft:inventory")?.container;
-  for (const s of stacksOf(id, count)) {
+/** Give to the player's inventory; whatever does not fit drops at their feet. Never lost.
+ *  `mapped: false` skips the series output mapping (the proofing basket's 1:1 swap). */
+export function giveItems(player, id, count = 1, mapped = true) {
+  let inv;
+  try { inv = player.getComponent("minecraft:inventory")?.container; } catch {}
+  for (const s of stacksOf(id, count, mapped)) {
     let rest = s;
     try { rest = inv ? inv.addItem(s) : s; } catch {}
     if (rest) try { player.dimension.spawnItem(rest, player.location); } catch {}
   }
+}
+
+/** The inventory of a block (chest, barrel, hopper...), or undefined. */
+export function containerOf(block) {
+  try { return block?.getComponent("minecraft:inventory")?.container ?? undefined; } catch { return undefined; }
+}
+
+/** How many more of `id` fit into the container (stack sizes respected). */
+export function roomFor(container, id) {
+  let probe;
+  try { probe = new ItemStack(id, 1); } catch { return 0; }
+  const max = probe.maxAmount || 64;
+  let room = 0;
+  for (let i = 0; i < container.size; i++) {
+    let s;
+    try { s = container.getItem(i); } catch { continue; }
+    if (!s) room += max;
+    else if (s.typeId === id && s.amount < max) {
+      try { if (s.isStackableWith && !s.isStackableWith(probe)) continue; } catch {}
+      room += max - s.amount;
+    }
+  }
+  return room;
+}
+
+/**
+ * Put every yield `[{id, count}]` into the container, all or nothing (series output mapping
+ * applied). Returns false and puts nothing in when it would not all fit.
+ */
+export function insertAll(container, yields) {
+  if (!container) return false;
+  const want = new Map();
+  for (const y of yields) {
+    const id = outputMapper(y.id) || y.id;
+    want.set(id, (want.get(id) ?? 0) + y.count);
+  }
+  // Different ids compete for empty slots, so check them together.
+  let emptyNeeded = 0, empty = 0;
+  for (let i = 0; i < container.size; i++) { try { if (!container.getItem(i)) empty++; } catch {} }
+  for (const [id, n] of want) {
+    const room = roomFor(container, id);
+    if (room < n) return false;
+    let probe;
+    try { probe = new ItemStack(id, 1); } catch { return false; }
+    const max = probe.maxAmount || 64;
+    const partial = room - empty * max; // space in stacks already there
+    if (n > partial) emptyNeeded += Math.ceil((n - partial) / max);
+  }
+  if (emptyNeeded > empty) return false;
+  for (const [id, n] of want) {
+    for (const s of stacksOf(id, n, false)) { try { container.addItem(s); } catch {} }
+  }
+  return true;
 }
 
 /** Give a prepared ItemStack (keeps lore / dynamic properties). Drops it if the inventory is full. */

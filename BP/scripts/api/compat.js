@@ -13,24 +13,29 @@ export function leaderOf(category) {
 /**
  * Resolve active equivalents.
  * Returns {items: Map(bakingId -> primaryId), aliases: Map(primaryId -> bakingId),
+ *          swaps: Map(id -> the other pack's id, both directions),
  *          blocks: Map(bakingBlock -> {primary, bakingMax, primaryState, primaryMax}), leaders:Set}
+ * `items` (what Baking hands out) skips entries marked `outputs: false`; those are still
+ * accepted (aliases) and swappable.
  */
 export function resolveEquivalents(exists, table = EQUIVALENTS) {
-  const items = new Map(), aliases = new Map(), blocks = new Map(), leaders = new Set();
+  const items = new Map(), aliases = new Map(), swaps = new Map(), blocks = new Map(), leaders = new Set();
   for (const e of table) {
     const lead = leaderOf(e.category);
     if (!lead || e.hold) continue;
     const primary = (e.primary ?? []).find(id => safe(exists, id));
     if (!primary) continue;
-    items.set(e.baking, primary);
+    if (e.outputs !== false) items.set(e.baking, primary);
     aliases.set(primary, e.baking);
+    swaps.set(e.baking, primary);
+    swaps.set(primary, e.baking);
     leaders.add(lead);
     if (e.block) {
       const pb = (e.block.primary ?? []).find(id => safe(exists, id, "block"));
       if (pb) blocks.set(e.block.baking, { primary: pb, bakingMax: e.block.bakingMax, primaryState: e.block.primaryState, primaryMax: e.block.primaryMax });
     }
   }
-  return { items, aliases, blocks, leaders };
+  return { items, aliases, swaps, blocks, leaders };
 }
 
 function safe(exists, id, kind = "item") {

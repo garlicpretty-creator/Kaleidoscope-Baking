@@ -77,6 +77,11 @@ class Block {
   getLightLevel() { return 15; }
   above() { return this.dimension.getBlock({ x: this.x, y: this.y + 1, z: this.z }); }
   hasTag() { return false; }
+  /** A chest / hopper placed with __mock.placeContainer has an inventory. */
+  getComponent(name) {
+    const c = this.dimension._containers.get(this._k());
+    return name === "minecraft:inventory" && c && this.typeId === c.typeId ? { container: c.container } : undefined;
+  }
   setPermutation(p) { this.dimension._blocks.set(this._k(), p); }
   setType(id) { if (id === "minecraft:air") this.dimension._blocks.delete(this._k()); else this.setPermutation(BlockPermutation.resolve(id)); }
 }
@@ -101,7 +106,7 @@ class MockEntity {
 }
 
 class Dimension {
-  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this.spawned = []; this.sounds = []; this.entities = []; this.particles = []; }
+  constructor(id) { this.id = id; this._blocks = new Map(); this._power = new Map(); this._containers = new Map(); this.spawned = []; this.sounds = []; this.entities = []; this.particles = []; }
   spawnEntity(typeId, location) { const e = new MockEntity(this, typeId, location); this.entities.push(e); return e; }
   getEntities(o = {}) {
     return this.entities.filter(e => (!o.type || e.typeId === o.type) && (!o.location ||
@@ -214,5 +219,13 @@ export const __mock = {
     return registry;
   },
   interactBefore(ev) { world.beforeEvents.playerInteractWithBlock._fire(ev); this.flush(); return ev; },
+  /** Put a vanilla container block (chest, hopper...) with `size` slots at loc; returns its container. */
+  placeContainer(loc, typeId = "minecraft:chest", size = 27) {
+    const b = overworld.getBlock(loc);
+    b.setType(typeId);
+    const container = new Container(size);
+    overworld._containers.set(b._k(), { typeId, container });
+    return container;
+  },
   explode(block, permutation) { world.afterEvents.blockExplode._fire({ block, dimension: block.dimension, explodedBlockPermutation: permutation }); }
 };

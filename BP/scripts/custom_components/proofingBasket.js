@@ -4,9 +4,15 @@
 //   dough in hand     -> add as many as fit (one kind at a time, max 16)
 //   empty hand        -> take it out once risen
 //   sneak + empty     -> take it out early (unrisen dough comes back unchanged)
-import { world } from "@minecraft/server";
+//   a duplicate item  -> (series compat) the held stack is swapped 1:1 for the sister pack's
+//                        version and back again: Baking's strawberry <-> 豐收's, Baking's butter
+//                        <-> 樂牧's... (compat/series.data.js). Only while that pack is installed,
+//                        so the swap never names an item that does not exist. Dough is never a
+//                        duplicate, so this does not get in the way of proofing.
+import { ItemStack, world } from "@minecraft/server";
 import { addProofing, normalizeProofing, proofingYield, tickProofing } from "../api/stationLogic.js";
-import { getRecipeById } from "../api/registry.js";
+import { getProofingRecipe, getRecipeById } from "../api/registry.js";
+import { swapPartner } from "../compat/index.js";
 import { refuse, giveItems, heldItem, isCreative, mainhand, particle, safeBlock, sound, spawnItems } from "../utils/runtime.js";
 import { bump, KIND, removeVisual, showContents, tintOf } from "../utils/visuals.js";
 import { loadStation, registerTicker, saveStation, trackStation, untrackStation } from "../utils/stations.js";
@@ -51,9 +57,27 @@ function show(block, s) {
     progress: r && s.count ? s.progress / r.time : 0 });
 }
 
+/** Swap the held stack for its sister-pack twin, same amount (series compat). */
+function swapStack(block, player, held, partner) {
+  const slot = mainhand(player);
+  let first;
+  try { first = new ItemStack(partner, 1); } catch { refuse(block.dimension, centre(block)); return; }
+  const n = Math.min(held.amount, first.maxAmount || 64);
+  first.amount = n;
+  try { slot.setItem(first); } catch { return; }
+  if (held.amount > n) giveItems(player, partner, held.amount - n, false);
+  const at = { x: block.x + 0.5, y: block.y + 0.7, z: block.z + 0.5 };
+  sound(block.dimension, "random.pop", at, 0.5, 1.3);
+  sound(block.dimension, "dig.grass", at, 0.5, 1.2);
+  particle(block.dimension, "minecraft:villager_happy", at);
+  bump(block, KIND.proof);
+}
+
 function interact(block, player) {
   const s = loadStation(PREFIX, block, normalizeProofing);
   const held = heldItem(player);
+  const partner = held && swapPartner(held.typeId);
+  if (partner && !getProofingRecipe(held.typeId)) { swapStack(block, player, held, partner); return; }
   if (held) {
     const r = addProofing(s, held.typeId, held.amount);
     if (!r.added) {

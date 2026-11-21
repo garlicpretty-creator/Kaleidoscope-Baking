@@ -7,6 +7,22 @@
 //   crafting materials              -> 樂牧 (Ranch)
 //   finished baked goods & drinks   -> 烘焙 (Baking itself)
 //
+// Canonical rule for items BOTH packs already ship (owner's decision, 2026-11):
+//   fruit, cinnamon and fruit products (jams, blueberry pie, pineapple cake) -> 豐收's item
+//   dairy and egg products (butter, whipped cream, custard, egg tart, raw egg tart) -> 樂牧's item
+// While the sister pack is installed Baking's stations accept its item wherever Baking's is
+// asked for (aliases), and the proofing basket swaps a held stack 1:1 between the two
+// (custom_components/proofingBasket.js; not JSON recipes, see below).
+// `outputs: false` marks entries where Baking keeps handing out ITS OWN item even so, because
+// something only knows Baking's id: Baking's Cookery recipes (butter in custard / caramel /
+// chocolate sauce / French toast / pancakes / cream soup, the butter jar; cinnamon bark on the
+// drying rack) or Baking's eating effects and afternoon tea (blueberry pie, pineapple cake,
+// egg tart, data/effects.js). The player can still swap those stacks at the basket.
+//
+// Why no crafting-table swap recipes: a JSON recipe naming another pack's item is a content
+// error whenever that pack is absent, and JSON cannot be loaded conditionally, so the swap is
+// done by script, which checks the sister item exists (ItemTypes) first.
+//
 // The four namespaces are the packs' real ones (checked against Fishing Voyage 1.6.0,
 // Harvest 1.3.1, Herbal 1.3.1 and Ranching 1.3.0); compat/reverse.data.js builds its event
 // names from them.
@@ -18,15 +34,17 @@
 //              kaleidoscope_harvest:growth 0..7. Harvest has no raspberry. The blueberry bush is not mapped to
 //              blueberry_crop yet (that would newly switch on its in-world conversion: not decided).
 //   草本 none:  Herbal has no mint, lavender, thyme or rosemary, so the herb entries never match.
-//   樂牧 real:  butter and cream (both on hold, see below). Ranching has no cream cheese (its
-//              cheeses are other things), frothed milk, brown sugar or yeast.
+//              Also real (checked against Harvest's repository, 2026-11-21): strawberry_jam, blueberry_jam,
+//              blueberry_pie, pineapple_cake, cinnamon_bark.
+//   樂牧 real:  butter, cream (鮮奶油), custard, egg_tart, raw_egg_tart (checked 2026-11-21). Ranching has
+//              no cream cheese (its cheeses are other things), frothed milk, brown sugar or yeast.
 // ============================================================================
 
 export const SERIES = Object.freeze({
   fishing: { name: "漁歌", namespace: "kaleidoscope_fishing", leads: [] },
-  harvest: { name: "豐收", namespace: "kaleidoscope_harvest", leads: ["fruit", "crop"] },
+  harvest: { name: "豐收", namespace: "kaleidoscope_harvest", leads: ["fruit", "crop", "fruit_product"] },
   herbal: { name: "草本", namespace: "kaleidoscope_herbal", leads: ["herb"] },
-  ranch: { name: "樂牧", namespace: "kaleidoscope_ranching", leads: ["material"] }
+  ranch: { name: "樂牧", namespace: "kaleidoscope_ranching", leads: ["material", "dairy"] }
 });
 
 const H = SERIES.herbal.namespace, F = SERIES.harvest.namespace, R = SERIES.ranch.namespace;
@@ -36,10 +54,9 @@ const kb = n => `kaleidoscope_baking:${n}`;
  * baking:   our item
  * category: decides the lead pack (see SERIES.leads)
  * primary:  candidate ids in the lead pack (first one that exists wins)
- * confirmed: set to true once the lead pack's id is verified — tools/gen_compat_recipes.mjs
- *           then generates 1:1 crafting-table swap recipes for it (unconfirmed guesses get none)
+ * outputs:  false = accept and swap only: Baking keeps handing out its own item (see the header)
  * hold:     true keeps the entry switched off even when the lead pack's item exists
- *           (api/compat.js skips it)
+ *           (api/compat.js skips it; nothing uses it at the moment)
  * block:    optional plant-block mapping for in-world auto-conversion:
  *           {baking, primary:[candidates], bakingMax, primaryState, primaryMax}
  */
@@ -70,17 +87,22 @@ export const EQUIVALENTS = Object.freeze([
   { baking: kb("pineapple"), category: "fruit", primary: [`${F}:pineapple`],
     block: { baking: kb("pineapple_crop"), primary: [`${F}:pineapple_crop`, `${F}:pineapple`], bakingMax: 7, primaryState: `${F}:growth`, primaryMax: 7 } },
   { baking: kb("pineapple_crown"), category: "fruit", primary: [`${F}:pineapple_crown`, `${F}:pineapple_seeds`] },
+  // Fruit products and cinnamon -> 豐收
+  { baking: kb("strawberry_jam"), category: "fruit_product", primary: [`${F}:strawberry_jam`] },
+  { baking: kb("blueberry_jam"), category: "fruit_product", primary: [`${F}:blueberry_jam`] },
+  { baking: kb("blueberry_pie"), category: "fruit_product", primary: [`${F}:blueberry_pie`], outputs: false },
+  { baking: kb("pineapple_cake"), category: "fruit_product", primary: [`${F}:pineapple_cake`], outputs: false },
+  { baking: kb("cinnamon_bark"), category: "crop", primary: [`${F}:cinnamon_bark`], outputs: false },
 
 
-  // Crafting materials -> 樂牧
-  // Butter and cream are ON HOLD (`hold: true`). kaleidoscope_ranching:butter and :cream (鮮奶油)
-  // are real, but with the lead rule on Baking's mixing bowl would hand out Ranching's butter and
-  // cream from whisked milk (Ranching makes them in its cream separator and butter churn), and
-  // Baking would stop handing out its own butter, which its Cookery recipes (custard, caramel,
-  // chocolate sauce, French toast, pancakes, cream soup), the butter jar's crafting recipe and the
-  // jar's oil-container registration all name. Remove `hold` once that is decided and handled.
-  { baking: kb("butter"), category: "material", primary: [`${R}:butter`], hold: true },
-  { baking: kb("whipped_cream"), category: "material", primary: [`${R}:whipped_cream`, `${R}:cream`], hold: true },
+  // Dairy and egg products -> 樂牧
+  { baking: kb("butter"), category: "dairy", primary: [`${R}:butter`], outputs: false },
+  { baking: kb("whipped_cream"), category: "dairy", primary: [`${R}:cream`], outputs: false },
+  { baking: kb("custard"), category: "dairy", primary: [`${R}:custard`] },
+  { baking: kb("raw_egg_tart"), category: "dairy", primary: [`${R}:raw_egg_tart`] },
+  { baking: kb("egg_tart"), category: "dairy", primary: [`${R}:egg_tart`], outputs: false },
+
+  // Crafting materials -> 樂牧 (guessed ids; Ranching has none of these, so they never match)
   { baking: kb("cream_cheese"), category: "material", primary: [`${R}:cream_cheese`, `${R}:cheese`] },
   { baking: kb("frothed_milk"), category: "material", primary: [`${R}:frothed_milk`, `${R}:milk_foam`] },
   { baking: kb("brown_sugar"), category: "material", primary: [`${R}:brown_sugar`] },

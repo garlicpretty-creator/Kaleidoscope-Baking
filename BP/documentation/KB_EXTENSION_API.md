@@ -209,7 +209,8 @@ When the same thing exists in Baking and in a series pack, the lead pack's versi
 (herbs → 草本, fruits/crops → 豐收, crafting materials → 樂牧, baked goods → Baking). Baking
 handles this itself from `BP/scripts/compat/series.data.js`; series packs only need to use their
 real ids there (or tell the Baking team) and, ideally, tag their items with `kaleidoscope:*`.
-Marking an entry `confirmed: true` lets `node tools/gen_compat_recipes.mjs` generate 1:1 swap recipes.
+Items both packs ship are swapped 1:1 by holding one against Baking's proofing basket (script, only while the
+other pack is installed: a JSON recipe naming an absent pack's item would be a content error).
 
 Baking also sends two of its by-products into the series packs' own APIs when they announce
 themselves with `api_ready` (`BP/scripts/compat/reverse.data.js`, once per world session):

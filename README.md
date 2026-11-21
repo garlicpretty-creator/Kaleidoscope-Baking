@@ -29,7 +29,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 - 廚房食譜書「烘焙」分頁（三語）；其他模組後來註冊的配方也會自動更新
 - 咖啡因與心悸、下午茶加成（點心架 60 秒）、手搖飲甜度 / 冰塊、副產品
 - 開放 API v1（1.1 新增：副產品、查詢食材、調整咖啡因、展示規則、公開甜點元件）
-- 系列互通：裝了豐收時，草莓、藍莓、檸檬、鳳梨以豐收的版本為主；裝了漁歌時麵包屑可以當魚餌；裝了樂牧時果渣可以放進飼槽餵豬和兔子
+- 系列互通：裝了豐收時，草莓、藍莓、檸檬、鳳梨以豐收的版本為主；兩邊重複的水果製品以豐收為準、乳製品與蛋製品以樂牧為準，站點兩種都收，發酵籃可一對一互換；裝了漁歌時麵包屑可以當魚餌；裝了樂牧時果渣可以放進飼槽餵豬和兔子
 
 方塊模型與方塊貼圖由 `tools/art/` 以程式繪製（含 z-fight 稽核、單面材質），物品圖示由 Retro Diffusion 產生；說明見 [tools/art/README.md](tools/art/README.md)，預覽在 `art/previews/`。
 
@@ -38,14 +38,13 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 需要 Node.js 22+ 與 Python 3（含 Pillow）。
 
 ```sh
-npm test                           # 71 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
+npm test                           # 83 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
 python3 tools/validate.py          # 檢查 JSON、貼圖、語系、物品 ID、元件註冊、腳本語法、不顯示文字
 python3 tools/check_rp.py          # 實體 / 動畫 / 算圖控制器 / 粒子 / 動態貼圖互相對得上，腳本設定的實體屬性在範圍內
 python3 tools/art/check_refs.py    # 每個方塊的模型、貼圖、UV 都對得上
 python3 tools/build.py             # 打包成 dist/Kaleidoscope-Baking-v<版本>.mcaddon
 python3 tools/gen_content.py       # 由 tools/content.py 產生物品 / 方塊 / 語系 / 暫代圖（不覆蓋既有圖）
 node tools/gen_oven_block.mjs      # 修改烤箱結構後重新產生 BP/blocks/oven.json
-node tools/gen_compat_recipes.mjs   # 系列模組 ID 確認（confirmed: true）後產生 1:1 互換配方
 ```
 
 安裝：匯入 `.mcaddon` 後，在世界中同時啟用 **森羅物語：廚房 v1.6.6** 與 **森羅物語：烘焙**；不需要開啟 Beta API（只使用穩定版 `@minecraft/server` 2.7.0 與 `@minecraft/server-ui` 2.0.0）。

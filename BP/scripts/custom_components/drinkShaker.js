@@ -9,7 +9,7 @@
 import { ItemStack, world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { addToShaker, normalizeShaker, shake, shakerRecipe, takeFromShaker, ICE, SWEETNESS } from "../api/stationLogic.js";
-import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
+import { containerReturnOf } from "../api/ingredients.js";
 import { ICE_PROP, SWEET_PROP } from "../events/consumption.js";
 import {
   refuse, consumeHeld, giveItems, giveStack, hasInInventory, heldItem, isCreative, particle, sound, spawnItems, takeCarrier
@@ -78,7 +78,7 @@ function interact(block, player) {
   const s = loadStation(PREFIX, block, normalizeShaker);
   const held = heldItem(player);
   if (held) {
-    const back = CONTAINER_RETURNS[held.typeId];
+    const back = containerReturnOf(held.typeId);
     const r = addToShaker(s, held.typeId, !!back);
     if (!r.ok) { refuse(block.dimension, top(block)); return; }
     consumeHeld(player, 1);

@@ -161,13 +161,20 @@ test("series compat: lead pack per category, aliases make recipes accept the oth
   assert.ok(!res.items.has(kb("mint_leaves")), "absent pack = no mapping");
   assert.deepEqual(res.blocks.get(kb("strawberry_bush")), { primary: "kaleidoscope_harvest:strawberry_crop", bakingMax: 3, primaryState: "kaleidoscope_harvest:growth", primaryMax: 7 });
   assert.ok(!res.blocks.has(kb("blueberry_bush")), "the blueberry bush is not mapped to Harvest's crop yet");
-  // Ranching's butter and cream exist but are on hold (series.data.js): nothing changes for them yet.
-  assert.ok(!res.items.has(kb("butter")) && !res.items.has(kb("whipped_cream")) && !res.leaders.has("ranch"), "held entries stay off");
+  // Ranching's butter and cream (dairy -> 樂牧) are accepted and swappable, but Baking keeps
+  // handing out its own (outputs: false: its Cookery recipes and the butter jar name it).
+  assert.ok(res.leaders.has("ranch"));
+  assert.ok(!res.items.has(kb("butter")) && !res.items.has(kb("whipped_cream")), "Baking still hands out its own butter");
+  assert.equal(res.aliases.get("kaleidoscope_ranching:butter"), kb("butter"));
+  assert.equal(res.aliases.get("kaleidoscope_ranching:cream"), kb("whipped_cream"));
+  assert.equal(res.swaps.get(kb("butter")), "kaleidoscope_ranching:butter");
+  assert.equal(res.swaps.get("kaleidoscope_ranching:butter"), kb("butter"), "swaps go both ways");
+  assert.equal(res.swaps.get(kb("strawberry")), "kaleidoscope_harvest:strawberry");
 
-  // The material rule itself, with the hold lifted.
-  const lifted = resolveEquivalents(id => existing.has(id), EQUIVALENTS.map(e => ({ ...e, hold: false })));
-  assert.equal(lifted.items.get(kb("butter")), "kaleidoscope_ranching:butter");
-  assert.ok(lifted.leaders.has("ranch"));
+  // A held entry stays fully off.
+  const held = resolveEquivalents(id => existing.has(id), EQUIVALENTS.map(e => e.baking === kb("butter") ? { ...e, hold: true } : e));
+  assert.ok(!held.aliases.has("kaleidoscope_ranching:butter") && !held.swaps.has(kb("butter")));
+  const lifted = res;
   setIngredientAliases(lifted.aliases);
   assert.ok(matchesSpec("kaleidoscope_harvest:strawberry", kb("strawberry")));
   setItemTagResolver((id, tag) => id === kb("butter") && tag === "kaleidoscope:butter");
@@ -182,4 +189,25 @@ test("extension kinds validate their own schema", () => {
   assert.equal(registerRecipe({ api: 1, kind: "oven", recipe: { id: "x:o", input: "x:i", result: "x:r", roast: ["x:a"] } }).reason, "schema");
   assert.ok(registerRecipe({ api: 1, kind: "espresso", recipe: { id: "x:e", input: "x:c", result: "x:r" } }).ok);
   assert.ok(registerRecipe({ api: 1, kind: "decorating", recipe: { id: "x:d", base: "x:b", layers: ["#x:t"], result: "x:r" } }).ok);
+});
+
+test("series duplicates: every item both packs ship maps to the canonical pack's real id", () => {
+  // Owner's rule: fruit, cinnamon and fruit products -> 豐收; dairy and egg products -> 樂牧.
+  // Ids checked against the Harvest and Ranching repositories (2026-11-21).
+  const H = "kaleidoscope_harvest:", R = "kaleidoscope_ranching:";
+  const want = {
+    strawberry: H + "strawberry", blueberry: H + "blueberry", lemon: H + "lemon", pineapple: H + "pineapple",
+    pineapple_crown: H + "pineapple_crown", strawberry_jam: H + "strawberry_jam", blueberry_jam: H + "blueberry_jam",
+    blueberry_pie: H + "blueberry_pie", pineapple_cake: H + "pineapple_cake", cinnamon_bark: H + "cinnamon_bark",
+    butter: R + "butter", whipped_cream: R + "cream", custard: R + "custard", egg_tart: R + "egg_tart", raw_egg_tart: R + "raw_egg_tart"
+  };
+  const res = resolveEquivalents(id => Object.values(want).includes(id));
+  for (const [baking, primary] of Object.entries(want)) {
+    assert.equal(res.aliases.get(primary), kb(baking), `${primary} stands in for ${baking}`);
+    assert.equal(res.swaps.get(kb(baking)), primary);
+  }
+  assert.deepEqual([...res.leaders].sort(), ["harvest", "ranch"]);
+  // Baking keeps handing out its own where its Cookery recipes or eating effects name it.
+  for (const n of ["butter", "whipped_cream", "egg_tart", "blueberry_pie", "pineapple_cake", "cinnamon_bark"]) assert.ok(!res.items.has(kb(n)), n);
+  for (const n of ["strawberry", "strawberry_jam", "custard", "raw_egg_tart"]) assert.equal(res.items.get(kb(n)), want[n]);
 });

@@ -6,7 +6,8 @@
 //   2. everything Baking hands out (stations, harvests) is the lead pack's version
 //   3. Baking plant blocks in the world turn into the lead pack's plant on random tick,
 //      keeping the growth stage — only while the world setting `auto_convert` is on
-//   4. items in inventories are never converted (nothing can be lost)
+//   4. items in inventories are never converted on their own (nothing can be lost); the
+//      player swaps a stack 1:1 at the proofing basket (swapPartner below)
 // Activation is detected from which items exist (ItemTypes): a listed id that the lead pack
 // does not have never matches (series.data.js says which ids are checked against the real packs).
 // ============================================================================
@@ -19,7 +20,10 @@ import { onWorldReady, setOutputMapper } from "../utils/runtime.js";
 import { ItemStack } from "@minecraft/server";
 
 export const AUTO_CONVERT_PROP = "kaleidoscope_baking:auto_convert";
-let active = { items: new Map(), aliases: new Map(), blocks: new Map(), leaders: new Set() };
+let active = { items: new Map(), aliases: new Map(), swaps: new Map(), blocks: new Map(), leaders: new Set() };
+
+/** The other pack's id for a duplicate item (either direction), or undefined. */
+export function swapPartner(id) { return active.swaps.get(id); }
 
 export function autoConvertEnabled() {
   try { return world.getDynamicProperty(AUTO_CONVERT_PROP) !== false; } catch { return true; }
@@ -35,17 +39,17 @@ function exists(id, kind) {
 onWorldReady(() => {
   for (const t of SERIES_TAGS) registerIngredient({ api: 1, source: "kaleidoscope_baking_compat", id: t.id, tags: t.tags });
   active = resolveEquivalents(exists);
-  if (!active.items.size) return;
+  if (!active.aliases.size) return;
   setIngredientAliases(active.aliases);
   // Lead items also get Baking's runtime ingredient tags (so #kaleidoscope:fruit etc. match
   // even if the lead pack forgot to tag them).
-  for (const [baking, primary] of active.items) {
+  for (const [primary, baking] of active.aliases) {
     let tags = [];
     try { tags = new ItemStack(baking, 1).getTags().filter(x => x.startsWith("kaleidoscope:")); } catch {}
     if (tags.length) registerIngredient({ api: 1, source: "kaleidoscope_baking_compat", id: primary, tags });
   }
   setOutputMapper(id => active.items.get(id) ?? id);
-  console.log(`[Kaleidoscope Baking] Series compat active: ${[...active.leaders].join(", ")} (${active.items.size} items).`);
+  console.log(`[Kaleidoscope Baking] Series compat active: ${[...active.leaders].join(", ")} (${active.aliases.size} items, ${active.items.size} handed out as theirs).`);
 });
 
 /**

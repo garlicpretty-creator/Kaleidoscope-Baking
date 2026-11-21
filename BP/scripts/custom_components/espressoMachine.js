@@ -11,7 +11,7 @@
 // redstone block next to it powers the neighbour cell, not always the custom block itself.
 import { world } from "@minecraft/server";
 import { ESPRESSO_WATER_MAX, loadEspressoAdditive, loadEspressoCoffee, normalizeEspresso, tickEspresso } from "../api/stationLogic.js";
-import { CONTAINER_RETURNS } from "../data/ingredientTags.js";
+import { containerReturnOf } from "../api/ingredients.js";
 import { all } from "../api/registry.js";
 import {
   refuse, consumeHeld, giveItems, heldItem, isCreative, particle, safeBlock, sound, spawnItems, takeCarrier
@@ -59,7 +59,7 @@ function interact(block, player) {
       return;
     }
     if (player.isSneaking) {
-      for (const id of [s.coffee, s.additive]) if (id && !CONTAINER_RETURNS[id]) giveItems(player, id, 1);
+      for (const id of [s.coffee, s.additive]) if (id && !containerReturnOf(id)) giveItems(player, id, 1);
       s.coffee = ""; s.additive = ""; s.progress = 0;
       save(); untrackStation(PREFIX, block);
     }
@@ -83,7 +83,7 @@ function interact(block, player) {
     return;
   }
   consumeHeld(player, 1);
-  const back = CONTAINER_RETURNS[id];
+  const back = containerReturnOf(id);
   if (back && !isCreative(player)) giveItems(player, back, 1);
   sound(block.dimension, "random.click", spout(block), 0.7, 1.3);
   save();
@@ -106,7 +106,7 @@ function spill(dimension, loc) {
   const fake = { dimension, x: loc.x, y: loc.y, z: loc.z };
   const s = loadStation(PREFIX, fake, normalizeEspresso);
   const at = { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 };
-  for (const id of [s.coffee, s.additive]) if (id && !CONTAINER_RETURNS[id]) spawnItems(dimension, at, id, 1);
+  for (const id of [s.coffee, s.additive]) if (id && !containerReturnOf(id)) spawnItems(dimension, at, id, 1);
   // A finished drink is dropped too, so nothing is lost. (Its mug was not taken yet, so the
   // player effectively gets a mug when they drink it — a harmless edge case.)
   if (s.ready) spawnItems(dimension, at, s.ready, 1);
