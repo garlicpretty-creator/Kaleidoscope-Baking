@@ -94,12 +94,12 @@ function autoLines(id) {
 /** How-to text shown on station entries. */
 const HELP = {
   "kaleidoscope_baking:oven": {
-    zh_TW: ["3×3×3 大型烤箱，需要完整空地。", "手持燃料點擊加柴；手持材料放入（共 4 格，模具會自動從背包拿）。", "爐門有玻璃窗：裡面的東西烤的時候會慢慢膨起來，烤好變金黃，烤焦變黑；烤箱燒著時爐膛深處有火光。", "空手點爐門可以把門打開或關上，門會保持原樣。", "時間到發出音效時取出才是成品，放太久會烤焦。", "空手取出完成品；潛行空手取出全部。"],
-    en_US: ["A 3×3×3 oven: needs a clear space.", "Click with fuel to stoke it; click with dough/batter to load (4 slots, molds come from your inventory).", "The door has a glass window: the bake rises as it cooks, turns golden when done and dark when burnt, and embers glow at the back while the oven burns.", "An empty hand on the door opens or closes it, and it stays as you leave it.", "Take it out when it chimes; leave it too long and it burns.", "Empty hand: take finished items. Sneak: take everything."]
+    zh_TW: ["3×3×3 大型烤箱，需要完整空地。", "手持燃料點擊加柴；手持材料放入（共 4 格，模具會自動從背包拿）。", "爐門有玻璃窗：裡面的東西烤的時候會慢慢膨起來，烤好變金黃，烤焦變黑；烤箱燒著時爐膛深處有火光。", "空手點爐門可以把門打開或關上，門會保持原樣。", "時間到發出音效時取出才是成品，放太久會烤焦。", "空手取出完成品；潛行空手取出全部。", "潛行手持一組麵團點擊：一次放滿所有空格。", "烤箱中間正下方放箱子、木桶或漏斗：烤到剛好的成品會連模具自動收進去，不會烤焦（放不下時留在爐裡）。"],
+    en_US: ["A 3×3×3 oven: needs a clear space.", "Click with fuel to stoke it; click with dough/batter to load (4 slots, molds come from your inventory).", "The door has a glass window: the bake rises as it cooks, turns golden when done and dark when burnt, and embers glow at the back while the oven burns.", "An empty hand on the door opens or closes it, and it stays as you leave it.", "Take it out when it chimes; leave it too long and it burns.", "Empty hand: take finished items. Sneak: take everything.", "Sneak with a stack of dough: fills every free slot at once.", "A chest, barrel or hopper under the middle of the oven takes each bake (with its mold) the moment it is perfect, so it never burns (if it doesn't fit, the bake stays in)."]
   },
   "kaleidoscope_baking:mixing_bowl": {
-    zh_TW: ["放入最多 9 種材料，用打蛋器攪拌。", "奶泡類配方改用奶泡器。", "空手取回最後一樣；潛行空手全部取回。"],
-    en_US: ["Add up to 9 ingredients and stir with a whisk.", "Frothing recipes use the milk frother instead.", "Empty hand takes the last ingredient back; sneak takes all."]
+    zh_TW: ["放入最多 9 種材料，用打蛋器攪拌。", "奶泡類配方改用奶泡器。", "空手取回最後一樣；潛行空手全部取回。", "潛行手持材料點擊：把整份配方需要的材料一次放進去；背包夠的話一次最多 4 份，產量跟著變多。想做特定配方時，先手動放一個代表性材料（例如可可）再潛行補齊。", "潛行手持打蛋器：剩下的攪拌次數連續做完。"],
+    en_US: ["Add up to 9 ingredients and stir with a whisk.", "Frothing recipes use the milk frother instead.", "Empty hand takes the last ingredient back; sneak takes all.", "Sneak with an ingredient: adds the whole recipe's set at once; with enough in your inventory, up to 4 sets and 4× the result. For a particular recipe, add one telling ingredient by hand first (e.g. cocoa), then sneak.", "Sneak with the whisk: does all remaining strokes in a row."]
   },
   "kaleidoscope_baking:proofing_basket": {
     zh_TW: ["放入麵團等它發酵（最多 16 個）。", "旁邊有火、點燃的爐子或烤箱會加倍；冰雪會減半。"],
