@@ -146,6 +146,9 @@ export function normalizeEspresso(raw) {
   s.water = Math.max(0, Math.min(ESPRESSO_WATER_MAX, Math.floor(Number(raw.water) || 0)));
   for (const f of ["coffee", "additive", "cup", "ready"]) if (typeof raw[f] === "string") s[f] = raw[f];
   s.progress = Math.max(0, Math.floor(Number(raw.progress) || 0));
+  // grounds left by drinks the machine served onto a mug rack by itself (handed over with the next empty-hand click)
+  const g = Math.max(0, Math.min(64, Math.floor(Number(raw.grounds) || 0)));
+  if (g) s.grounds = g;
   return s;
 }
 /** Which recipe would brew from the current coffee + additive (undefined = invalid combo). */

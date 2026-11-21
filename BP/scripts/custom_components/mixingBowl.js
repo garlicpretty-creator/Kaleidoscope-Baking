@@ -87,7 +87,7 @@ function strokeAll(block, player, toolId) {
 }
 
 /** Counts of every item in the player's inventory (held stack included). */
-function inventoryCounts(player) {
+export function inventoryCounts(player) {
   const m = new Map();
   let inv;
   try { inv = player.getComponent("minecraft:inventory")?.container; } catch {}
@@ -101,7 +101,7 @@ function inventoryCounts(player) {
 }
 
 /** Remove `n` of `id` from the inventory, the held slot last (so the stack in hand lasts longest). */
-function takeItems(player, id, n) {
+export function takeItems(player, id, n) {
   let inv;
   try { inv = player.getComponent("minecraft:inventory")?.container; } catch {}
   if (!inv) return;
@@ -120,10 +120,11 @@ function takeItems(player, id, n) {
   }
 }
 
-const maxStackOf = id => { try { return new ItemStack(id, 1).maxAmount || 64; } catch { return 64; } };
+export const maxStackOf = id => { try { return new ItemStack(id, 1).maxAmount || 64; } catch { return 64; } };
 
-/** Sneak + stack: the whole set (or several) at once. Returns true if anything went in. */
-function addFullSet(block, player, s, held) {
+/** Sneak + stack: the whole set (or several) at once. Returns true if anything went in.
+ *  `s` is a bowl state (api/mixingLogic.js); the stand mixer passes its own bowl and visual kind. */
+export function addFullSet(block, player, s, held, kind = KIND.bowl) {
   const plan = planFullSet(s, held.typeId, inventoryCounts(player), MAX_BATCH, maxStackOf);
   if (!plan) return false;
   const creative = isCreative(player);
@@ -140,7 +141,7 @@ function addFullSet(block, player, s, held) {
   // a fuller plop than a single ingredient, higher for each extra set
   sound(block.dimension, "random.pop", at, 0.6, 1.1 + 0.1 * plan.batch);
   sound(block.dimension, "block.composter.fill", at, 0.6, 0.9);
-  bump(block, KIND.bowl);
+  bump(block, kind);
   return true;
 }
 

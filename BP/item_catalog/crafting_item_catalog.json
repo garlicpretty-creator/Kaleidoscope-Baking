@@ -22,7 +22,10 @@
               "kaleidoscope_baking:cake_stand",
               "kaleidoscope_baking:tea_tray",
               "kaleidoscope_baking:bread_display",
-              "kaleidoscope_baking:pastry_case"
+              "kaleidoscope_baking:pastry_case",
+              "kaleidoscope_baking:stand_mixer",
+              "kaleidoscope_baking:cooling_rack",
+              "kaleidoscope_baking:mug_rack"
             ]
           },
           {

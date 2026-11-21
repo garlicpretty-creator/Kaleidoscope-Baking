@@ -24,6 +24,15 @@
   "kaleidoscope_baking:herb_planter": {
     "sound": "stone"
   },
+  "kaleidoscope_baking:stand_mixer": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:cooling_rack": {
+    "sound": "metal"
+  },
+  "kaleidoscope_baking:mug_rack": {
+    "sound": "wood"
+  },
   "kaleidoscope_baking:rosemary_bush": {
     "sound": "grass"
   },

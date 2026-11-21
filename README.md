@@ -18,7 +18,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 
 | 類別 | 數量 | 內容 |
 |------|------|------|
-| 站點 / 家具 | 12 | 烤箱（3×3×3）、攪拌盆、發酵籃、裱花台、咖啡機（紅石供電）、手沖架、雪克杯、香草盆栽、蛋糕架、三層點心架、麵包展示櫃、甜點櫥窗 |
+| 站點 / 家具 | 15 | 烤箱（3×3×3）、攪拌盆、手搖攪拌機、發酵籃、裱花台、咖啡機（紅石供電）、手沖架、雪克杯、涼架、杯架、香草盆栽、蛋糕架、三層點心架、麵包展示櫃、甜點櫥窗 |
 | 工具 | 19 | 打蛋器、奶泡器、擠花袋、擀麵棍、麵包刀、9 種模具、馬克杯、外帶杯、空罐子、奶油罐、生日蠟燭 |
 | 材料 | 98 | 麵團 / 麵糊、千層酥皮、6 色糖霜、果醬、醬料、咖啡豆（三焙度）、珍珠、茶湯底、鹹蛋黃、副產品（咖啡渣、果渣、麵包屑）… |
 | 植物 | 32 | 香草蘭、迷迭香、百里香、薰衣草、薄荷、肉桂樹、芝麻、甜菊、樹薯、咖啡樹、草莓、藍莓、覆盆子、檸檬樹、鳳梨 |
@@ -38,7 +38,7 @@ A Kaleidoscope series add-on introducing custom baking mechanics, new kitchenwar
 需要 Node.js 22+ 與 Python 3（含 Pillow）。
 
 ```sh
-npm test                           # 83 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
+npm test                           # 95 項測試：純邏輯 + 以模擬 @minecraft/server 實際執行所有方塊腳本
 python3 tools/validate.py          # 檢查 JSON、貼圖、語系、物品 ID、元件註冊、腳本語法、不顯示文字
 python3 tools/check_rp.py          # 實體 / 動畫 / 算圖控制器 / 粒子 / 動態貼圖互相對得上，腳本設定的實體屬性在範圍內
 python3 tools/art/check_refs.py    # 每個方塊的模型、貼圖、UV 都對得上

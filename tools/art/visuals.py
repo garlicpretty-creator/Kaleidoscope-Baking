@@ -2,7 +2,8 @@
 
 Same pattern as Cookery's millstone_visual. Scripts set four entity properties and the client animates:
   kind      1 bowl, 2 proofing basket, 3 decorating stand, 4 espresso machine, 5 pour-over stand, 6 drink shaker,
-            7 oven door (sits on the oven's hollow door block: swings open, what bakes shows through its window)
+            7 oven door (sits on the oven's hollow door block: swings open, what bakes shows through its window),
+            8 stand mixer (the beater spins in the bowl and the side crank turns while it mixes)
   fill      0..16 how much is in it (ingredients, layers, coffee level); 0 hides the contents
   tint      0..7  colour of the contents (TINTS)
   progress  0..1  proofing rise / brewing progress
@@ -17,7 +18,8 @@ import math
 from kit import Box, Painted, noise, painter, ramp
 
 NS = "kaleidoscope_baking"
-KINDS = {1: "bowl", 2: "proof", 3: "stand", 4: "espresso", 5: "pour", 6: "shaker", 7: "oven"}
+KINDS = {1: "bowl", 2: "proof", 3: "stand", 4: "espresso", 5: "pour", 6: "shaker", 7: "oven", 8: "mixer"}
+N_KINDS = max(KINDS) + 1
 TINTS = [(240, 214, 160), (110, 70, 45), (150, 190, 90), (240, 150, 170), (248, 214, 96), (250, 246, 236),
          (76, 44, 26), (200, 130, 50)]  # dough, chocolate, matcha, strawberry, egg, cream, coffee, caramel
 CLEAR = (0, 0, 0, 0)
@@ -135,6 +137,14 @@ def parts(kind):
                  Box(-4, 3.5, -5.75, 4, 8.5, -5.5, "glow", bone="door_glow")],
                 {"panel": door_panel, "brass": brass, "glow": glow}, {"door": (-6, 8, 9), "door_glow": (0, 6, -5.5)},
                 {})
+    if kind == "mixer":
+        # stand mixer (tools/art/stations.py): bowl centred at z = 1.5 under the head (bottom y = 11);
+        # the crank sits on the head's side and turns about the x axis
+        return ([Box(-1.5, 3.5, 0, 1.5, 7.5, 3, "wire", bone="beater"),
+                 Box(-0.5, 7.5, 1, 0.5, 11, 2, "steel", bone="beater"),
+                 Box(2.5, 12.5, -1.5, 3.5, 13.5, 2.5, "steel", bone="crank"),
+                 Box(3.5, 12.25, 1.5, 5, 13.75, 2.5, "handle", bone="crank")],
+                {"wire": wire, "steel": steel, "handle": handle}, {"beater": (0, 7, 1.5), "crank": (3, 13, -1)})
     if kind == "shaker":
         return ([Box(-6, 1, -4, 0, 8, 2, "steel", bone="shaker"), Box(-5, 8, -3, -1, 10, 1, "steel", bone="shaker"),
                  Box(-4, 10, -2, -2, 11, 0, "steel", bone="shaker")], {"steel": steel}, {"shaker": (-3, 1, -1)})
@@ -150,6 +160,7 @@ CONTENTS = {
     "pour": ("carafe", (-3, 1, -1, 3, 5, 5), (0, 1, 2)),
     "shaker": ("ice", (2, 7.5, 1, 4, 8, 3), (3, 7.5, 2)),
     "oven": ("tray", (-4, 3.25, -4, 4, 6.5, 3), (0, 3.25, -0.5)),  # the bake, on the floor of the hollow mouth
+    "mixer": ("mixer_batter", (-2.5, 3, -1, 2.5, 4, 4), (0, 3, 1.5)),
 }
 
 
@@ -194,6 +205,12 @@ ANIMATIONS = {
         "door_glow": {"scale": f"{P('lit')} ? 1 + math.sin(q.life_time * 400) * 0.06 : 0"},
         "tray": {"scale": [1, "0.55 + v.kb_prog * 0.45", 1]},  # the bake rises as it cooks
     },
+    "mixer": {
+        "beater": {"rotation": [0, f"{ACTIVE} ? q.life_time * 900 : 0", 0]},
+        "crank": {"rotation": [f"{ACTIVE} ? q.life_time * 360 : 0", 0, 0]},
+        "mixer_batter": {"position": [0, "v.kb_level * 0.25", 0], "rotation": [0, f"{ACTIVE} ? q.life_time * 240 : 0", 0],
+                         "scale": [1, "1 + v.kb_pop * 0.6", 1]},
+    },
     "shaker": {
         "shaker": {"rotation": [f"{ACTIVE} ? math.sin(q.life_time * 1500) * 14 : 0", 0, f"{ACTIVE} ? math.cos(q.life_time * 1500) * 14 : 0"],
                    "position": [0, f"{ACTIVE} ? math.abs(math.sin(q.life_time * 1500)) * 1.5 : 0", 0]},
@@ -226,7 +243,7 @@ def build(write_json, rp, bp):
 
     with_parts = [k for k, v in KINDS.items() if parts(v)]
     first = KINDS[with_parts[0]]
-    pick = [KINDS[i] if i in with_parts else first for i in range(8)]  # index = kind; unused slots reuse a valid entry
+    pick = [KINDS[i] if i in with_parts else first for i in range(N_KINDS)]  # index = kind; unused slots reuse a valid entry
     geo_arr = [f"Geometry.{k}" for k in pick]
     tex_arr = [f"Texture.{k}" for k in pick]
     write_json("RP/render_controllers/station_visual.render_controllers.json", {
@@ -236,7 +253,7 @@ def build(write_json, rp, bp):
                 "geometry": f"Array.geo[{P('kind')}]", "textures": [f"Array.tex[{P('kind')}]"],
                 "materials": [{"*": "Material.default"}]},
             f"controller.render.{NS}.contents": {
-                "arrays": {"geometries": {"Array.geo": [f"Geometry.{KINDS.get(i, 'bowl')}_c" for i in range(8)]},
+                "arrays": {"geometries": {"Array.geo": [f"Geometry.{KINDS.get(i, 'bowl')}_c" for i in range(N_KINDS)]},
                            "textures": {"Array.tint": [f"Texture.tint{i}" for i in range(len(TINTS))]}},
                 "geometry": f"Array.geo[{P('kind')}]", "textures": [f"Array.tint[{P('tint')}]"],
                 "materials": [{"*": "Material.default"}]}}})
@@ -267,7 +284,7 @@ def build(write_json, rp, bp):
     write_json("BP/entities/station_visual.json", {"format_version": "1.21.60", "minecraft:entity": {
         "description": {"identifier": f"{NS}:station_visual", "is_spawnable": False, "is_summonable": True,
                         "properties": {
-                            f"{NS}:kind": {"type": "int", "range": [0, 7], "default": 0, "client_sync": True},
+                            f"{NS}:kind": {"type": "int", "range": [0, N_KINDS - 1], "default": 0, "client_sync": True},
                             f"{NS}:fill": {"type": "int", "range": [0, 16], "default": 0, "client_sync": True},
                             f"{NS}:tint": {"type": "int", "range": [0, len(TINTS) - 1], "default": 0, "client_sync": True},
                             f"{NS}:progress": {"type": "float", "range": [0.0, 1.0], "default": 0.0, "client_sync": True},

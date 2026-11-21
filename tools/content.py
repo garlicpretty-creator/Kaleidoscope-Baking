@@ -457,3 +457,22 @@ CRAFTING += [
 CRAFTING_SHAPELESS = [
     ("butter_jar", [f"{NS}:empty_jar", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter", f"{NS}:butter"], 1),
 ]
+
+# ===========================================================================
+# Convenience update, phase 3: helper stations (models in tools/art/stations.py)
+# ===========================================================================
+# stand mixer: the mixing bowl's recipes, every stroke by itself (crank or a redstone pulse)
+station("stand_mixer", "手搖攪拌機", "Stand Mixer", ("machine", C["iron"], C["pink"]),
+        [([-5, 0, -6], [10, 2, 12]), ([-2, 2, -6], [4, 9, 4]), ([-2.5, 11, -6.5], [5, 4, 10.5])], C["iron"], 16, sound="metal")
+# cooling rack: next to the oven it catches perfect bakes and shows up to four of them
+station("cooling_rack", "涼架", "Cooling Rack", ("tray", C["iron"], C["crust"]),
+        [([-7, 0, -7], [14, 5.5, 14])], C["iron"], sound="metal")
+# mug rack: next to the espresso machine it hands over mugs and takes the drinks back (6 mugs)
+station("mug_rack", "杯架", "Mug Rack", ("stand", C["tan"], C["white"]),
+        [([-5, 0, -5], [10, 1, 10]), ([-1, 1, -1], [2, 13, 2])], C["tan"])
+CRAFTING += [
+    # Baking items in every grid, so none of these can match a vanilla or sister-pack recipe
+    ("stand_mixer", ["II ", "IW ", "IBI"], {"I": "minecraft:iron_ingot", "W": f"{NS}:whisk", "B": f"{NS}:mixing_bowl"}, 1),
+    ("cooling_rack", ["BBB", "STS"], {"B": "minecraft:iron_bars", "S": "minecraft:stick", "T": f"{NS}:baking_tray"}, 1),
+    ("mug_rack", [" S ", "SMS", "PPP"], {"S": "minecraft:stick", "M": f"{NS}:coffee_mug", "P": "minecraft:oak_slab"}, 1),
+]

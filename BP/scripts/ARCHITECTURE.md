@@ -8,10 +8,10 @@ identifiers; addons register into hosts through Script Events and item tags.
 ## Folders
 
 - `api/` — Public Baking API and the pure rules behind it. `registry.js`, `ingredients.js`,
-  `matcher.js`, `ovenLogic.js`, `mixingLogic.js`, `stationLogic.js`, `effects.js`, `chunks.js`,
+  `matcher.js`, `ovenLogic.js`, `mixingLogic.js`, `stationLogic.js`, `rackLogic.js`, `effects.js`, `chunks.js`,
   `compat.js` are **pure** (no `@minecraft/*` imports) and unit-tested. `bus.js` is the transport.
 - `custom_components/` — Block components: oven (3×3×3), mixing bowl, proofing basket,
-  decorating stand, espresso machine, pour-over stand, drink shaker, placeable desserts,
+  decorating stand, espresso machine, pour-over stand, drink shaker, stand mixer, cooling rack, mug rack, placeable desserts,
   plants / trees / bark / herb planter.
 - `events/` — Eating & drinking (caffeine, effects, afternoon tea), seeds from grass.
 - `data/` — Built-in recipes, fuels, effects, ingredient tag aliases.

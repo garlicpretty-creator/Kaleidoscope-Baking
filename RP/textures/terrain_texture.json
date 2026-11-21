@@ -43,6 +43,15 @@
     "kb_herb_planter": {
       "textures": "textures/blocks/kb_herb_planter"
     },
+    "kb_stand_mixer": {
+      "textures": "textures/blocks/kb_stand_mixer"
+    },
+    "kb_cooling_rack": {
+      "textures": "textures/blocks/kb_cooling_rack"
+    },
+    "kb_mug_rack": {
+      "textures": "textures/blocks/kb_mug_rack"
+    },
     "kb_rosemary_bush_stage_0": {
       "textures": "textures/blocks/kb_rosemary_bush_stage_0"
     },

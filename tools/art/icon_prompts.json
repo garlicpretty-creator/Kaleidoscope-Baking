@@ -965,6 +965,18 @@
       "zh": "甜點櫥窗",
       "prompt": "glass dessert display case with cakes inside"
     },
+    "stand_mixer": {
+      "zh": "手搖攪拌機",
+      "prompt": "pastel pink retro stand mixer seen from the side at an angle, tilt head on a pillar, steel mixing bowl on the base, small wooden crank handle on the side"
+    },
+    "cooling_rack": {
+      "zh": "涼架",
+      "prompt": "isometric baking cooling rack: a flat square frame of thin shiny silver wires crossing in an open grid with see-through gaps, standing on four short metal legs, empty"
+    },
+    "mug_rack": {
+      "zh": "杯架",
+      "prompt": "wooden mug tree stand, a round post on a square dark wood base with short pegs sticking out on all sides, no mugs"
+    },
     "pineapple": {
       "zh": "鳳梨",
       "from_harvest": true

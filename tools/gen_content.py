@@ -57,7 +57,7 @@ def w(path, obj):
 # ---------------------------------------------------------------------------
 # zh_TW -> zh_CN (characters used by this pack's strings)
 # ---------------------------------------------------------------------------
-_T2S = ("著着 並并 來来 側侧 儲储 內内 別别 囪囱 圓圆 執执 寬宽 導导 張张 強强 採采 擺摆 攪搅 敗败 東东 樣样 樺桦 檢检 殼壳 減减 湯汤 潛潜 澤泽 灘滩 無无 煙烟 爐炉 牆墙 產产 當当 疊叠 穩稳 編编 緩缓 繪绘 莖茎 術术 覽览 諾诺 貼贴 資资 輯辑 階阶 頂顶 語语 擴扩 廚厨 麵面 餅饼 乾干 鬆松 檸柠 藍蓝 綠绿 塊块 漿浆 醬酱 盤盘 機机 壺壶 鍋锅 籃篮 臺台 鯛鲷 魚鱼 燒烧 鹹咸 鳳凤 蘋苹 樹树 葉叶 濃浓 縮缩 鐵铁 瑪玛 沖冲 淺浅 實实 熱热 帶带 馬马 鴛鸳 鴦鸯 紅红 烏乌 龍龙 蓋盖 頌颂 捲卷 蘿萝 貝贝 發发 黃黄 國国 條条 壓压 團团 鮮鲜 莢荚 澱淀 層层 蠟蜡 燭烛 鮭鲑 風风 濾滤 掛挂 搖摇 飲饮 種种 叢丛 剝剥 製制 譜谱 時时 間间 滿满 進进 裡里 後后 還还 沒没 這这 個个 層层 開开 點点 擊击 繼继 續续 飾饰 該该 給给 讓让 慢慢 會会 溫温 較较 較较 處处 據据 單单 號号 歡欢 應应 對对 類类 雜杂 純纯 聖圣 誕诞 慶庆 節节 夠够 嗎吗 兩两 錯错 誤误 須须 號号 罐罐 腦脑 錄录 戶户 給给 驗验 選选 擇择 設设 定定 換换 動动 轉转 為为 準准 備备 時时 經经 過过 遠远 邊边 從从 與与 隻只 嚴严 稱称 計计 處处 憶忆 歷历 異异 斷断 變变 現现 寫写 聽听 說说 讀读 書书 檔档 輸输 關关 閉闭 啟启 舊旧 識识 認认 價价 錢钱 買买 賣卖 費费 員员 戲戏 圖图 畫画 傳传 統统 啡啡 鬆松 糰团 餡馅 籽籽 薑姜 蔥葱 麥麦 穀谷 釀酿 醃腌 滷卤 烤烤 炸炸 罌罂 噴喷 灑洒 汙污 淨净 潔洁 衛卫 歸归 擁拥 擠挤 灣湾 銀银 鍵键 錶表 鐘钟 鏡镜 閃闪 陽阳 陰阴 雲云 電电 響响 頁页 項项 順顺 預预 領领 頭头 題题 顏颜 願愿 類类 顯显 飯饭 飽饱 飼饲 館馆 餘余 驚惊 體体 髮发 鬥斗 鳥鸟 鴨鸭 鵝鹅 鷹鹰 麗丽 黴霉 點点 齊齐 齒齿 龜龟 蟲虫 蝦虾 蠔蚝 補补 襪袜 裝装 製制 複复 視视 覺觉 觀观 角角 訂订 計计 訊讯 記记 訪访 許许 診诊 註注 詞词 試试 詩诗 話话 該该 誠诚 誰谁 課课 調调 談谈 請请 論论 諸诸 謝谢 證证 識识 護护 讀读 變变 讓让 豐丰 貓猫 貨货 質质 購购 賽赛 趕赶 趨趋 跡迹 踐践 蹤踪 車车 軟软 輕轻 載载 較较 輔辅 輪轮 辦办 這这 連连 週周 運运 過过 達达 違违 遞递 遠远 適适 遲迟 遷迁 選选 遺遗 還还 邊边 郵邮 鄉乡 醫医 釋释 針针 鈕钮 銷销 鋼钢 錄录 鍵键 鎖锁 長长 門门 閒闲 開开 間间 閱阅 闊阔 隊队 陳陈 際际 險险 隨随 隱隐 雖虽 雙双 雞鸡 離离 難难 雪雪 電电 靜静 韓韩 頓顿 頻频 額额 風风 飛飞 養养 驅驱 騎骑 驗验 魯鲁 鮮鲜 鯨鲸 麼么 黨党 鬥斗 歲岁 盞盏 碗碗 紙纸 糧粮 終终 結结 給给 絲丝 經经 綿绵 緊紧 線线 練练 組组 縣县 總总 織织 繞绕 纖纤 罰罚 羅罗 聞闻 聯联 聲声 職职 腳脚 膠胶 臉脸 興兴 舉举 艙舱 艱艰 藥药 蘭兰 處处 號号 蟻蚁 衝冲 補补 裡里 覆覆 見见 規规 親亲")
+_T2S = ("著着 並并 來来 側侧 儲储 內内 別别 囪囱 圓圆 執执 寬宽 導导 張张 強强 採采 擺摆 攪搅 敗败 東东 樣样 樺桦 檢检 殼壳 減减 湯汤 潛潜 澤泽 灘滩 無无 煙烟 爐炉 牆墙 產产 當当 疊叠 穩稳 編编 緩缓 繪绘 莖茎 術术 覽览 諾诺 貼贴 資资 輯辑 階阶 頂顶 語语 擴扩 廚厨 麵面 餅饼 乾干 鬆松 檸柠 藍蓝 綠绿 塊块 漿浆 醬酱 盤盘 機机 壺壶 鍋锅 籃篮 臺台 鯛鲷 魚鱼 燒烧 鹹咸 鳳凤 蘋苹 樹树 葉叶 濃浓 縮缩 鐵铁 瑪玛 沖冲 淺浅 實实 熱热 帶带 馬马 鴛鸳 鴦鸯 紅红 烏乌 龍龙 蓋盖 頌颂 捲卷 蘿萝 貝贝 發发 黃黄 國国 條条 壓压 團团 鮮鲜 莢荚 澱淀 層层 蠟蜡 燭烛 鮭鲑 風风 濾滤 掛挂 搖摇 飲饮 種种 叢丛 剝剥 製制 譜谱 時时 間间 滿满 進进 裡里 後后 還还 沒没 這这 個个 層层 開开 點点 擊击 繼继 續续 飾饰 該该 給给 讓让 慢慢 會会 溫温 較较 較较 處处 據据 單单 號号 歡欢 應应 對对 類类 雜杂 純纯 聖圣 誕诞 慶庆 節节 夠够 嗎吗 兩两 錯错 誤误 須须 號号 罐罐 腦脑 錄录 戶户 給给 驗验 選选 擇择 設设 定定 換换 動动 轉转 為为 準准 備备 時时 經经 過过 遠远 邊边 從从 與与 隻只 嚴严 稱称 計计 處处 憶忆 歷历 異异 斷断 變变 現现 寫写 聽听 說说 讀读 書书 檔档 輸输 關关 閉闭 啟启 舊旧 識识 認认 價价 錢钱 買买 賣卖 費费 員员 戲戏 圖图 畫画 傳传 統统 啡啡 鬆松 糰团 餡馅 籽籽 薑姜 蔥葱 麥麦 穀谷 釀酿 醃腌 滷卤 烤烤 炸炸 罌罂 噴喷 灑洒 汙污 淨净 潔洁 衛卫 歸归 擁拥 擠挤 灣湾 銀银 鍵键 錶表 鐘钟 鏡镜 閃闪 陽阳 陰阴 雲云 電电 響响 頁页 項项 順顺 預预 領领 頭头 題题 顏颜 願愿 類类 顯显 飯饭 飽饱 飼饲 館馆 餘余 驚惊 體体 髮发 鬥斗 鳥鸟 鴨鸭 鵝鹅 鷹鹰 麗丽 黴霉 點点 齊齐 齒齿 龜龟 蟲虫 蝦虾 蠔蚝 補补 襪袜 裝装 製制 複复 視视 覺觉 觀观 角角 訂订 計计 訊讯 記记 訪访 許许 診诊 註注 詞词 試试 詩诗 話话 該该 誠诚 誰谁 課课 調调 談谈 請请 論论 諸诸 謝谢 證证 識识 護护 讀读 變变 讓让 豐丰 貓猫 貨货 質质 購购 賽赛 趕赶 趨趋 跡迹 踐践 蹤踪 車车 軟软 輕轻 載载 較较 輔辅 輪轮 辦办 這这 連连 週周 運运 過过 達达 違违 遞递 遠远 適适 遲迟 遷迁 選选 遺遗 還还 邊边 郵邮 鄉乡 醫医 釋释 針针 鈕钮 銷销 鋼钢 錄录 鍵键 鎖锁 長长 門门 閒闲 開开 間间 閱阅 闊阔 隊队 陳陈 際际 險险 隨随 隱隐 雖虽 雙双 雞鸡 離离 難难 雪雪 電电 靜静 韓韩 頓顿 頻频 額额 風风 飛飞 養养 驅驱 騎骑 驗验 魯鲁 鮮鲜 鯨鲸 麼么 黨党 鬥斗 歲岁 盞盏 碗碗 紙纸 糧粮 終终 結结 給给 絲丝 經经 綿绵 緊紧 線线 練练 組组 縣县 總总 織织 繞绕 纖纤 罰罚 羅罗 聞闻 聯联 聲声 職职 腳脚 膠胶 臉脸 興兴 舉举 艙舱 艱艰 藥药 蘭兰 處处 號号 蟻蚁 衝冲 補补 裡里 覆覆 見见 規规 親亲 涼凉")
 T2S = {}
 for pair in _T2S.split():
     if len(pair) == 2:
@@ -964,23 +964,26 @@ name(f"tile.{kb('drink_cups')}.name", "手搖杯", "Hand-Shaken Drinks")
 sounds[kb("drink_cups")] = "glass"
 
 # --- Item display entity (1.1): shows one item on display furniture (Cookery millstone pattern) ---
-w(f"BP/entities/{NS}_display.json", {"format_version": "1.16.0", "minecraft:entity": {
-    "description": {"identifier": kb("display"), "is_spawnable": False, "is_summonable": True, "is_experimental": False},
-    "component_groups": {f"{NS}:despawn": {"minecraft:instant_despawn": {"remove_child_entities": False}}},
-    "components": {
-        "minecraft:damage_sensor": {"triggers": {"cause": "all", "deals_damage": False}},
-        "minecraft:persistent": {}, "minecraft:physics": {"has_collision": False, "has_gravity": False},
-        "minecraft:scale": 0, "minecraft:type_family": {"family": ["kb_display"]},
-        "minecraft:health": {"value": 1, "max": 1, "min": 1}, "minecraft:collision_box": {"width": 0, "height": 0},
-        "minecraft:body_rotation_axis_aligned": {}, "minecraft:body_rotation_blocked": {},
-        "minecraft:knockback_resistance": {"value": 1}, "minecraft:movement": {"value": 0},
-        "minecraft:pushable": {"is_pushable": False, "is_pushable_by_piston": False}},
-    "events": {f"{NS}:despawn": {"add": {"component_groups": [f"{NS}:despawn"]}}}}})
-w(f"RP/entity/{NS}_display.entity.json", {"format_version": "1.10.0", "minecraft:client_entity": {"description": {
-    "identifier": kb("display"), "materials": {"default": "zombie"}, "textures": {"default": "textures/entity/kb_display"},
-    "geometry": {"default": f"geometry.{NS}.display"}, "animations": {"pose": f"animation.{NS}.display.pose"},
-    "scripts": {"scale": "0.8", "animate": ["pose"]}, "render_controllers": ["controller.render.default"],
-    "enable_attachables": False}}})
+# `display_small` (phase 3) is the same entity at a smaller scale, for racks that show many items (mug rack).
+for did, scale in (("display", "0.8"), ("display_small", "0.45")):
+    w(f"BP/entities/{NS}_{did}.json", {"format_version": "1.16.0", "minecraft:entity": {
+        "description": {"identifier": kb(did), "is_spawnable": False, "is_summonable": True, "is_experimental": False},
+        "component_groups": {f"{NS}:despawn": {"minecraft:instant_despawn": {"remove_child_entities": False}}},
+        "components": {
+            "minecraft:damage_sensor": {"triggers": {"cause": "all", "deals_damage": False}},
+            "minecraft:persistent": {}, "minecraft:physics": {"has_collision": False, "has_gravity": False},
+            "minecraft:scale": 0, "minecraft:type_family": {"family": ["kb_display"]},
+            "minecraft:health": {"value": 1, "max": 1, "min": 1}, "minecraft:collision_box": {"width": 0, "height": 0},
+            "minecraft:body_rotation_axis_aligned": {}, "minecraft:body_rotation_blocked": {},
+            "minecraft:knockback_resistance": {"value": 1}, "minecraft:movement": {"value": 0},
+            "minecraft:pushable": {"is_pushable": False, "is_pushable_by_piston": False}},
+        "events": {f"{NS}:despawn": {"add": {"component_groups": [f"{NS}:despawn"]}}}}})
+    w(f"RP/entity/{NS}_{did}.entity.json", {"format_version": "1.10.0", "minecraft:client_entity": {"description": {
+        "identifier": kb(did), "materials": {"default": "zombie"}, "textures": {"default": "textures/entity/kb_display"},
+        "geometry": {"default": f"geometry.{NS}.display"}, "animations": {"pose": f"animation.{NS}.display.pose"},
+        "scripts": {"scale": scale, "animate": ["pose"]}, "render_controllers": ["controller.render.default"],
+        "enable_attachables": False}}})
+    name(f"entity.{kb(did)}.name", "展示", "Display")
 w(f"RP/models/entity/{NS}_display.geo.json", {"format_version": "1.16.0", "minecraft:geometry": [{
     "description": {"identifier": f"geometry.{NS}.display", "texture_width": 16, "texture_height": 16,
                     "visible_bounds_width": 2, "visible_bounds_height": 2, "visible_bounds_offset": [0, 0.5, 0]},
@@ -991,7 +994,6 @@ ent_tex = os.path.join(RP, "textures", "entity", "kb_display.png")
 if not os.path.exists(ent_tex):
     os.makedirs(os.path.dirname(ent_tex), exist_ok=True)
     Image.new("RGBA", (16, 16), T).save(ent_tex)
-name(f"entity.{kb('display')}.name", "展示", "Display")
 
 # --- Crafting ---------------------------------------------------------------
 for rid, pattern, key, count in C.CRAFTING:

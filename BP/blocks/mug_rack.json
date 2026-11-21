@@ -1,0 +1,50 @@
+{
+  "format_version": "1.26.1",
+  "minecraft:block": {
+    "description": {
+      "identifier": "kaleidoscope_baking:mug_rack",
+      "menu_category": {
+        "category": "none"
+      }
+    },
+    "components": {
+      "minecraft:geometry": "geometry.kaleidoscope_baking.mug_rack",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "kb_mug_rack",
+          "render_method": "alpha_test_single_sided"
+        }
+      },
+      "minecraft:collision_box": {
+        "origin": [
+          -5,
+          0,
+          -5
+        ],
+        "size": [
+          10,
+          15,
+          10
+        ]
+      },
+      "minecraft:selection_box": {
+        "origin": [
+          -5,
+          0,
+          -5
+        ],
+        "size": [
+          10,
+          15,
+          10
+        ]
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 1.0
+      },
+      "minecraft:light_dampening": 0,
+      "minecraft:map_color": "#D2AA6E",
+      "kaleidoscope_baking:mug_rack": {}
+    }
+  }
+}

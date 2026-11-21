@@ -7,7 +7,7 @@ import { MolangVariableMap, system } from "@minecraft/server";
 
 export const VISUAL_ID = "kaleidoscope_baking:station_visual";
 const NS = "kaleidoscope_baking";
-export const KIND = Object.freeze({ bowl: 1, proof: 2, stand: 3, espresso: 4, pour: 5, shaker: 6, oven: 7 });
+export const KIND = Object.freeze({ bowl: 1, proof: 2, stand: 3, espresso: 4, pour: 5, shaker: 6, oven: 7, mixer: 8 });
 // Entity yaw for a block facing (model front is south / +z).
 const YAW = { south: 0, west: 90, north: 180, east: -90 };
 

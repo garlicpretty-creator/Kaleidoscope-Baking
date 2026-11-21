@@ -45,6 +45,9 @@
 | `textures/blocks/kb_pour_over_stand.png` | 手沖架 | `RP/models/blocks/pour_over_stand.geo.json` |
 | `textures/blocks/kb_drink_shaker.png` | 雪克杯 | `RP/models/blocks/drink_shaker.geo.json` |
 | `textures/blocks/kb_herb_planter.png` | 香草盆栽 | `RP/models/blocks/herb_planter.geo.json` |
+| `textures/blocks/kb_stand_mixer.png` | 手搖攪拌機 | `RP/models/blocks/stand_mixer.geo.json` |
+| `textures/blocks/kb_cooling_rack.png` | 涼架 | `RP/models/blocks/cooling_rack.geo.json` |
+| `textures/blocks/kb_mug_rack.png` | 杯架 | `RP/models/blocks/mug_rack.geo.json` |
 
 ## 作物 / 灌木（`tools/art/plants.py`；灌木為交叉模型，一年生作物為 # 字模型）
 
@@ -137,6 +140,9 @@
 | `kb_tea_tray.png` | 三層點心架 |
 | `kb_bread_display.png` | 麵包展示櫃 |
 | `kb_pastry_case.png` | 甜點櫥窗 |
+| `kb_stand_mixer.png` | 手搖攪拌機 |
+| `kb_cooling_rack.png` | 涼架 |
+| `kb_mug_rack.png` | 杯架 |
 
 ### 烘焙工具
 

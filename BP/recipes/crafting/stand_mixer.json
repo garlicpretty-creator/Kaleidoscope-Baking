@@ -1,0 +1,39 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:stand_mixer"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "II ",
+      "IW ",
+      "IBI"
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:iron_ingot"
+      },
+      "W": {
+        "item": "kaleidoscope_baking:whisk"
+      },
+      "B": {
+        "item": "kaleidoscope_baking:mixing_bowl"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:stand_mixer",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "kaleidoscope_baking:whisk"
+      }
+    ]
+  }
+}

@@ -123,6 +123,18 @@ const HELP = {
   "kaleidoscope_baking:herb_planter": {
     zh_TW: ["種下香草插枝或草莓，長在室內也可以。"], en_US: ["Plant herb cuttings or strawberries indoors."]
   },
+  "kaleidoscope_baking:stand_mixer": {
+    zh_TW: ["做攪拌盆的工作，不用自己打：材料放法和攪拌盆一樣（潛行手持一疊可一次放入整套，最多 4 份）。", "材料湊成配方後空手點擊轉動搖把，或給一個紅石脈衝，攪拌機會自己打完所有下數（打蛋器與奶泡器的配方都能做）。", "成品留在盆裡，空手取出；下方有箱子、木桶或漏斗時直接放進去。", "空手取回最後一樣材料；潛行空手全部取回。"],
+    en_US: ["Does the mixing bowl's job without the whisking: load it like the bowl (sneak with a stack for whole sets, up to 4).", "Once the mix makes something, click with an empty hand to turn the crank, or give it a redstone pulse: it runs every stroke by itself (whisk and frother recipes).", "The result waits in the bowl for an empty hand, or drops into a chest, barrel or hopper below.", "Empty hand takes the last ingredient back; sneak takes all."]
+  },
+  "kaleidoscope_baking:cooling_rack": {
+    zh_TW: ["放在烤箱中間正下方，或烤箱正面（火口或爐門前），烤好的成品會自己移到架上，最多 4 份，模具一起。", "烤箱正下方放箱子時以箱子優先。", "剛出爐的會冒一陣子熱氣。", "空手取下最早的一份；潛行空手全部取下。"],
+    en_US: ["Under the middle of the oven, or in front of it (before the firebox or the door), perfect bakes move onto the rack by themselves, up to 4, molds included.", "A chest under the oven still comes first.", "Fresh bakes steam for a while.", "Empty hand takes the oldest bake; sneak takes them all."]
+  },
+  "kaleidoscope_baking:mug_rack": {
+    zh_TW: ["掛最多 6 個馬克杯或杯裝咖啡（潛行一次掛滿）。", "放在咖啡機旁邊：咖啡煮好時咖啡機會從架上拿空杯，把咖啡掛回原位；咖啡機下方有箱子時咖啡和咖啡渣放進箱子。", "咖啡機上方放箱子時，會自己拿水桶（空桶放回）和咖啡粉。", "空手先取咖啡，沒有咖啡時取空杯；潛行空手全部取下。"],
+    en_US: ["Holds up to 6 Coffee Mugs or mug coffees (sneak to fill it).", "Beside the espresso machine: a finished coffee takes an empty mug from the rack and hangs back in its place; with a chest under the machine, the coffee and grounds go in there.", "A chest on top of the machine feeds it water buckets (the empty bucket goes back) and ground coffee.", "Empty hand takes a coffee first, else an empty mug; sneak takes everything."]
+  },
   "kaleidoscope_baking:pineapple": {
     zh_TW: ["野生於熱帶草原、海灘；種在耕地上。", "安裝森羅物語：豐收時，以豐收的鳳梨為主。"],
     en_US: ["Grows wild in savannas and on beaches; plant on farmland.", "With Kaleidoscope Harvest installed, Harvest's pineapple leads."]

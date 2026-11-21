@@ -22,6 +22,8 @@ import { barkComponent, herbPlanterComponent, plantComponent, treeComponent } fr
 import {
   breadDisplayComponent, cakeStandComponent, drinkCupsComponent, pastryCaseComponent, teaTrayComponent
 } from "./custom_components/furniture.js";
+import { standMixerComponent } from "./custom_components/standMixer.js";
+import { coolingRackComponent, mugRackComponent } from "./custom_components/racks.js";
 
 export const BLOCK_COMPONENTS = Object.freeze({
   "kaleidoscope_baking:oven": ovenComponent,
@@ -42,7 +44,11 @@ export const BLOCK_COMPONENTS = Object.freeze({
   "kaleidoscope_baking:tea_tray": teaTrayComponent,
   "kaleidoscope_baking:bread_display": breadDisplayComponent,
   "kaleidoscope_baking:pastry_case": pastryCaseComponent,
-  "kaleidoscope_baking:drink_cups": drinkCupsComponent
+  "kaleidoscope_baking:drink_cups": drinkCupsComponent,
+  // convenience update, phase 3
+  "kaleidoscope_baking:stand_mixer": standMixerComponent,
+  "kaleidoscope_baking:cooling_rack": coolingRackComponent,
+  "kaleidoscope_baking:mug_rack": mugRackComponent
 });
 
 system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {

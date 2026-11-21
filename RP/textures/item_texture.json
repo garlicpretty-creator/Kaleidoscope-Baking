@@ -730,6 +730,15 @@
     },
     "kb_pastry_case": {
       "textures": "textures/items/kb_pastry_case"
+    },
+    "kb_stand_mixer": {
+      "textures": "textures/items/kb_stand_mixer"
+    },
+    "kb_cooling_rack": {
+      "textures": "textures/items/kb_cooling_rack"
+    },
+    "kb_mug_rack": {
+      "textures": "textures/items/kb_mug_rack"
     }
   }
 }

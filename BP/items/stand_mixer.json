@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.60",
+  "minecraft:item": {
+    "description": {
+      "identifier": "kaleidoscope_baking:stand_mixer",
+      "menu_category": {
+        "category": "equipment",
+        "group": "kaleidoscope_baking:itemGroup.name.stations"
+      }
+    },
+    "components": {
+      "minecraft:display_name": {
+        "value": "item.kaleidoscope_baking:stand_mixer.name"
+      },
+      "minecraft:icon": "kb_stand_mixer",
+      "minecraft:max_stack_size": 16,
+      "minecraft:block_placer": {
+        "block": "kaleidoscope_baking:stand_mixer",
+        "replace_block_item": true
+      }
+    }
+  }
+}

@@ -122,6 +122,42 @@
         }
       }
     },
+    "animation.kaleidoscope_baking.visual.mixer": {
+      "loop": true,
+      "bones": {
+        "beater": {
+          "rotation": [
+            0,
+            "q.property('kaleidoscope_baking:active') ? q.life_time * 900 : 0",
+            0
+          ]
+        },
+        "crank": {
+          "rotation": [
+            "q.property('kaleidoscope_baking:active') ? q.life_time * 360 : 0",
+            0,
+            0
+          ]
+        },
+        "mixer_batter": {
+          "position": [
+            0,
+            "v.kb_level * 0.25",
+            0
+          ],
+          "rotation": [
+            0,
+            "q.property('kaleidoscope_baking:active') ? q.life_time * 240 : 0",
+            0
+          ],
+          "scale": [
+            1,
+            "1 + v.kb_pop * 0.6",
+            1
+          ]
+        }
+      }
+    },
     "animation.kaleidoscope_baking.visual.shaker": {
       "loop": true,
       "bones": {

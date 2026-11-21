@@ -24,6 +24,8 @@
 // only on the existing 1 s oven tick and only when a slot has just turned perfect (or is
 // still perfect): no scans. Bedrock hoppers cannot push into custom blocks, so loading stays
 // by hand.
+// Cooling rack (phase 3): with no container below, a cooling rack directly below the controller or in
+// front of the oven (before the firebox or the door) takes the bake instead, up to 4, shown on the rack.
 //
 // ## State lives in a world dynamic property per oven (Baking-owned; not shared across
 // packs). One shared 1-second interval advances every known oven whose chunk is loaded;
@@ -31,7 +33,7 @@
 // ============================================================================
 import { BlockPermutation, system, world } from "@minecraft/server";
 import {
-  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, LIT_STATE, OVEN_ID, partFromPermutation, partStates, controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
+  CHIMNEY_PART, CONTROLLER_PART, FACING_STATE, FACINGS, FRONT, LIT_STATE, OVEN_ID, partFromPermutation, partStates, controllerFrom, doorOutside, doorPart, facingToward, fireboxPart, footprint, partOffset
 } from "../utils/ovenGeometry.js";
 import {
   MAX_FUEL_TICKS, emptyOvenState, freeSlot, isLit, normalizeOvenState, percent, phaseOf, slotYield, tickOven
@@ -42,6 +44,7 @@ import {
   refuse, consumeHeld, containerOf, giveItems, heldItem, insertAll, isCreative, locKey, onWorldReady, parseLocKey, particle, readJson, safeBlock, sound, spawnItems, takeOneFromInventory, writeJson
 } from "../utils/runtime.js";
 import { KIND, holdMotion, playMotion, removeVisual, showContents, steam, tintOf } from "../utils/visuals.js";
+import { rackAcceptBake } from "./racks.js";
 
 const PREFIX = "kb_oven";
 const INDEX_KEY = "kb_oven_index";
@@ -223,18 +226,25 @@ function loadAll(player, dimension, c, s, held, recipe) {
   return n;
 }
 
-/** Perfect bakes go straight into a container under the controller. Returns true if any did. */
-function ejectPerfect(dimension, c, s) {
+/** Where a cooling rack may stand: under the controller, or in front of the oven at the firebox or the door. */
+export function rackSpots(c, facing) {
+  const f = FRONT[facing] ?? FRONT.south;
+  return [{ x: c.x, y: c.y - 1, z: c.z }, { x: c.x + f.x * 2, y: c.y, z: c.z + f.z * 2 }, { x: c.x + f.x * 2, y: c.y + 1, z: c.z + f.z * 2 }];
+}
+
+/** Perfect bakes go straight into a container under the controller, or onto a cooling rack. True if any did. */
+function ejectPerfect(dimension, c, s, facing) {
   const ready = s.slots.some(slot => slot && phaseOf(slot, getOvenRecipeById(slot.recipe)) === "perfect");
   if (!ready) return false;
   const container = containerOf(safeBlock(dimension, { x: c.x, y: c.y - 1, z: c.z }));
-  if (!container) return false;
+  const racks = container ? [] : rackSpots(c, facing);
   let moved = false;
   s.slots.forEach((slot, i) => {
     if (!slot) return;
     const recipe = getOvenRecipeById(slot.recipe);
     if (phaseOf(slot, recipe) !== "perfect") return;
-    if (!insertAll(container, slotYield(slot, recipe))) return;
+    const out = slotYield(slot, recipe);
+    if (container ? !insertAll(container, out) : !racks.some(p => rackAcceptBake(dimension, p, out))) return;
     s.slots[i] = null;
     moved = true;
   });
@@ -315,7 +325,7 @@ function tickAll() {
     const s = loadState(key, facing);
     if (!s) continue;
     const res = tickOven(s, TICK_INTERVAL, getOvenRecipeById);
-    const ejected = ejectPerfect(dimension, o.loc, s);
+    const ejected = ejectPerfect(dimension, o.loc, s, facing);
     if (res.changed || ejected) saveState(key, s);
     if (ejected) {
       res.lit = isLit(s, getOvenRecipeById);

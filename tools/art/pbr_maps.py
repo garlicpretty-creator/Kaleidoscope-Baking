@@ -34,6 +34,8 @@ EMISSIVE = re.compile(r"firebox_lit|visual_oven")   # these glow: emissive follo
 
 # name pattern -> (metalness, roughness, relief). First match wins; relief scales the normal map.
 MATERIALS = [
+    (r"mug_rack", (0, 220, 1.1)),                                                   # oak mug tree: rough wood
+    (r"stand_mixer|cooling_rack", (170, 110, 0.9)),                                 # enamel-and-steel mixer, wire rack
     (r"espresso_machine|whisk|frother|knife|tray|mold|pan|shaker|scale|steel|tin", (170, 110, 0.9)),   # steel and tin
     (r"drink_|mug|cup|latte|espresso|americano|cappuccino|mocha|macchiato|pour_over|tea|syrup|sauce|jam|caramel|honey|milk|cream",
      (0, 128, 0.8)),                                                                # glazed ware, liquids, glossy things

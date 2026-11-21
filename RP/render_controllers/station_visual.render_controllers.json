@@ -12,7 +12,8 @@
             "Geometry.espresso",
             "Geometry.pour",
             "Geometry.shaker",
-            "Geometry.oven"
+            "Geometry.oven",
+            "Geometry.mixer"
           ]
         },
         "textures": {
@@ -24,7 +25,8 @@
             "Texture.espresso",
             "Texture.pour",
             "Texture.shaker",
-            "Texture.oven"
+            "Texture.oven",
+            "Texture.mixer"
           ]
         }
       },
@@ -49,7 +51,8 @@
             "Geometry.espresso_c",
             "Geometry.pour_c",
             "Geometry.shaker_c",
-            "Geometry.oven_c"
+            "Geometry.oven_c",
+            "Geometry.mixer_c"
           ]
         },
         "textures": {

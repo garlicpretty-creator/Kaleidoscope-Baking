@@ -10,20 +10,27 @@
 //   - syncDisplay(block, slot, undefined) removes it
 //   - clearDisplays(location) removes every display of a block (call on break / explode)
 //   - when a display entity loads but its block is gone, it removes itself
+//   - `small: true` uses `kaleidoscope_baking:display_small` (same entity, smaller), for racks with many items
 // ============================================================================
 import { system, world } from "@minecraft/server";
 
 export const DISPLAY_ID = "kaleidoscope_baking:display";
+export const DISPLAY_SMALL_ID = "kaleidoscope_baking:display_small";
+const DISPLAY_TYPES = new Set([DISPLAY_ID, DISPLAY_SMALL_ID]);
 const SHOWING = "kb_disp_item:"; // second tag remembers the shown item to skip redundant commands
 
 const tagOf = (dimension, loc, slot) => `kb_disp:${dimension.id}:${loc.x},${loc.y},${loc.z}:${slot}`;
 const blockTagPrefix = (dimension, loc) => `kb_disp:${dimension.id}:${loc.x},${loc.y},${loc.z}:`;
 
-function find(dimension, loc, prefix, radius = 2) {
-  try {
-    return dimension.getEntities({ type: DISPLAY_ID, location: { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, maxDistance: radius })
-      .filter(e => e.getTags().some(t => t.startsWith(prefix)));
-  } catch { return []; }
+function find(dimension, loc, prefix, radius = 2, type = undefined) {
+  const out = [];
+  for (const t of type ? [type] : DISPLAY_TYPES) {
+    try {
+      out.push(...dimension.getEntities({ type: t, location: { x: loc.x + 0.5, y: loc.y + 0.5, z: loc.z + 0.5 }, maxDistance: radius })
+        .filter(e => e.getTags().some(tag => tag.startsWith(prefix))));
+    } catch {}
+  }
+  return out;
 }
 
 function despawn(e) {
@@ -34,18 +41,19 @@ function despawn(e) {
  * Show `itemId` for `slot` of `block` at `offset` (block-relative, e.g. {x:0.5, y:1, z:0.5}).
  * Pass itemId = undefined to remove that display.
  */
-export function syncDisplay(block, slot, itemId, offset = { x: 0.5, y: 1.0, z: 0.5 }) {
+export function syncDisplay(block, slot, itemId, offset = { x: 0.5, y: 1.0, z: 0.5 }, { small = false } = {}) {
   const dimension = block.dimension;
   const loc = { x: block.x, y: block.y, z: block.z };
   const tag = tagOf(dimension, loc, slot);
-  const existing = find(dimension, loc, tag);
+  const type = small ? DISPLAY_SMALL_ID : DISPLAY_ID;
+  const existing = find(dimension, loc, tag, 2, type);
   for (const extra of existing.slice(1)) despawn(extra);
   let e = existing[0];
   if (!itemId) { if (e) despawn(e); return; }
   const pos = { x: loc.x + offset.x, y: loc.y + offset.y, z: loc.z + offset.z };
   try {
     if (!e) {
-      e = dimension.spawnEntity(DISPLAY_ID, pos);
+      e = dimension.spawnEntity(type, pos);
       e.addTag(tag);
     } else {
       e.teleport(pos);
@@ -65,7 +73,7 @@ export function clearDisplays(dimension, loc) {
 
 // Orphan cleanup: a display whose block no longer exists removes itself when it loads.
 world.afterEvents?.entityLoad?.subscribe?.(({ entity }) => {
-  if (entity?.typeId !== DISPLAY_ID) return;
+  if (!DISPLAY_TYPES.has(entity?.typeId)) return;
   system.run(() => {
     try {
       const t = entity.getTags().find(x => x.startsWith("kb_disp:"));

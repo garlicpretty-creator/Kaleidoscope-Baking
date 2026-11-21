@@ -12,6 +12,7 @@
         "pour": "textures/entity/kb_visual_pour",
         "shaker": "textures/entity/kb_visual_shaker",
         "oven": "textures/entity/kb_visual_oven",
+        "mixer": "textures/entity/kb_visual_mixer",
         "tint0": "textures/entity/kb_tint_0",
         "tint1": "textures/entity/kb_tint_1",
         "tint2": "textures/entity/kb_tint_2",
@@ -33,7 +34,9 @@
         "shaker": "geometry.kaleidoscope_baking.visual_shaker",
         "shaker_c": "geometry.kaleidoscope_baking.visual_shaker_contents",
         "oven": "geometry.kaleidoscope_baking.visual_oven",
-        "oven_c": "geometry.kaleidoscope_baking.visual_oven_contents"
+        "oven_c": "geometry.kaleidoscope_baking.visual_oven_contents",
+        "mixer": "geometry.kaleidoscope_baking.visual_mixer",
+        "mixer_c": "geometry.kaleidoscope_baking.visual_mixer_contents"
       },
       "animations": {
         "bowl": "animation.kaleidoscope_baking.visual.bowl",
@@ -42,6 +45,7 @@
         "espresso": "animation.kaleidoscope_baking.visual.espresso",
         "pour": "animation.kaleidoscope_baking.visual.pour",
         "oven": "animation.kaleidoscope_baking.visual.oven",
+        "mixer": "animation.kaleidoscope_baking.visual.mixer",
         "shaker": "animation.kaleidoscope_baking.visual.shaker"
       },
       "scripts": {
@@ -72,12 +76,15 @@
           },
           {
             "oven": "q.property('kaleidoscope_baking:kind') == 7"
+          },
+          {
+            "mixer": "q.property('kaleidoscope_baking:kind') == 8"
           }
         ]
       },
       "render_controllers": [
         {
-          "controller.render.kaleidoscope_baking.visual": "q.property('kaleidoscope_baking:kind') == 1 || q.property('kaleidoscope_baking:kind') == 4 || q.property('kaleidoscope_baking:kind') == 5 || q.property('kaleidoscope_baking:kind') == 6 || q.property('kaleidoscope_baking:kind') == 7"
+          "controller.render.kaleidoscope_baking.visual": "q.property('kaleidoscope_baking:kind') == 1 || q.property('kaleidoscope_baking:kind') == 4 || q.property('kaleidoscope_baking:kind') == 5 || q.property('kaleidoscope_baking:kind') == 6 || q.property('kaleidoscope_baking:kind') == 7 || q.property('kaleidoscope_baking:kind') == 8"
         },
         {
           "controller.render.kaleidoscope_baking.contents": "q.property('kaleidoscope_baking:fill') > 0"

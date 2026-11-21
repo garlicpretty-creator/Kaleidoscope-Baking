@@ -395,3 +395,132 @@ MODELS = {"mixing_bowl": mixing_bowl, "proofing_basket": proofing_basket, "decor
           "espresso_machine": espresso_machine, "pour_over_stand": pour_over_stand, "drink_shaker": drink_shaker,
           "herb_planter": herb_planter}
 DIRECTIONAL = {"proofing_basket", "decorating_stand", "espresso_machine", "pour_over_stand", "drink_shaker"}
+
+
+# --------------------------------------------------------------------------------------------- stand mixer (phase 3)
+MIXER = ramp((226, 158, 168), lo=0.66, hi=1.12)  # pastel rose enamel, like the espresso machine's stripe
+
+
+@painter
+def mixer_body(t):
+    """Rose enamel with a chrome band at the head's waist and a darker foot line."""
+    if t.side and t.y < 0.75:
+        return MIXER[0]
+    if t.side and 12.75 <= t.y < 13.25:
+        return STEEL[4] if t.u % 3 else STEEL[3]
+    return MIXER[3] if n(t, 51) > 0.9 else MIXER[2]
+
+
+@painter
+def mixer_base_top(t):
+    """Base plate from above: a steel ring where the bowl locks in, a rose surround."""
+    d = math.hypot(t.x, t.z - 1.5)
+    if 3.4 < d < 4.6:
+        return STEEL[3] if (t.u + t.v) % 4 else STEEL[4]
+    return MIXER[3] if n(t, 52) > 0.9 else MIXER[2]
+
+
+@painter
+def mixer_hub(t):
+    """Front of the head: the chrome attachment hub and a brass speed dot."""
+    d = math.hypot(t.u + 0.5 - t.w / 2, t.v + 0.5 - t.h / 2)
+    if d < 1.3:
+        return STEEL[4] if d < 0.8 else STEEL[2]
+    if (t.u, t.v) == (t.w - 1, 0):
+        return (214, 170, 72)
+    return MIXER[2]
+
+
+@painter
+def mixer_head_top(t):
+    """Top of the head: a chrome strip down the middle, a vent slot near the back."""
+    if abs(t.x) < 0.6:
+        return STEEL[4] if t.v % 2 else STEEL[3]
+    if -5.5 < t.z < -4.5 and abs(t.x) < 2:
+        return MIXER[0]
+    return MIXER[3] if n(t, 53) > 0.9 else MIXER[2]
+
+
+@painter
+def mixer_bowl_inside(t):
+    """The small bowl's floor: darker in the middle, a bright reflected arc."""
+    d = math.hypot(t.x, t.z - 1.5)
+    if 1.5 < d < 2.2 and t.x < 0 and t.z < 1.5:
+        return STEEL[4]
+    return STEEL_D[1] if d < 1.2 else STEEL_D[2]
+
+
+def stand_mixer():
+    w = {"*": "steel", "top": "rim"}
+    b = [Box(-5, 0, -6.5, 5, 2, 6, {"*": "body", "top": "base_top"}),
+         Box(-2, 2, -6, 2, 11, -2.5, "body"),
+         Box(-2.5, 11, -6.5, 2.5, 15, 4, {"*": "body", "south": "hub", "top": "head_top"}),
+         # the steel bowl: open, so the batter (station_visual contents) shows; the beater and crank are visual parts
+         Box(-2.5, 2, -1, 2.5, 3, 4, {"*": "steel", "top": "inside"}),
+         Box(-3.5, 2, -2, 3.5, 7, -1, dict(w, south="steel_in")), Box(-3.5, 2, 4, 3.5, 7, 5, dict(w, north="steel_in")),
+         Box(-3.5, 2, -1, -2.5, 7, 4, dict(w, west="steel_in")), Box(2.5, 2, -1, 3.5, 7, 4, dict(w, east="steel_in"))]
+    return b, {"body": mixer_body, "base_top": mixer_base_top, "hub": mixer_hub, "head_top": mixer_head_top,
+               "steel": steel, "steel_in": steel_in, "rim": bowl_rim, "inside": mixer_bowl_inside}
+
+
+# --------------------------------------------------------------------------------------------- cooling rack (phase 3)
+@painter
+def rack_grid(t):
+    """Wire grid seen from above / below: a frame and wires two pixels apart, open in between."""
+    if t.side:
+        return STEEL[3]
+    if t.u in (0, t.w - 1) or t.v in (0, t.h - 1):
+        return STEEL[3]
+    if t.u % 2 == 1:
+        return STEEL[4] if t.v % 4 else STEEL[2]
+    if t.v % 4 == 2:
+        return STEEL[2]  # cross wires, fewer
+    return CLEAR
+
+
+rack_grid.shade = False
+
+
+@painter
+def rack_leg(t):
+    if t.y < 0.5:
+        return IRON[1]  # rubber foot
+    return STEEL[3] if t.v % 3 else STEEL[2]
+
+
+def cooling_rack():
+    b = [Box(-7, 5, -7, 7, 5.5, 7, "grid", clear=True)]
+    for x in (-7, 6):
+        for z in (-7, 6):
+            b.append(Box(x, 0, z, x + 1, 5, z + 1, "leg"))
+    b += [Box(-6, 1, -7, 6, 1.5, -6, "steel"), Box(-6, 1, 6, 6, 1.5, 7, "steel")]
+    return b, {"grid": rack_grid, "leg": rack_leg, "steel": steel}
+
+
+# --------------------------------------------------------------------------------------------- mug rack (phase 3)
+@painter
+def peg(t):
+    """Turned oak peg: darker grain rings, dark tips where the mugs hang."""
+    ax = max(abs(t.x), abs(t.z))
+    if ax > 4.4:
+        return WALNUT[1]
+    return OAK[1] if int((t.x + t.z) * 1.5 + 64) % 4 == 0 else OAK[2]
+
+
+@painter
+def post(t):
+    return OAK[1] if int(t.y * 1.5 + 64) % 5 == 0 else (OAK[3] if n(t, 61) > 0.9 else OAK[2])
+
+
+def mug_rack():
+    b = [Box(-5, 0, -5, 5, 1, 5, {"*": "walnut", "top": "walnut_top"}),
+         Box(-1, 1, -1, 1, 14, 1, "post"),
+         Box(-5, 4.5, -0.5, 5, 5.5, 0.5, "peg"),
+         Box(-0.5, 8, -5, 0.5, 9, 5, "peg"),
+         Box(-5, 11.5, -0.5, 5, 12.5, 0.5, "peg"),
+         Box(-1.5, 14, -1.5, 1.5, 15, 1.5, "walnut")]
+    return b, {"walnut": walnut, "walnut_top": walnut_top, "post": post, "peg": peg}
+
+
+MODELS.update({"stand_mixer": stand_mixer, "cooling_rack": cooling_rack, "mug_rack": mug_rack})
+DIRECTIONAL.add("stand_mixer")

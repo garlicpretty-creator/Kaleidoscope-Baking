@@ -1,0 +1,39 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "kaleidoscope_baking:mug_rack"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " S ",
+      "SMS",
+      "PPP"
+    ],
+    "key": {
+      "S": {
+        "item": "minecraft:stick"
+      },
+      "M": {
+        "item": "kaleidoscope_baking:coffee_mug"
+      },
+      "P": {
+        "item": "minecraft:oak_slab"
+      }
+    },
+    "result": {
+      "item": "kaleidoscope_baking:mug_rack",
+      "count": 1
+    },
+    "unlock": [
+      {
+        "item": "minecraft:stick"
+      },
+      {
+        "item": "kaleidoscope_baking:coffee_mug"
+      }
+    ]
+  }
+}

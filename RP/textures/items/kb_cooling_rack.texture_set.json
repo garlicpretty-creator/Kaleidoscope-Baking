@@ -1,0 +1,8 @@
+{
+  "format_version": "1.16.100",
+  "minecraft:texture_set": {
+    "color": "kb_cooling_rack",
+    "normal": "kb_cooling_rack_normal",
+    "metalness_emissive_roughness": "kb_cooling_rack_mer"
+  }
+}
